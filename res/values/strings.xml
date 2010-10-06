@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MaharaDroid</string>
+    <string name="startup_text">Welcome to MaharaDroid</string>
+    <string name="prefs_app_name">MaharaDroid Preferences</string>
+    
+    <string name="pref_upload_url_key">upload.uri</string>
+    <string name="pref_upload_url_title">Upload URI</string>
+    <string name="pref_upload_url_summary">Enter the URL to post files to Mahara</string>
+    
+    <string name="prefcat_advanced">Advanced</string>
+
+    <string name="pref_upload_https_key">upload.https</string>
+    <string name="pref_upload_https_title">Enable HTTPs upload</string>
+    <string name="pref_upload_https_summary">Upload your artefacts over HTTPS</string>
+    
+    <string name="pref_upload_folder_key">upload.folder</string>
+    <string name="pref_upload_folder_title">Upload Folder</string>
+    <string name="pref_upload_folder_summary">Enter the folder to upload your artefacts into</string>
+
+
+    <string name="pref_menu_reset">Reset</string>
+    
+    <string name="btnok">OK</string>
+    <string name="btnupload">Upload</string>
+    <string name="btnsendlabel">Send</string>
+    <string name="btncancellabel">Cancel</string>
+    
+	<string name="lbluploadoptions">Upload Settings</string>
+	
+	<string name="artifact_retrieve_error">Error Retrieving Artefact Details</string>
+    <string name="artifactsettings">Artefact Settings</string>
+    <string name="transferprogress">File Transfer Progress</string>
+    <string name="uploadstarting">Your Upload is Starting</string>
+    <string name="uploadfinished">Your Upload is Finished</string>
+    <string name="uploadingartifact">Uploading Artefact</string>
+    <string name="uploading">Uploading</string>
+    <string name="filetransfers">File Transfers</string>
+    
+    <string name="chkupload">Yes:</string>
+    <string name="confirmtext">The file I am attempting to upload is my own or I have express 
+								permission to reproduce and/or distribute this item. My use of this file 
+								does not breach any local Copyright legislation. This file also adheres to 
+								the Terms and Conditions outlined on this site.</string>
+    
+</resources>

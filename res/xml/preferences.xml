@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<EditTextPreference
+		android:key="@string/pref_upload_url_key"
+		android:title="@string/pref_upload_url_title"
+		android:summary="@string/pref_upload_url_summary"
+		android:defaultValue="http://10.0.1.100/mahara/artefact/file/mobileupload.php" />	
+		
+	
+	<PreferenceCategory
+		android:title="@string/prefcat_advanced">
+
+	<EditTextPreference
+		android:key="@string/pref_upload_folder_key"
+		android:title="@string/pref_upload_folder_title"
+		android:enabled="false"
+		android:summary="@string/pref_upload_folder_summary"
+		android:defaultValue="Home" />	
+	
+
+	</PreferenceCategory>
+			
+</PreferenceScreen>

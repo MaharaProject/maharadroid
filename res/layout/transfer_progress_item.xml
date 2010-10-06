@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/TransferProgressItemLayout"
+  android:orientation="horizontal"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent">
+  
+	<ImageView android:id="@+id/TransferThumbnail"
+			   android:visibility="gone"
+			   android:layout_width="wrap_content"
+			   android:layout_height="fill_parent">
+    </ImageView>
+
+	<LinearLayout
+	  xmlns:android="http://schemas.android.com/apk/res/android"
+	  android:orientation="vertical"
+	  android:padding="10dp"
+	  android:layout_width="fill_parent"
+	  android:layout_height="fill_parent">
+	  
+		<TextView android:id="@+id/TransferPictureName"
+				  android:text="Picture"
+				  android:gravity="bottom"
+				  android:textSize="8pt"
+				  android:layout_width="fill_parent"
+				  android:layout_height="wrap_content">
+	    </TextView>
+	    
+		<TextView android:id="@+id/TransferType"
+				  android:text="Upload"
+				  android:gravity="center_vertical"
+				  android:padding="2dp"
+				  android:textSize="6pt"
+				  android:layout_width="fill_parent"
+				  android:layout_height="wrap_content">
+	    </TextView>
+	    
+		<TextView android:id="@+id/TransferPictureStatus"
+				  android:text="Pending"
+				  android:gravity="center_vertical"
+				  android:padding="2dp"
+				  android:textSize="6pt"
+				  android:layout_width="fill_parent"
+				  android:layout_height="wrap_content">
+	    </TextView>
+	    
+		<ProgressBar android:id="@+id/TransferProgressBar"
+					 android:indeterminate="false"
+					 android:progress="0"
+					 android:max="100"
+					 android:layout_width="fill_parent"
+					 android:layout_height="wrap_content"
+					 android:visibility="gone"
+					 style="?android:attr/progressBarStyleHorizontal">
+		</ProgressBar>
+		 
+	</LinearLayout>
+
+</LinearLayout>

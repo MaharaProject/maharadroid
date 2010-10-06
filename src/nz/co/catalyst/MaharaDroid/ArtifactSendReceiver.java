@@ -2,7 +2,7 @@
  * MaharaDroid -  Artefact uploader
  * 
  * This file is part of MaharaDroid.
- *
+ * 
  *   Copyright [2010] [Catalyst IT Limited]
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,6 +24,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+
+/*
+ * The ArtifactSendReceiver class is taken from the PictureSendReceiver class
+ * written by Russel Stewart (rnstewart@gmail.com) as part of the Flickr Free
+ * Android application.
+ *
+ * @author	Alan McNatty (alan.mcnatty@catalyst.net.nz)
+ */
 
 public class ArtifactSendReceiver extends Activity {
 

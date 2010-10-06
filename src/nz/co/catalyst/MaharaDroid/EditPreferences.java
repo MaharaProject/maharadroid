@@ -1,9 +1,9 @@
 /*
- * ENUM Discoverer. ENUM Demonstration software, demonstrating the potential of ENUM.
- * 
- * Copyright (C) 2009 SIDN and ISOC.nl
+ * MaharaDroid -  Artefact uploader
  * 
  * This file is part of ENUM Discoverer.
+ * 
+ * Copyright (C) 2009 SIDN and ISOC.nl
  *
  * ENUM Discoverer is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by

@@ -1,1 +1,6 @@
 bin
+gen
+.classpath
+.project
+local.properties
+build

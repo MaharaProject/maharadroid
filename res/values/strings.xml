@@ -20,6 +20,7 @@
 
 
     <string name="pref_menu_reset">Reset</string>
+    <string name="pref_menu_about">About</string>
     
     <string name="btnok">OK</string>
     <string name="btnupload">Upload</string>
@@ -42,5 +43,12 @@
 								permission to reproduce and/or distribute this item. My use of this file 
 								does not breach any local Copyright legislation. This file also adheres to 
 								the Terms and Conditions outlined on this site.</string>
-    
+        <!--  About page -->
+    <string name="about_title">About MaharaDroid</string>
+    <string name="about_top_section_title">MaharaDroid</string>    
+	<string name="about_sponsors_section_title">Sponsors</string>
+    <string name="about_code_contributors_section_title">Third Party Components</string>
+	<string name="about_licenses_section_title">Licenses</string>
+	<string name="about_version_label">Version</string>
+	<string name="about_license_label">License</string>
 </resources>

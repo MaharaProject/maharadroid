@@ -21,6 +21,9 @@
 
 package nz.co.catalyst.MaharaDroid;
 
+import nz.co.catalyst.MaharaDroid.ui.about.AboutActivity;
+
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
@@ -64,6 +67,9 @@ public class EditPreferences extends PreferenceActivity implements OnSharedPrefe
 	public boolean onOptionsItemSelected(MenuItem item) {
 		
 		switch (item.getItemId()) {
+		case R.id.about:
+			showAboutPage();
+			return true;
 		case R.id.reset:
 			resetToDefaults();
 			return true;
@@ -76,7 +82,10 @@ public class EditPreferences extends PreferenceActivity implements OnSharedPrefe
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 		
 	}
-	
+	private void showAboutPage() {
+		
+		startActivity(new Intent(this, AboutActivity.class));
+	}
 	private void resetToDefaults() {
 		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);

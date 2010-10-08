@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<about>
+
+	<main_info
+		name="MaharaDroid"
+		description="Android Artefact Uploader for Mahara."
+		version="1.0.0"
+		license="Apache License, Version 2.0"
+		uri="http://code.google.com/p/maharadroid/" >
+		<link
+			text="Attribution notices from Apache 2.0 licensed third-party code"
+			uri="android.resource://nz.co.catalyst.MaharaDroid/raw/notice"
+			type="text/plain" />
+	</main_info>
+	
+	<!-- Third party software components - Libraries or code used by this project -->
+	<contributor
+		name="Android"
+		license="Apache License, Version 2.0"
+		uri="http://www.android.com/" />
+	<contributor
+		name="Apache Commons Codec"
+		license="Apache License, Version 2.0"
+		uri="http://commons.apache.org/codec/" />
+	<contributor
+		name="Apache Commons Lang"
+		license="Apache License, Version 2.0"
+		uri="http://commons.apache.org/lang/" />
+	<contributor
+		name="flickrfree"
+		license="Apache License, Version 2.0"
+		uri="http://code.google.com/p/flickrfree" />
+	
+	<!-- Licenses - The licenses mentioned in the above sections -->
+	<license
+		name="Apache License, Version 2.0"
+		uri="http://www.apache.org/licenses/LICENSE-2.0" />
+	
+</about>

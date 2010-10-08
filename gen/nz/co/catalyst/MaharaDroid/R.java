@@ -12,9 +12,8 @@ public final class R {
     }
     public static final class drawable {
         public static final int icon=0x7f020000;
-        public static final int maharadroid=0x7f020001;
-        public static final int menu_info=0x7f020002;
-        public static final int menu_revert=0x7f020003;
+        public static final int menu_info=0x7f020001;
+        public static final int menu_revert=0x7f020002;
     }
     public static final class id {
         public static final int ArtifactConfirmLayout=0x7f080004;
@@ -86,13 +85,13 @@ public final class R {
         public static final int pref_upload_folder_key=0x7f06000a;
         public static final int pref_upload_folder_summary=0x7f06000c;
         public static final int pref_upload_folder_title=0x7f06000b;
-        public static final int pref_upload_https_key=0x7f060007;
-        public static final int pref_upload_https_summary=0x7f060009;
-        public static final int pref_upload_https_title=0x7f060008;
+        public static final int pref_upload_token_key=0x7f060006;
+        public static final int pref_upload_token_summary=0x7f060008;
+        public static final int pref_upload_token_title=0x7f060007;
         public static final int pref_upload_url_key=0x7f060003;
         public static final int pref_upload_url_summary=0x7f060005;
         public static final int pref_upload_url_title=0x7f060004;
-        public static final int prefcat_advanced=0x7f060006;
+        public static final int prefcat_advanced=0x7f060009;
         public static final int prefs_app_name=0x7f060002;
         public static final int startup_text=0x7f060001;
         public static final int transferprogress=0x7f060016;

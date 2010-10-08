@@ -103,7 +103,7 @@ public class ArtifactSettings extends Activity implements OnClickListener {
 		// upload in the Extras Bundle.
 		Intent uploader_intent = new Intent(this, TransferService.class);
 		uploader_intent.putExtra("filename", m_filepath);
-		uploader_intent.putExtra("type", "upload");
+		//uploader_intent.putExtra("type", "upload");
 		uploader_intent.putExtra("title", ((EditText)findViewById(R.id.txtArtifactTitle)).getText().toString());
 		
 		// Start the uploader service and pass in the intent containing

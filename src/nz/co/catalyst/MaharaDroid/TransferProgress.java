@@ -53,6 +53,11 @@ import android.content.ServiceConnection;
 
 public class TransferProgress extends Activity implements OnClickListener {
 
+	private StatusReceiver m_receiver = null;
+	private BindTransferServiceReceiver m_bind_transfer_service_receiver = null;
+	private PercentProgressUpdateReceiver m_update_receiver = null;
+    private TransferService m_transfer_service = null;
+
     private ServiceConnection m_svc = new ServiceConnection() {
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
@@ -69,7 +74,7 @@ public class TransferProgress extends Activity implements OnClickListener {
     };
     
 	// This is the receiver that we use to update the percentage progress display
-    // for the current upload and/or download.
+    // for the current upload 
 	public class PercentProgressUpdateReceiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -194,14 +199,14 @@ public class TransferProgress extends Activity implements OnClickListener {
 			ArrayList < HashMap<String, String> > transferlist = new ArrayList < HashMap<String,String> >();
 			LinkedList<Bundle> upload_list = m_transfer_service.getUploads();
 			
-			// If either the upload or download lists is empty, then be sure to cancel the appropriate
-			// notification. If both are empty, then there's nothing to do here, so close the TransferProgress
+			// If the upload list is empty, then be sure to cancel the appropriate
+			// notification. If it is empty, then there's nothing to do here, so close the TransferProgress
 			// Activity.
 			if (upload_list.isEmpty()) {
 				((NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE)).cancel(GlobalResources.UPLOADER_ID);
 			}
 
-	        // We want to interleave the list of uploads and downloads in the ListView.
+	        // We want to interleave the list of uploads in the ListView.
 			HashMap<String, String> m;
 			Bundle b = null;
 			while (!upload_list.isEmpty() ) {
@@ -229,8 +234,4 @@ public class TransferProgress extends Activity implements OnClickListener {
     	}
 	}
 	
-	private StatusReceiver m_receiver = null;
-	private BindTransferServiceReceiver m_bind_transfer_service_receiver = null;
-	private PercentProgressUpdateReceiver m_update_receiver = null;
-    private TransferService m_transfer_service = null;
 }

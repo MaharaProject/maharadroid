@@ -95,8 +95,8 @@ public class RestClient {
 		return sb.toString();
 	}
 
-	public static JSONObject UploadArtifact(String url, String id, String filename, 
-															String title, Context context){
+	public static JSONObject UploadArtifact(String url, String token, String folder,
+												String filename, String title, Context context){
 		Vector<String> pNames = new Vector<String>();
 		Vector<String> pVals = new Vector<String>();
 
@@ -117,12 +117,14 @@ public class RestClient {
 		paramNames = pNames.toArray(paramNames);
 		paramVals = pVals.toArray(paramVals);
 		
-		return CallFunction(url, id, paramNames, paramVals, filename, context);
+		Log.d("MaharaDroid", "String url: '" + url + "', String token: '" + token + "', String folder: '" + folder + "', String filename: '" + filename + "'");
+
+		return CallFunction(url, token, folder, filename, paramNames, paramVals, context);
 	}
 
-	public static JSONObject CallFunction(String url, String id, 
+	public static JSONObject CallFunction(String url, String token, String folder, String filename, 
 											String[] paramNames, String[] paramVals,
-										  String filename,  Context context)
+										    Context context)
 	{
 		JSONObject json = new JSONObject();
 		SchemeRegistry supportedSchemes = new SchemeRegistry();
@@ -142,6 +144,7 @@ public class RestClient {
 
 		DefaultHttpClient httpclient = new DefaultHttpClient(ccm, http_params);
 
+		Log.d("MaharaDroid", "String url: '" + url + "', String token: '" + token + "', String folder: '" + folder + "', String filename: '" + filename + "'");
 	    
 	    if (paramNames == null) {
 			paramNames = new String[0];
@@ -155,51 +158,11 @@ public class RestClient {
 			return json;
 		}
 		
-		// TODO this all needs configuring...
-		/*
-		URL mURL;
-		 
-		
-		try {
-			mURL = new URL(url);
-		} catch (MalformedURLException e2) {
-			Log.w("MaharaDroid", "Malformed URL '" + url + "', bailing on upload!");
-			return json;
-		}
-		String mDomain = mURL.getHost();
-		String mPath = mURL.getPath();
-		*/
 		SortedMap<String,String> sig_params = new TreeMap<String,String>();
 		
-		sig_params.put("id", id);
-		sig_params.put("folder", "0");
+		sig_params.put("token", token);
+		sig_params.put("foldername", folder);
 		
-		/*
-		sig_params.put("JSON", "1");
-		sig_params.put("NOSESSKEY", "1");
-		sig_params.put("files_filebrowser_changefolder", "");	
-		sig_params.put("files_filebrowser_foldername", "Home");
-		sig_params.put("files_filebrowser_uploadnumber", "1");
-		sig_params.put("files_filebrowser_upload", "1");
-		sig_params.put("MAX_FILE_SIZE", "2097152");
-		sig_params.put("files_filebrowser_notice", "on");
-		sig_params.put("pieform_files", "1");
-		sig_params.put("pieform_jssubmission", "1");	
-		
-		SortedMap<String,String> m_cookies = new TreeMap<String,String>();
-		
-		m_cookies.put("mahara", token);
-		m_cookies.put("ctest", "1");
-		
-	    BasicCookieStore mCookieStore = new BasicCookieStore();
-		for (Map.Entry<String,String> entry : m_cookies.entrySet()) {
-		    BasicClientCookie c = new BasicClientCookie(entry.getKey(), entry.getValue());
-		    c.setDomain(mDomain);  
-		    c.setPath(mPath);
-		    mCookieStore.addCookie(c); 
-		}
-	    httpclient.setCookieStore(mCookieStore);
-		*/
 		HttpResponse response = null;
 
 		try {
@@ -237,15 +200,14 @@ public class RestClient {
 		    	//resEntity.consumeContent();
 		    	String content = convertStreamToString(resEntity.getContent());
 		    	// TODO analyse content and put success / fail  
-		    	if ( response.getStatusLine().getStatusCode() == 200 && 
-		    					content.indexOf("success") >= 0) {
+		    	if ( response.getStatusLine().getStatusCode() == 200 ) {
 		    		try {
-						json.put("success", "Artefact successfully uploaded");
+						json.put("success", content.toString());
 					} catch (JSONException e) {
 						json = null;
 					}
 		    	} else {
-					Log.w("MaharaDroid", "File upload success could not be determined (non 200 or error in response body).");
+					Log.w("MaharaDroid", "File upload failed with response code:" + response.getStatusLine().getStatusCode());
 		    		try {
 						json.put("fail", "Artefact upload failed");
 						Log.d("MaharaDroid", "HTTP POST returned status code: " + response.getStatusLine());

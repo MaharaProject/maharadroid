@@ -40,7 +40,7 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -105,9 +105,10 @@ public class TransferService extends Service implements OnSharedPreferenceChange
 				upload_info = m_uploads.get(0);
 				if (upload_info != null) {
 					publishProgress(new String[]{"start", upload_info.getString("title")});
-					
 			        JSONObject result = RestClient.UploadArtifact(
-			        						 getUploadURLPref(), getDeviceId(),
+			        						 getUploadURLPref(), 
+			        						 getUploadAuthTokenPref(),
+			        						 getUploadFolderPref(),
 			        						 upload_info.getString("filename"),
 							    			 upload_info.getString("title"),
 								    		 getApplicationContext());
@@ -154,7 +155,7 @@ public class TransferService extends Service implements OnSharedPreferenceChange
 					getApplicationContext().sendBroadcast(broadcast_intent);
 				}
 				if (status.equals("finish")) {
-					// Send out a broadcast to let us know that an upload is starting.
+					// Send out a broadcast to let us know that an upload is finished.
 					broadcast_intent.setAction(GlobalResources.INTENT_UPLOAD_FINISHED);
 					getApplicationContext().sendBroadcast(broadcast_intent);
 				}
@@ -180,6 +181,17 @@ public class TransferService extends Service implements OnSharedPreferenceChange
 			// Uploader service.
 			Toast.makeText(getApplicationContext(), R.string.uploadfinished, Toast.LENGTH_SHORT).show();
 			((NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE)).cancel(GlobalResources.UPLOADER_ID);
+			
+			// Check the result - if a new token is provided, update our preferences.
+			
+			if ( result != null ) {
+				try {
+					setUploadAuthTokenPref(((JSONObject) result).getString("success"));
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					Log.w("MaharaDroid", "Hmm .. got success but not a valid token");
+				}
+			}
 			stopSelf();
 		}
 		
@@ -217,9 +229,7 @@ public class TransferService extends Service implements OnSharedPreferenceChange
 	public void onStart(Intent intent, int startId) {
 		Bundle extras = intent.getExtras();
 		if (extras != null) {
-			if (extras.getString("type").equals("upload")) {
-				addUpload(intent.getExtras());
-			}
+			addUpload(intent.getExtras());
 		}
 		m_update_receiver = new NotificationProgressUpdateReceiver();
 		if (m_update_receiver != null) {
@@ -281,9 +291,15 @@ public class TransferService extends Service implements OnSharedPreferenceChange
 	private String getUploadURLPref() {
 		return mPrefs.getString(getString(R.string.pref_upload_url_key), null);
 	}
-	
-	public String getDeviceId() {
-		TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-		return telephonyManager.getDeviceId();
+	private String getUploadFolderPref() {
+		return mPrefs.getString(getString(R.string.pref_upload_folder_key), null);
+	}
+	public String getUploadAuthTokenPref() {
+		//this.getDeviceId()
+		return mPrefs.getString(getString(R.string.pref_upload_token_key), null);
+	}
+	public void setUploadAuthTokenPref(String newToken) {
+		Log.d("MaharaDroid", "New Token is '" + newToken + "'");
+		mPrefs.edit().putString(getString(R.string.pref_upload_token_key), newToken);
 	}
 }

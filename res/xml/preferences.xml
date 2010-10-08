@@ -7,8 +7,12 @@
 		android:key="@string/pref_upload_url_key"
 		android:title="@string/pref_upload_url_title"
 		android:summary="@string/pref_upload_url_summary"
-		android:defaultValue="http://10.0.1.100/mahara/artefact/file/mobileupload.php" />	
-		
+		android:defaultValue="http://www.mahara.org/artefact/file/mobileupload.php" />	
+	<EditTextPreference
+		android:key="@string/pref_upload_token_key"
+		android:title="@string/pref_upload_token_title"
+		android:summary="@string/pref_upload_token_summary"	/>	
+			
 	
 	<PreferenceCategory
 		android:title="@string/prefcat_advanced">
@@ -16,7 +20,6 @@
 	<EditTextPreference
 		android:key="@string/pref_upload_folder_key"
 		android:title="@string/pref_upload_folder_title"
-		android:enabled="false"
 		android:summary="@string/pref_upload_folder_summary"
 		android:defaultValue="Home" />	
 	

@@ -18,7 +18,7 @@
  *  limitations under the License.
  */
 
-package nz.co.catalyst.MaharaDroid;
+package nz.net.catalyst.MaharaDroid;
 
 /*
  * The GlobalResources class is taken from the GlobalResources class

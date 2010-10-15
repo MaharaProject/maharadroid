@@ -18,7 +18,7 @@
  *  limitations under the License.
  */
 
-package nz.co.catalyst.MaharaDroid;
+package nz.net.catalyst.MaharaDroid;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -117,7 +117,7 @@ public class RestClient {
 		paramNames = pNames.toArray(paramNames);
 		paramVals = pVals.toArray(paramVals);
 		
-		Log.d("MaharaDroid", "String url: '" + url + "', String token: '" + token + "', String folder: '" + folder + "', String filename: '" + filename + "'");
+		//Log.d("MaharaDroid", "String url: '" + url + "', String token: '" + token + "', String folder: '" + folder + "', String filename: '" + filename + "'");
 
 		return CallFunction(url, token, folder, filename, paramNames, paramVals, context);
 	}
@@ -144,7 +144,7 @@ public class RestClient {
 
 		DefaultHttpClient httpclient = new DefaultHttpClient(ccm, http_params);
 
-		Log.d("MaharaDroid", "String url: '" + url + "', String token: '" + token + "', String folder: '" + folder + "', String filename: '" + filename + "'");
+		//Log.d("MaharaDroid", "String url: '" + url + "', String token: '" + token + "', String folder: '" + folder + "', String filename: '" + filename + "'");
 	    
 	    if (paramNames == null) {
 			paramNames = new String[0];

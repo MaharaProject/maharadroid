@@ -19,9 +19,9 @@
  * along with ENUM Discoverer.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package nz.co.catalyst.MaharaDroid;
+package nz.net.catalyst.MaharaDroid;
 
-import nz.co.catalyst.MaharaDroid.ui.about.AboutActivity;
+import nz.net.catalyst.MaharaDroid.ui.about.AboutActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;

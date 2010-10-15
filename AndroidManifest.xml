@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="nz.co.catalyst.MaharaDroid"
+      package="nz.net.catalyst.MaharaDroid"
       android:versionCode="1"
       android:versionName="1.0">
-    <application android:icon="@drawable/icon" android:label="@string/app_name">
+    <application android:icon="@drawable/icon" android:label="@string/app_name" android:debuggable="false">
     
         <activity android:name=".MaharaDroid"
                   android:label="@string/app_name"
@@ -29,14 +29,14 @@
 		
 	    <activity android:name=".ArtifactSettings" android:label="@string/artifactsettings">
             <intent-filter>
-                <action android:name="nz.co.catalyst.MaharaDroid.ArtifactSettings" />
+                <action android:name="nz.net.catalyst.MaharaDroid.ArtifactSettings" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         
         <activity android:name=".TransferProgress" android:label="@string/transferprogress">
             <intent-filter>
-                <action android:name="nz.co.catalyst.MaharaDroid.TRANSFERPROGRESS" />
+                <action android:name="nz.net.catalyst.MaharaDroid.TRANSFERPROGRESS" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -57,6 +57,5 @@
     </application>
     <uses-sdk android:minSdkVersion="3" />
 	<uses-permission android:name="android.permission.INTERNET"/>
-	<uses-permission android:name="android.permission.READ_PHONE_STATE"/>
        
 </manifest> 

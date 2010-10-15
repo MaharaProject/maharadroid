@@ -18,21 +18,38 @@
  *  limitations under the License.
  */
 
-package nz.co.catalyst.MaharaDroid;
+package nz.net.catalyst.MaharaDroid;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
-public class MaharaDroid extends Activity {
-    /** Called when the activity is first created. */
+/*
+ * The ArtifactSendReceiver class is taken from the PictureSendReceiver class
+ * written by Russel Stewart (rnstewart@gmail.com) as part of the Flickr Free
+ * Android application.
+ *
+ * @author	Alan McNatty (alan.mcnatty@catalyst.net.nz)
+ */
+
+public class ArtifactSendReceiver extends Activity {
+
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-		Intent intent = new Intent(this, EditPreferences.class);
-		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		startActivity(intent);
+        Intent intent = getIntent();
+		if (intent.getAction().equals(Intent.ACTION_SEND)) {
+			Bundle extras = intent.getExtras();
+			if (extras.containsKey("android.intent.extra.STREAM")) {
+				Uri uri = (Uri)extras.get("android.intent.extra.STREAM");
+				Intent i = new Intent(this, ArtifactSettings.class);
+				i.putExtra("uri", uri.toString());
+				//i.putExtra("action", "upload");
+				startActivity(i);
+			}
+		}
 		finish();
-    }
+	}
 }

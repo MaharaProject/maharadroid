@@ -18,14 +18,14 @@
  *  limitations under the License.
  */
 
-package nz.co.catalyst.MaharaDroid.ui.about;
+package nz.net.catalyst.MaharaDroid.ui.about;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import nz.co.catalyst.MaharaDroid.R;
+import nz.net.catalyst.MaharaDroid.R;
 
 import android.app.Activity;
 import android.net.Uri;

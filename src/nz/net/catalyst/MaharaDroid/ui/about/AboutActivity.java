@@ -18,9 +18,9 @@
  *  limitations under the License.
  */
 
-package nz.co.catalyst.MaharaDroid.ui.about;
+package nz.net.catalyst.MaharaDroid.ui.about;
 
-import nz.co.catalyst.MaharaDroid.R;
+import nz.net.catalyst.MaharaDroid.R;
 
 import java.io.IOException;
 import java.util.ArrayList;

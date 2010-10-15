@@ -18,7 +18,7 @@
  *  limitations under the License.
  */
 
-package nz.co.catalyst.MaharaDroid;
+package nz.net.catalyst.MaharaDroid;
 
 import java.io.FilterOutputStream;
 import java.io.IOException;

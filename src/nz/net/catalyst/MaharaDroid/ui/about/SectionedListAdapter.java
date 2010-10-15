@@ -18,7 +18,7 @@
  *  limitations under the License.
  */
 
-package nz.co.catalyst.MaharaDroid.ui.about;
+package nz.net.catalyst.MaharaDroid.ui.about;
 
 import java.util.ArrayList;
 import android.view.View;

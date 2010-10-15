@@ -29,7 +29,6 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -44,11 +43,6 @@ public class EditPreferences extends PreferenceActivity implements OnSharedPrefe
 		addPreferencesFromResource(R.xml.preferences);
 		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
-		if ( prefs.getString(getString(R.string.pref_upload_token_key), null).trim().length() == 0 ) {
-			// set the token to the IMEI is null
-			prefs.edit().putString(getString(R.string.pref_upload_token_key), this.getDeviceId());			
-		}
 
 		prefs.registerOnSharedPreferenceChangeListener(this);
 	}
@@ -101,17 +95,10 @@ public class EditPreferences extends PreferenceActivity implements OnSharedPrefe
 		// reset defaults
 		PreferenceManager.setDefaultValues(this, R.xml.preferences, true);
 		
-		// set the token to the IMEI is null
-		prefs.edit().putString(getString(R.string.pref_upload_token_key), this.getDeviceId());
-		
 		// refresh displayed values by restarting activity (a hack, but apparently there
 		// isn't a nicer way)
 		finish();
 		startActivity(getIntent());
 	}
 	
-	public String getDeviceId() {
-		TelephonyManager telephonyManager = (TelephonyManager)getSystemService(TELEPHONY_SERVICE);
-		return telephonyManager.getDeviceId();
-	}
 }

@@ -34,7 +34,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Bundle;
@@ -53,8 +52,13 @@ import android.widget.Toast;
  * @author	Alan McNatty (alan.mcnatty@catalyst.net.nz)
  */
 
-public class TransferService extends Service implements OnSharedPreferenceChangeListener {
-
+public class TransferService extends Service { 
+	static final String TAG = LogConfig.getLogTag(TransferService.class);
+	// whether DEBUG level logging is enabled (whether globally, or explicitly for this log tag)
+	static final boolean DEBUG = LogConfig.isDebug(TAG);
+	// whether VERBOSE level logging is enabled
+	static final boolean VERBOSE = LogConfig.VERBOSE;
+	
 	private Notification m_upload_notification = null;
 	private NotificationProgressUpdateReceiver m_update_receiver = null;
 	private PendingIntent m_notify_activity = null;
@@ -68,7 +72,6 @@ public class TransferService extends Service implements OnSharedPreferenceChange
 		super.onCreate();
 		
 		mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-		mPrefs.registerOnSharedPreferenceChangeListener(this);	
 	}
 	
 	// This is the receiver that we use to update the percentage progress display
@@ -124,6 +127,12 @@ public class TransferService extends Service implements OnSharedPreferenceChange
 						}
 						publishProgress("fail", err_str);
 			        	m_uploads.clear();
+			        } else if ( result.has("success") ) {
+			        	try {
+							setUploadAuthTokenPref(result.getString("success").trim());
+						} catch (JSONException e) {
+							Log.e(TAG, "Failed to get success token from result.");
+						}
 			        }
 				}
 			}
@@ -182,16 +191,6 @@ public class TransferService extends Service implements OnSharedPreferenceChange
 			Toast.makeText(getApplicationContext(), R.string.uploadfinished, Toast.LENGTH_SHORT).show();
 			((NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE)).cancel(GlobalResources.UPLOADER_ID);
 			
-			// Check the result - if a new token is provided, update our preferences.
-			
-			if ( result != null ) {
-				try {
-					setUploadAuthTokenPref(((JSONObject) result).getString("success"));
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					Log.w("MaharaDroid", "Hmm .. got success but not a valid token");
-				}
-			}
 			stopSelf();
 		}
 		
@@ -218,7 +217,7 @@ public class TransferService extends Service implements OnSharedPreferenceChange
 	@Override
 	public void onDestroy () {
 		super.onDestroy();
-		mPrefs.unregisterOnSharedPreferenceChangeListener(this);
+		//mPrefs.unregisterOnSharedPreferenceChangeListener(this);
 		((NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE)).cancel(GlobalResources.UPLOADER_ID);
 		if (m_update_receiver != null) {
 			this.unregisterReceiver(m_update_receiver);
@@ -282,12 +281,6 @@ public class TransferService extends Service implements OnSharedPreferenceChange
 		}
 	}
 
-	@Override
-	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
-			String key) {
-		// TODO Auto-generated method stub
-		
-	}
 	private String getUploadURLPref() {
 		return mPrefs.getString(getString(R.string.pref_upload_url_key), null);
 	}
@@ -295,11 +288,13 @@ public class TransferService extends Service implements OnSharedPreferenceChange
 		return mPrefs.getString(getString(R.string.pref_upload_folder_key), null);
 	}
 	public String getUploadAuthTokenPref() {
-		//this.getDeviceId()
 		return mPrefs.getString(getString(R.string.pref_upload_token_key), null);
 	}
 	public void setUploadAuthTokenPref(String newToken) {
-		Log.d("MaharaDroid", "New Token is '" + newToken + "'");
-		mPrefs.edit().putString(getString(R.string.pref_upload_token_key), newToken);
+		if ( DEBUG ) Log.d(TAG, "New Token is '" + newToken + "'");
+		mPrefs.edit()
+			.putString(getString(R.string.pref_upload_token_key), newToken)
+			.commit()
+		;
 	}
 }

@@ -26,7 +26,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -45,6 +44,12 @@ import android.widget.Toast;
 
 public class ArtifactSettings extends Activity implements OnClickListener {
 	
+	static final String TAG = LogConfig.getLogTag(ArtifactSettings.class);
+	// whether DEBUG level logging is enabled (whether globally, or explicitly for this log tag)
+	static final boolean DEBUG = LogConfig.isDebug(TAG);
+	// whether VERBOSE level logging is enabled
+	static final boolean VERBOSE = LogConfig.VERBOSE;
+	
 	private Bundle m_extras;
 	private String m_filepath = null;
 	
@@ -53,7 +58,7 @@ public class ArtifactSettings extends Activity implements OnClickListener {
         super.onCreate(savedInstanceState);
         
     	// ensure we have default preferences (if none set by user)
-    	PreferenceManager.setDefaultValues(this, R.xml.preferences, false);       
+    	//PreferenceManager.setDefaultValues(this, R.xml.preferences, false);       
 
         //TODO: Add thumbnail of image to upload options screen.
 		setContentView(R.layout.artifact_settings);
@@ -86,7 +91,6 @@ public class ArtifactSettings extends Activity implements OnClickListener {
 					String title = m_filepath.substring(m_filepath.lastIndexOf("/") + 1,
 														 m_filepath.lastIndexOf("."));
 					((EditText)findViewById(R.id.txtArtifactTitle)).setText(title);
-					//((EditText)findViewById(R.id.txtArtifactTitle)).selectAll();
 				}
 			}
         }
@@ -103,7 +107,6 @@ public class ArtifactSettings extends Activity implements OnClickListener {
 		// upload in the Extras Bundle.
 		Intent uploader_intent = new Intent(this, TransferService.class);
 		uploader_intent.putExtra("filename", m_filepath);
-		//uploader_intent.putExtra("type", "upload");
 		uploader_intent.putExtra("title", ((EditText)findViewById(R.id.txtArtifactTitle)).getText().toString());
 		
 		// Start the uploader service and pass in the intent containing

@@ -64,7 +64,11 @@ import android.util.Log;
  */
 
 public class RestClient {
-
+	static final String TAG = LogConfig.getLogTag(RestClient.class);
+	// whether DEBUG level logging is enabled (whether globally, or explicitly for this log tag)
+	static final boolean DEBUG = LogConfig.isDebug(TAG);
+	// whether VERBOSE level logging is enabled
+	static final boolean VERBOSE = LogConfig.VERBOSE;
     private static final int CONNECTION_TIMEOUT = 15000000;
     
     private static String convertStreamToString(InputStream is) {
@@ -106,18 +110,15 @@ public class RestClient {
 			pNames.add("title");
 			pVals.add(title);
 		}
-		/*
-		pNames.add("content_type");
-		pVals.add("1");
-		pNames.add("hidden");
-		pVals.add("1");
-		 */
 		String [] paramNames, paramVals;
 		paramNames = paramVals = new String[]{};
 		paramNames = pNames.toArray(paramNames);
 		paramVals = pVals.toArray(paramVals);
 		
-		//Log.d("MaharaDroid", "String url: '" + url + "', String token: '" + token + "', String folder: '" + folder + "', String filename: '" + filename + "'");
+		if ( DEBUG ) Log.d(TAG, "String url: '" + url + 
+								"', String token: '" + token + 
+								"', String folder: '" + folder + 
+								"', String filename: '" + filename + "'");
 
 		return CallFunction(url, token, folder, filename, paramNames, paramVals, context);
 	}
@@ -128,8 +129,11 @@ public class RestClient {
 	{
 		JSONObject json = new JSONObject();
 		SchemeRegistry supportedSchemes = new SchemeRegistry();
+		
 		// Register the "http" and "https" protocol schemes, they are
 		// required by the default operator to look up socket factories.
+		
+		//TODO we make assumptions about ports.
 		supportedSchemes.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
 		supportedSchemes.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
 		
@@ -144,7 +148,10 @@ public class RestClient {
 
 		DefaultHttpClient httpclient = new DefaultHttpClient(ccm, http_params);
 
-		//Log.d("MaharaDroid", "String url: '" + url + "', String token: '" + token + "', String folder: '" + folder + "', String filename: '" + filename + "'");
+		if ( DEBUG ) Log.d(TAG, "String url: '" + url + 
+								"', String token: '" + token + 
+								"', String folder: '" + folder + 
+								"', String filename: '" + filename + "'");
 	    
 	    if (paramNames == null) {
 			paramNames = new String[0];
@@ -154,7 +161,7 @@ public class RestClient {
 		}
 		
 		if (paramNames.length != paramVals.length) {
-			Log.w("MaharaDroid", "Incompatible nuber of param names and values, bailing on upload!");
+			Log.w(TAG, "Incompatible nuber of param names and values, bailing on upload!");
 			return json;
 		}
 		
@@ -197,30 +204,28 @@ public class RestClient {
 			HttpEntity resEntity = response.getEntity();
 			
 		    if (resEntity != null) {
-		    	//resEntity.consumeContent();
 		    	String content = convertStreamToString(resEntity.getContent());
-		    	// TODO analyse content and put success / fail  
 		    	if ( response.getStatusLine().getStatusCode() == 200 ) {
 		    		try {
 						json.put("success", content.toString());
+						Log.i(TAG, "success, updating token to : " + content.toString());
 					} catch (JSONException e) {
 						json = null;
 					}
 		    	} else {
-					Log.w("MaharaDroid", "File upload failed with response code:" + response.getStatusLine().getStatusCode());
+					Log.w(TAG, "File upload failed with response code:" + response.getStatusLine().getStatusCode());
 		    		try {
-						json.put("fail", "Artefact upload failed");
-						Log.d("MaharaDroid", "HTTP POST returned status code: " + response.getStatusLine());
-				    	Log.d("MaharaDroid", content);
+						json.put("fail", response.getStatusLine().getReasonPhrase());
+						if ( DEBUG) Log.d(TAG, "HTTP POST returned status code: " + response.getStatusLine());
 					} catch (JSONException e) {
 						json = null;
 					}
 		    	}
 	    	} else {
-				Log.w("MaharaDroid", "Response does not contain a valid HTTP entity.");
+				Log.w(TAG, "Response does not contain a valid HTTP entity.");
 	    		try {
 					json.put("fail", "Artefact upload failed");
-					Log.d("MaharaDroid", "HTTP POST returned status code: " + response.getStatusLine());
+					if ( DEBUG ) Log.d(TAG, "HTTP POST returned status code: " + response.getStatusLine());
 				} catch (JSONException e) {
 					json = null;
 				}

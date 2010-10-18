@@ -35,7 +35,12 @@ import android.view.MenuItem;
 
 
 public class EditPreferences extends PreferenceActivity implements OnSharedPreferenceChangeListener {
-
+	static final String TAG = LogConfig.getLogTag(EditPreferences.class);
+	// whether DEBUG level logging is enabled (whether globally, or explicitly for this log tag)
+	static final boolean DEBUG = LogConfig.isDebug(TAG);
+	// whether VERBOSE level logging is enabled
+	static final boolean VERBOSE = LogConfig.VERBOSE;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -79,10 +84,17 @@ public class EditPreferences extends PreferenceActivity implements OnSharedPrefe
 		}
 	}
 	
+	//public void onContentChanged() {
+	//}
+	
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-		
+		// refresh displayed values by restarting activity (a hack, but apparently there
+		// isn't a nicer way)
+		finish();
+		//startActivity(getIntent());
 	}
+	
 	private void showAboutPage() {
 		
 		startActivity(new Intent(this, AboutActivity.class));

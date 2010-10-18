@@ -52,7 +52,12 @@ import android.content.ServiceConnection;
  */
 
 public class TransferProgress extends Activity implements OnClickListener {
-
+	static final String TAG = LogConfig.getLogTag(TransferProgress.class);
+	// whether DEBUG level logging is enabled (whether globally, or explicitly for this log tag)
+	static final boolean DEBUG = LogConfig.isDebug(TAG);
+	// whether VERBOSE level logging is enabled
+	static final boolean VERBOSE = LogConfig.VERBOSE;
+	
 	private StatusReceiver m_receiver = null;
 	private BindTransferServiceReceiver m_bind_transfer_service_receiver = null;
 	private PercentProgressUpdateReceiver m_update_receiver = null;

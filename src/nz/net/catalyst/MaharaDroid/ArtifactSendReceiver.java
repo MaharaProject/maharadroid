@@ -35,6 +35,12 @@ import android.os.Bundle;
 
 public class ArtifactSendReceiver extends Activity {
 
+	static final String TAG = LogConfig.getLogTag(ArtifactSendReceiver.class);
+	// whether DEBUG level logging is enabled (whether globally, or explicitly for this log tag)
+	static final boolean DEBUG = LogConfig.isDebug(TAG);
+	// whether VERBOSE level logging is enabled
+	static final boolean VERBOSE = LogConfig.VERBOSE;
+	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +52,6 @@ public class ArtifactSendReceiver extends Activity {
 				Uri uri = (Uri)extras.get("android.intent.extra.STREAM");
 				Intent i = new Intent(this, ArtifactSettings.class);
 				i.putExtra("uri", uri.toString());
-				//i.putExtra("action", "upload");
 				startActivity(i);
 			}
 		}

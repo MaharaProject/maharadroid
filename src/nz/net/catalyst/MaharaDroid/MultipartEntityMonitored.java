@@ -42,7 +42,12 @@ import android.util.Log;
  */
 
 public class MultipartEntityMonitored extends MultipartEntity {
-
+	static final String TAG = LogConfig.getLogTag(MultipartEntityMonitored.class);
+	// whether DEBUG level logging is enabled (whether globally, or explicitly for this log tag)
+	static final boolean DEBUG = LogConfig.isDebug(TAG);
+	// whether VERBOSE level logging is enabled
+	static final boolean VERBOSE = LogConfig.VERBOSE;
+	
 	public class OutputStreamMonitored extends FilterOutputStream {
 
 		public OutputStreamMonitored(OutputStream out, long length) {
@@ -137,7 +142,7 @@ public class MultipartEntityMonitored extends MultipartEntity {
 
 	@Override
 	public void writeTo(OutputStream outstream) throws IOException {
-		Log.d("UPLOAD", "Uploading data");
+		if ( DEBUG ) Log.d(TAG, "Uploading data");
 		if (m_outputstream == null) {
 			m_outputstream = new OutputStreamMonitored(outstream, getContentLength());
 		}

@@ -7,12 +7,11 @@
 		android:key="@string/pref_upload_url_key"
 		android:title="@string/pref_upload_url_title"
 		android:summary="@string/pref_upload_url_summary"
-		android:defaultValue="http://www.mahara.org/artefact/file/mobileupload.php" />	
+		android:defaultValue="@string/pref_upload_url_default" />	
 	<EditTextPreference
 		android:key="@string/pref_upload_token_key"
 		android:title="@string/pref_upload_token_title"
 		android:summary="@string/pref_upload_token_summary"	/>	
-			
 	
 	<PreferenceCategory
 		android:title="@string/prefcat_advanced">
@@ -21,8 +20,13 @@
 		android:key="@string/pref_upload_folder_key"
 		android:title="@string/pref_upload_folder_title"
 		android:summary="@string/pref_upload_folder_summary"
-		android:defaultValue="Home" />	
-	
+		android:defaultValue="@string/pref_upload_folder_default" />	
+	<CheckBoxPreference
+		android:key="@string/pref_upload_view_key"
+		android:title="@string/pref_upload_view_title"
+		android:summary="@string/pref_upload_view_summary"
+		android:enabled="false"
+		/>	
 
 	</PreferenceCategory>
 			

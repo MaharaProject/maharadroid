@@ -91,8 +91,10 @@ public class EditPreferences extends PreferenceActivity implements OnSharedPrefe
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 		// refresh displayed values by restarting activity (a hack, but apparently there
 		// isn't a nicer way)
-		finish();
-		//startActivity(getIntent());
+		if ( key == getString(R.string.pref_upload_token_key)) {
+			finish();
+			//startActivity(getIntent());
+		}
 	}
 	
 	private void showAboutPage() {

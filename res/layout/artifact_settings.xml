@@ -56,29 +56,7 @@
 							  android:layout_height="wrap_content">
 				  	</EditText>
 			</LinearLayout>		
-			<!-- 
-			<LinearLayout
-				  xmlns:android="http://schemas.android.com/apk/res/android"
-				  android:id="@+id/ArtifactFolderLayout"
-				  android:layout_width="fill_parent"
-				  android:layout_height="wrap_content"
-				  android:layout_marginTop="10dp"
-				  android:gravity="center_horizontal"
-				  android:orientation="horizontal">
-				  
-					<ImageView android:id="@+id/UploadFolder"
-							   android:layout_width="wrap_content"
-							   android:layout_height="wrap_content">
-				   	</ImageView>
-					
-					<EditText android:text=""
-							  android:id="@+id/txtFolderTitle"
-							  android:singleLine="true"
-							  android:enabled="false"
-							  android:layout_width="fill_parent"
-							  android:layout_height="wrap_content">
-				  	</EditText>
-			</LinearLayout>	-->
+
 			<LinearLayout
 			  xmlns:android="http://schemas.android.com/apk/res/android"
 			  android:id="@+id/ArtifactSettingsButtonLayout"

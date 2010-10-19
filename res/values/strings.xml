@@ -7,17 +7,22 @@
     <string name="pref_upload_url_key">upload.uri</string>
     <string name="pref_upload_url_title">Upload URI</string>
     <string name="pref_upload_url_summary">Enter the URL to post files to Mahara</string>
+    <string name="pref_upload_url_default">http://www.mahara.org/artefact/file/mobileupload.php</string>
 
     <string name="pref_upload_token_key">upload.token</string>
     <string name="pref_upload_token_title">Token</string>
-    <string name="pref_upload_token_summary">Enter your Mahara upload token</string>  
-    
+    <string name="pref_upload_token_summary">Enter your Mahara upload token</string>     
+
     <string name="prefcat_advanced">Advanced</string>
 
     <string name="pref_upload_folder_key">upload.folder</string>
     <string name="pref_upload_folder_title">Upload Folder</string>
-    <string name="pref_upload_folder_summary">Enter the folder to upload your artefacts into</string>
+    <string name="pref_upload_folder_summary">Enter the (base) folder to upload your artefacts into</string>
+    <string name="pref_upload_folder_default">MobileUploads</string>  
 
+    <string name="pref_upload_view_key">upload.view</string>
+    <string name="pref_upload_view_title">Create Public View</string>
+    <string name="pref_upload_view_summary">Automatically create a public view for this folder?</string>
 
     <string name="pref_menu_reset">Reset</string>
     <string name="pref_menu_about">About</string>

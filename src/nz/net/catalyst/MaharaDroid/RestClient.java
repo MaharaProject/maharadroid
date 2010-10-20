@@ -99,33 +99,47 @@ public class RestClient {
 		return sb.toString();
 	}
 
-	public static JSONObject UploadArtifact(String url, String token, String folder,
-												String filename, String title, Context context){
+    // TODO: change this to be a hash of post variables
+	public static JSONObject UploadArtifact(String url, String token, String username, Boolean view, 
+												String foldername, String filename, String title, 
+												Context context){
 		Vector<String> pNames = new Vector<String>();
 		Vector<String> pVals = new Vector<String>();
 
-		pNames.add("userfile");
-		pVals.add("");
 		if (!title.equals("")) {
 			pNames.add("title");
 			pVals.add(title);
 		}
+		if (!token.equals("")) {
+			pNames.add("token");
+			pVals.add(token);
+		}
+		if (!username.equals("")) {
+			pNames.add("username");
+			pVals.add(username);
+		}
+		if (!foldername.equals("")) {
+			pNames.add("foldername");
+			pVals.add(foldername);
+		}
+		if (!filename.equals("")) {
+			pNames.add("filename");
+			pVals.add(filename);
+		}
+		if (view) {
+			pNames.add("view");
+			pVals.add("true");
+		}
+
 		String [] paramNames, paramVals;
 		paramNames = paramVals = new String[]{};
 		paramNames = pNames.toArray(paramNames);
 		paramVals = pVals.toArray(paramVals);
 		
-		if ( DEBUG ) Log.d(TAG, "String url: '" + url + 
-								"', String token: '" + token + 
-								"', String folder: '" + folder + 
-								"', String filename: '" + filename + "'");
-
-		return CallFunction(url, token, folder, filename, paramNames, paramVals, context);
+		return CallFunction(url, paramNames, paramVals, context);
 	}
 
-	public static JSONObject CallFunction(String url, String token, String folder, String filename, 
-											String[] paramNames, String[] paramVals,
-										    Context context)
+	public static JSONObject CallFunction(String url, String[] paramNames, String[] paramVals, Context context)
 	{
 		JSONObject json = new JSONObject();
 		SchemeRegistry supportedSchemes = new SchemeRegistry();
@@ -147,12 +161,7 @@ public class RestClient {
 	    HttpConnectionParams.setSoTimeout(http_params, CONNECTION_TIMEOUT);
 
 		DefaultHttpClient httpclient = new DefaultHttpClient(ccm, http_params);
-
-		if ( DEBUG ) Log.d(TAG, "String url: '" + url + 
-								"', String token: '" + token + 
-								"', String folder: '" + folder + 
-								"', String filename: '" + filename + "'");
-	    
+    
 	    if (paramNames == null) {
 			paramNames = new String[0];
 		}
@@ -167,27 +176,24 @@ public class RestClient {
 		
 		SortedMap<String,String> sig_params = new TreeMap<String,String>();
 		
-		sig_params.put("token", token);
-		sig_params.put("foldername", folder);
-		
 		HttpResponse response = null;
 
 		try {
 		    File file = null;
 		    // If this is a POST call, then it is a file upload. Check to see if a
 		    // filename is given, and if so, open that file.
-	    	if (!filename.equals("")) {
-	    		file = new File(filename);
-	    	}
-		    
 	    	// Get the title of the photo being uploaded so we can pass it into the
 	    	// MultipartEntityMonitored class to be broadcast for progress updates.
 	    	String title = "";
 	    	for (int i = 0; i < paramNames.length; ++i) {
 	    		if (paramNames[i].equals("title")) {
 	    			title = paramVals[i];
-	    			break;
 	    		}
+	    		else if (paramNames[i].equals("filename")) {
+		    		file = new File(paramVals[i]);
+		    		continue;
+		    	}
+	    		sig_params.put(paramNames[i], paramVals[i]);
 	    	}
 	    	
 		    HttpPost httppost = new HttpPost(url);
@@ -207,8 +213,9 @@ public class RestClient {
 		    	String content = convertStreamToString(resEntity.getContent());
 		    	if ( response.getStatusLine().getStatusCode() == 200 ) {
 		    		try {
-						json.put("success", content.toString());
-						Log.i(TAG, "success, updating token to : " + content.toString());
+		    			String new_token = content.toString().trim();
+	    				json.put("success", new_token);
+	    				Log.i(TAG, "success, updating token to : " + content.toString());
 					} catch (JSONException e) {
 						json = null;
 					}

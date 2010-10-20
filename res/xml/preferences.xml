@@ -9,6 +9,10 @@
 		android:summary="@string/pref_upload_url_summary"
 		android:defaultValue="@string/pref_upload_url_default" />	
 	<EditTextPreference
+		android:key="@string/pref_upload_username_key"
+		android:title="@string/pref_upload_username_title"
+		android:summary="@string/pref_upload_username_summary"	/>	
+	<EditTextPreference
 		android:key="@string/pref_upload_token_key"
 		android:title="@string/pref_upload_token_title"
 		android:summary="@string/pref_upload_token_summary"	/>	
@@ -25,6 +29,7 @@
 		android:key="@string/pref_upload_view_key"
 		android:title="@string/pref_upload_view_title"
 		android:summary="@string/pref_upload_view_summary"
+		android:defaultValue="false"
 		android:enabled="false"
 		/>	
 

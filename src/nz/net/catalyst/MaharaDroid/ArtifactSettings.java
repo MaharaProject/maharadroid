@@ -57,9 +57,6 @@ public class ArtifactSettings extends Activity implements OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-    	// ensure we have default preferences (if none set by user)
-    	//PreferenceManager.setDefaultValues(this, R.xml.preferences, false);       
-
         //TODO: Add thumbnail of image to upload options screen.
 		setContentView(R.layout.artifact_settings);
 		
@@ -91,6 +88,7 @@ public class ArtifactSettings extends Activity implements OnClickListener {
 					String title = m_filepath.substring(m_filepath.lastIndexOf("/") + 1,
 														 m_filepath.lastIndexOf("."));
 					((EditText)findViewById(R.id.txtArtifactTitle)).setText(title);
+					((EditText)findViewById(R.id.txtArtifactTitle)).selectAll();
 				}
 			}
         }

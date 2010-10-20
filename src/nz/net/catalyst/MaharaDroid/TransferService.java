@@ -111,6 +111,8 @@ public class TransferService extends Service {
 			        JSONObject result = RestClient.UploadArtifact(
 			        						 getUploadURLPref(), 
 			        						 getUploadAuthTokenPref(),
+			        						 getUploadUsernamePref(),
+			        						 getUploadCreateViewPref(),
 			        						 getUploadFolderPref(),
 			        						 upload_info.getString("filename"),
 							    			 upload_info.getString("title"),
@@ -129,7 +131,7 @@ public class TransferService extends Service {
 			        	m_uploads.clear();
 			        } else if ( result.has("success") ) {
 			        	try {
-							setUploadAuthTokenPref(result.getString("success").trim());
+							setUploadAuthTokenPref(result.getString("success"));
 						} catch (JSONException e) {
 							Log.e(TAG, "Failed to get success token from result.");
 						}
@@ -284,14 +286,21 @@ public class TransferService extends Service {
 	private String getUploadURLPref() {
 		return mPrefs.getString(getString(R.string.pref_upload_url_key), null);
 	}
+	private Boolean getUploadCreateViewPref() {
+		return mPrefs.getBoolean(getString(R.string.pref_upload_view_key), false);
+	}
 	private String getUploadFolderPref() {
 		return mPrefs.getString(getString(R.string.pref_upload_folder_key), null);
 	}
 	public String getUploadAuthTokenPref() {
 		return mPrefs.getString(getString(R.string.pref_upload_token_key), null);
 	}
+	public String getUploadUsernamePref() {
+		return mPrefs.getString(getString(R.string.pref_upload_username_key), null);
+	}
 	public void setUploadAuthTokenPref(String newToken) {
 		if ( DEBUG ) Log.d(TAG, "New Token is '" + newToken + "'");
+			
 		mPrefs.edit()
 			.putString(getString(R.string.pref_upload_token_key), newToken)
 			.commit()

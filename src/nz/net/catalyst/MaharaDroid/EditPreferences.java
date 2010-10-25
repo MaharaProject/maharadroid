@@ -29,6 +29,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -84,16 +85,17 @@ public class EditPreferences extends PreferenceActivity implements OnSharedPrefe
 		}
 	}
 	
-	//public void onContentChanged() {
-	//}
-	
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 		// refresh displayed values by restarting activity (a hack, but apparently there
 		// isn't a nicer way)
 		if ( key == getString(R.string.pref_upload_token_key)) {
-			finish();
-			//startActivity(getIntent());
+			if ( this.getCallingActivity() != null ) { 
+				if ( DEBUG ) Log.d(TAG, "Calling activity is '" + this.getCallingActivity().getClassName().toString());
+				if ( this.getCallingActivity().getClassName().toString() == "ArtifactSendReceiver" ) {
+					finish();
+				}
+			}
 		}
 	}
 	

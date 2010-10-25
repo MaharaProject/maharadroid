@@ -101,14 +101,18 @@ public class RestClient {
 
     // TODO: change this to be a hash of post variables
 	public static JSONObject UploadArtifact(String url, String token, String username, Boolean view, 
-												String foldername, String filename, String title, 
-												Context context){
+												String foldername, String tags, String filename, String title, 
+												String description, Context context){
 		Vector<String> pNames = new Vector<String>();
 		Vector<String> pVals = new Vector<String>();
 
 		if (!title.equals("")) {
 			pNames.add("title");
 			pVals.add(title);
+		}
+		if (!description.equals("")) {
+			pNames.add("description");
+			pVals.add(description);
 		}
 		if (!token.equals("")) {
 			pNames.add("token");
@@ -121,6 +125,10 @@ public class RestClient {
 		if (!foldername.equals("")) {
 			pNames.add("foldername");
 			pVals.add(foldername);
+		}
+		if (!tags.equals("")) {
+			pNames.add("tags");
+			pVals.add(tags);
 		}
 		if (!filename.equals("")) {
 			pNames.add("filename");

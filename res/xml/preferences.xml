@@ -25,6 +25,11 @@
 		android:title="@string/pref_upload_folder_title"
 		android:summary="@string/pref_upload_folder_summary"
 		android:defaultValue="@string/pref_upload_folder_default" />	
+	<EditTextPreference
+		android:key="@string/pref_upload_tags_key"
+		android:title="@string/pref_upload_tags_title"
+		android:summary="@string/pref_upload_tags_summary"
+		android:defaultValue="@string/pref_upload_tags_default" />	
 	<CheckBoxPreference
 		android:key="@string/pref_upload_view_key"
 		android:title="@string/pref_upload_view_title"

@@ -75,7 +75,7 @@ public class TransferService extends Service {
 	}
 	
 	// This is the receiver that we use to update the percentage progress display
-    // for the current download.
+    // for the current upload.
 	public class NotificationProgressUpdateReceiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -114,8 +114,10 @@ public class TransferService extends Service {
 			        						 getUploadUsernamePref(),
 			        						 getUploadCreateViewPref(),
 			        						 getUploadFolderPref(),
+			        						 getUploadTagsPref(upload_info.getString("tags")),
 			        						 upload_info.getString("filename"),
 							    			 upload_info.getString("title"),
+							    			 upload_info.getString("description"),
 								    		 getApplicationContext());
 			        
 					publishProgress(new String[]{"start", upload_info.getString("title")});
@@ -176,7 +178,7 @@ public class TransferService extends Service {
 					getApplicationContext().sendBroadcast(broadcast_intent);
 
 					((NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE)).cancel(GlobalResources.UPLOADER_ID);
-					Toast.makeText(getApplicationContext(), "Upload Failed:\n" + progress[1], Toast.LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), getResources().getString(R.string.uploadfailed) + ": " + progress[1], Toast.LENGTH_SHORT).show();
 					stopSelf();
 				}
 			}
@@ -298,6 +300,11 @@ public class TransferService extends Service {
 	public String getUploadUsernamePref() {
 		return mPrefs.getString(getString(R.string.pref_upload_username_key), null);
 	}
+	public String getUploadTagsPref(String pref_tags) {
+		String tags = ( pref_tags != null ) ? pref_tags.trim() : "" ;	
+		return (mPrefs.getString(getString(R.string.pref_upload_tags_key), null) + " " + tags).trim();  
+	}
+	
 	public void setUploadAuthTokenPref(String newToken) {
 		if ( DEBUG ) Log.d(TAG, "New Token is '" + newToken + "'");
 			

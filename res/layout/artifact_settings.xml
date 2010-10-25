@@ -13,19 +13,18 @@
 				  android:layout_width="fill_parent"
 				  android:layout_height="wrap_content"
 				  android:layout_marginTop="10dp"
-				  android:gravity="center_horizontal"
 				  android:orientation="horizontal">
 				  
-					<CheckBox android:text="@string/chkupload"
+					<CheckBox android:text="@string/upload_confirm_label"
 							style="@android:style/TextAppearance.Small"
 							android:id="@+id/chkUpload"
-							android:layout_width="wrap_content"
+							  android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
 							android:layout_margin="10dip"
 			  							  >
 					</CheckBox>
 					
-					<TextView android:text="@string/confirmtext"
+					<TextView android:text="@string/upload_confirm_text"
 							  android:id="@+id/txtArtifactConfirm"
 							  android:layout_width="wrap_content"
 							  android:singleLine="false"
@@ -35,27 +34,83 @@
 			  				  style="@android:style/TextAppearance.Small">
 					</TextView>
 			</LinearLayout>
-			<LinearLayout
-				  xmlns:android="http://schemas.android.com/apk/res/android"
-				  android:id="@+id/ArtifactUploadLayout"
-				  android:layout_width="fill_parent"
-				  android:layout_height="wrap_content"
-				  android:layout_marginTop="10dp"
-				  android:gravity="center_horizontal"
-				  android:orientation="horizontal">
-				  
+			<!-- 
 					<ImageView android:id="@+id/UploadArtifact"
 							   android:layout_width="wrap_content"
 							   android:layout_height="wrap_content">
 				   	</ImageView>
-					
+ 			-->
+			<LinearLayout
+				  xmlns:android="http://schemas.android.com/apk/res/android"
+				  android:id="@+id/ArtifactConfirmLayout"
+				  android:layout_width="fill_parent"
+				  android:layout_height="wrap_content"
+				  android:layout_marginTop="10dp"
+				  android:orientation="horizontal">
+
+					<TextView android:text="@string/upload_title_label"
+							  android:layout_width="50dip"
+							  android:singleLine="false"
+							  android:layout_height="wrap_content"
+			  				  android:padding="2dip"
+			  				  android:layout_margin="10dip"
+			  				  style="@android:style/TextAppearance.Small">
+					</TextView>
+				  
 					<EditText android:text=""
 							  android:id="@+id/txtArtifactTitle"
 							  android:singleLine="true"
 							  android:layout_width="fill_parent"
 							  android:layout_height="wrap_content">
 				  	</EditText>
-			</LinearLayout>		
+					
+			</LinearLayout>
+			<LinearLayout
+				  xmlns:android="http://schemas.android.com/apk/res/android"
+				  android:layout_width="fill_parent"
+				  android:layout_height="wrap_content"
+				  android:layout_marginTop="10dp"
+				  android:orientation="horizontal">
+
+					<TextView android:text="@string/upload_description_label"
+							  android:layout_width="50dip"
+							  android:singleLine="false"
+							  android:layout_height="wrap_content"
+			  				  android:padding="2dip"
+			  				  android:layout_margin="10dip"
+			  				  style="@android:style/TextAppearance.Small">
+					</TextView>
+					<EditText android:text=""
+							  android:id="@+id/txtArtifactDescription"
+							  android:singleLine="false"
+							  android:layout_width="fill_parent"
+							  android:layout_height="wrap_content"
+							  >
+				  	</EditText>
+			</LinearLayout>
+			<LinearLayout
+				  xmlns:android="http://schemas.android.com/apk/res/android"
+				  android:layout_width="fill_parent"
+				  android:layout_height="wrap_content"
+				  android:layout_marginTop="10dp"
+				  android:orientation="horizontal">
+
+					<TextView android:text="@string/upload_tags_label"
+							  android:layout_width="50dip"
+							  android:singleLine="false"
+							  android:layout_height="wrap_content"
+			  				  android:padding="2dip"
+			  				  android:layout_margin="10dip"
+			  				  style="@android:style/TextAppearance.Small">
+					</TextView>
+
+					<EditText android:text=""
+							  android:id="@+id/txtArtifactTags"
+							  android:singleLine="true"
+							  android:layout_width="fill_parent"
+							  android:layout_height="wrap_content">
+				  	</EditText>
+			</LinearLayout>
 
 			<LinearLayout
 			  xmlns:android="http://schemas.android.com/apk/res/android"

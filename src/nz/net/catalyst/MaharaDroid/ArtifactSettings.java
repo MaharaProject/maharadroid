@@ -76,30 +76,34 @@ public class ArtifactSettings extends Activity implements OnClickListener {
 		
         m_extras = getIntent().getExtras();
         if (m_extras == null) {
+        	if ( DEBUG ) Log.d(TAG, "No extras .. nothing to do!");
         	finish();
         }
         else {
         	ContentResolver cr = getContentResolver();
         	Uri uri = Uri.parse(m_extras.getString("uri"));
+			if ( DEBUG ) Log.d(TAG, "URI = '" + uri.toString() + "'");
         	
-        	// Get the filename of the image and use that as the default title.
-        	//TODO: assumes image so we should either restrict to image/* or check file type
-			Cursor cursor = cr.query(uri, new String[]{android.provider.MediaStore.Images.ImageColumns.DATA},
-									 null, null, null);
-			if (cursor == null) {
-				Toast.makeText(this, R.string.artifact_retrieve_error, Toast.LENGTH_LONG).show();
-				finish();
-			}
-			else {
+        	// Get the filename of the media file and use that as the default title.
+        	Cursor cursor = cr.query(uri, new String[]{android.provider.MediaStore.MediaColumns.DATA}, null, null, null);
+			if (cursor != null) {
+				if ( DEBUG ) Log.d(TAG, "cursor query succeeded");
 				cursor.moveToFirst();
 				m_filepath = cursor.getString(0);
 				cursor.close();
+			} else {
+				if ( DEBUG ) Log.d(TAG, "cursor query failed");
+				// If nothing found by query then assume the file is good to go as is.
+				m_filepath = uri.toString();
+				// Remove prefix if we still have one
+				m_filepath = m_filepath.substring(m_filepath.indexOf(":///") + "://".length());
+			}
 	
-				if (m_filepath != null) {
-					String title = m_filepath.substring(m_filepath.lastIndexOf("/") + 1);
-					((EditText)findViewById(R.id.txtArtifactTitle)).setText(title);
-					((EditText)findViewById(R.id.txtArtifactTitle)).selectAll();
-				}
+			if (m_filepath != null) {			
+				String title = m_filepath.substring(m_filepath.lastIndexOf("/") + 1);
+				((EditText)findViewById(R.id.txtArtifactTitle)).setText(title);
+				((EditText)findViewById(R.id.txtArtifactTitle)).selectAll();
+				if ( DEBUG ) Log.d(TAG, "m_filepath = '" + m_filepath + "'");
 			}
         }
 	}
@@ -156,7 +160,7 @@ public class ArtifactSettings extends Activity implements OnClickListener {
 		final Button button = (Button)findViewById(R.id.btnUpload);
 
 		// Hide the confirmation section if user has accepted T&C's
-		Log.d(TAG, "Upload Conditions Confirmed: " + mPrefs.getBoolean("Upload Conditions Confirmed", false));
+		if ( DEBUG ) Log.d(TAG, "Upload Conditions Confirmed: " + mPrefs.getBoolean("Upload Conditions Confirmed", false));
         if ( mPrefs.getBoolean("Upload Conditions Confirmed", false) ) { 
     		((CheckBox)findViewById(R.id.chkUpload)).setVisibility(CheckBox.GONE);
     		((CheckBox)findViewById(R.id.chkUpload)).invalidate();

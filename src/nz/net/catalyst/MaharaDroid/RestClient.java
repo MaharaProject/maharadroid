@@ -106,35 +106,35 @@ public class RestClient {
 		Vector<String> pNames = new Vector<String>();
 		Vector<String> pVals = new Vector<String>();
 
-		if (!title.equals("")) {
+		if ( title != null ) {
 			pNames.add("title");
 			pVals.add(title);
 		}
-		if (!description.equals("")) {
+		if ( description != null ) {
 			pNames.add("description");
 			pVals.add(description);
 		}
-		if (!token.equals("")) {
+		if ( token != null ) {
 			pNames.add("token");
 			pVals.add(token);
 		}
-		if (!username.equals("")) {
+		if ( username != null ) {
 			pNames.add("username");
 			pVals.add(username);
 		}
-		if (!foldername.equals("")) {
+		if ( foldername != null ) {
 			pNames.add("foldername");
 			pVals.add(foldername);
 		}
-		if (!tags.equals("")) {
+		if ( tags != null ) {
 			pNames.add("tags");
 			pVals.add(tags);
 		}
-		if (!filename.equals("")) {
+		if ( filename != null ) {
 			pNames.add("filename");
 			pVals.add(filename);
 		}
-		if (view) {
+		if (view != null && view ) {
 			pNames.add("view");
 			pVals.add("true");
 		}

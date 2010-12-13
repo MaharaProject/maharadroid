@@ -30,13 +30,6 @@
 		android:title="@string/pref_upload_tags_title"
 		android:summary="@string/pref_upload_tags_summary"
 		android:defaultValue="@string/pref_upload_tags_default" />	
-	<CheckBoxPreference
-		android:key="@string/pref_upload_view_key"
-		android:title="@string/pref_upload_view_title"
-		android:summary="@string/pref_upload_view_summary"
-		android:defaultValue="false"
-		android:enabled="false"
-		/>	
 
 	</PreferenceCategory>
 			

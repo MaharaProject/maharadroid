@@ -54,11 +54,10 @@
     <string name="filetransfers">Datei-Transfers</string>
     
     <string name="upload_confirm_label">Ja:</string>
-    <string name="upload_confirm_text">Die Datei, die ich hochladen möchte, ist meine eigene bzw. 
-    									habe ich die Erlaubnis, sie zu verwenden und / oder zu verbreiten. 
-    									Meine Nutzung dieser Datei verletzt keine lokalen 
-    									Urheberrechtsgesetzgebung. Der Inhalt der Datei entspricht auch den 
-    									Allgemeinen Geschäftsbedingungen dieser Website.</string>
+    <string name="upload_confirm_text">Die Datei, die ich hochladen will, gehört mir oder ich habe 
+    									die ausdrückliche Genehmigung dieses Element zu benutzen.  
+    									Meine Verwendung dieser Datei verstößt gegen keine Copyright Bestimmung. 
+    									Die Datei entspricht ebenso den Benutzerbestimmungen dieser Site.</string>
     <string name="upload_title_label">Titel:</string>
     <string name="upload_description_label">Beschreibung:</string>
     <string name="upload_tags_label">Tag(s):</string>

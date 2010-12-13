@@ -83,7 +83,7 @@ public class ArtifactSettings extends Activity implements OnClickListener {
         	ContentResolver cr = getContentResolver();
         	Uri uri = Uri.parse(m_extras.getString("uri"));
 			if ( DEBUG ) Log.d(TAG, "URI = '" + uri.toString() + "'");
-        	
+			
         	// Get the filename of the media file and use that as the default title.
         	Cursor cursor = cr.query(uri, new String[]{android.provider.MediaStore.MediaColumns.DATA}, null, null, null);
 			if (cursor != null) {
@@ -94,9 +94,7 @@ public class ArtifactSettings extends Activity implements OnClickListener {
 			} else {
 				if ( DEBUG ) Log.d(TAG, "cursor query failed");
 				// If nothing found by query then assume the file is good to go as is.
-				m_filepath = uri.toString();
-				// Remove prefix if we still have one
-				m_filepath = m_filepath.substring(m_filepath.indexOf(":///") + "://".length());
+				m_filepath = uri.getPath();				
 			}
 	
 			if (m_filepath != null) {			

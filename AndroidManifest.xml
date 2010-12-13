@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="nz.net.catalyst.MaharaDroid"
-      android:versionCode="4"
-      android:versionName="1.5">
+      android:versionCode="5"
+      android:versionName="1.6">
     <application android:icon="@drawable/icon" android:label="@string/app_name" android:debuggable="false">
     
         <activity android:name=".MaharaDroid"
@@ -47,7 +47,27 @@
 				<action android:name="android.intent.action.SEND" />
 				<category android:name="android.intent.category.DEFAULT" />
    				<data android:mimeType="image/*" />				
-   				<!-- <data android:mimeType="video/*" /> creates .3gp files - mahara can't easily use them -->			
+   				<data android:mimeType="video/*" />
+   				<data android:mimeType="audio/*" />			
+   				<data android:mimeType="application/pdf" />
+   				<data android:mimeType="application/postscript" />			
+   				<data android:mimeType="application/zip" />
+   				<data android:mimeType="application/x-tar" />
+   				<data android:mimeType="application/msword" />
+   				<data android:mimeType="application/vnd.ms-excel" />
+   				<data android:mimeType="application/vnd.ms-powerpoint" />
+   				<data android:mimeType="application/vnd.oasis.opendocument.text" />
+   				<data android:mimeType="application/vnd.oasis.opendocument.presentation" />
+   				<data android:mimeType="application/vnd.oasis.opendocument.graphics" />
+   				<data android:mimeType="application/vnd.oasis.opendocument.image" />
+   				<data android:mimeType="application/vnd.oasis.opendocument.spreadsheet" />
+   				<data android:mimeType="application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+   				<data android:mimeType="application/vnd.visio" />
+   				<data android:mimeType="application/x-debian-package" />
+   				<data android:mimeType="application/vnd.android.package-archive" />
+   				<data android:mimeType="text/csv" />
+   				<data android:mimeType="text/plain" />
+   				<data android:mimeType="text/rtf" />
 			</intent-filter>
         </activity>
         <activity android:name=".EditPreferences"

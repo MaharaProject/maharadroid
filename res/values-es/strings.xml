@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MaharaDroid</string>
+    <string name="startup_text">Bienvenido a MaharaDroid</string>
+    <string name="prefs_app_name">Preferencias de MaharaDroid</string>
+    
+    <string name="pref_upload_url_key">upload.uri</string>
+    <string name="pref_upload_url_title">URL de subida</string>
+    <string name="pref_upload_url_summary">Introduzca la URL para subir ficheros a Mahara</string>
+    <string name="pref_upload_url_default">http://master.dev.mahara.org/artefact/file/mobileupload.php</string>
+
+    <string name="pref_upload_token_key">upload.token</string>
+    <string name="pref_upload_token_title">Token</string>
+    <string name="pref_upload_token_summary">Introduzca su token de subida de Mahara</string>     
+
+    <string name="pref_upload_username_key">upload.username</string>
+    <string name="pref_upload_username_title">Nombre de usuario</string>
+    <string name="pref_upload_username_summary">Introduzca su nombre de usuario de Mahara</string>     
+
+    <string name="prefcat_advanced">Avanzado</string>
+
+    <string name="pref_upload_folder_key">upload.folder</string>
+    <string name="pref_upload_folder_title">Carpeta de subida</string>
+    <string name="pref_upload_folder_summary">Introduzca la carpeta (base) donde subir sus artefactos</string>
+    <string name="pref_upload_folder_default">MobileUploads</string>  
+
+    <string name="pref_upload_tags_key">upload.tags</string>
+    <string name="pref_upload_tags_title">Etiquetas de Artefacto</string>
+    <string name="pref_upload_tags_summary">Introduzca las etiquetas (separadas por espacios) a añadir en todos los artefactos subidos</string>
+    <string name="pref_upload_tags_default">Android</string>  
+
+    <string name="pref_upload_view_key">upload.view</string>
+    <string name="pref_upload_view_title">Crear Vista Pública</string>
+    <string name="pref_upload_view_summary">¿Crear automáticamente una vista pública para esta carpeta?</string>
+
+    <string name="pref_menu_reset">Reiniciar</string>
+    <string name="pref_menu_about">Acerca de</string>
+    
+    <string name="btnok">OK</string>
+    <string name="btnupload">Subir</string>
+    <string name="btnsendlabel">Enviar</string>
+    <string name="btncancellabel">Cancelar</string>
+    
+        <string name="lbluploadoptions">Ajustes de subida</string>
+        
+        <string name="artifact_retrieve_error">Error obteniendo los detalles del artefacto</string>
+    <string name="artifactsettings">Ajustes del artefacto</string>
+    <string name="transferprogress">Progreso de transferencia del fichero</string>
+    <string name="uploadstarting">Comienza la subida</string>
+    <string name="uploadfinished">La subida ha finalizado</string>
+    <string name="uploadfailed">La subida ha fallado</string>
+    <string name="uploadingartifact">Subiendo Artefacto</string>
+    <string name="uploading">Subiendo</string>
+    <string name="filetransfers">Transferencias de ficheros</string>
+    
+    <string name="upload_confirm_label">Sí:</string>
+    <string name="upload_confirm_text">El fichero que estoy intentando subir es de mi
+                                       propiedad o tengo permiso expreso para reproducir
+				       y/o distribuir este ítem. Mi uso de este fichero
+				       no vulnera ninguna legislación local de Derechos
+				       de Autor. Asimismo este fichero se adhiere a los
+				       Términos y Condiciones resumidos de este sitio.</string>
+    <string name="upload_title_label">Título:</string>
+    <string name="upload_description_label">Desc:</string>
+    <string name="upload_tags_label">Etiqueta(s):</string>
+                                                                
+        <!--  About page -->
+    <string name="about_title">Acerca de MaharaDroid</string>
+    <string name="about_top_section_title">MaharaDroid</string>    
+        <string name="about_sponsors_section_title">Espónsores</string>
+    <string name="about_code_contributors_section_title">Componentes de terceras partes</string>
+        <string name="about_licenses_section_title">Licencias</string>
+        <string name="about_version_label">Versión</string>
+        <string name="about_license_label">Licencia</string>
+</resources>

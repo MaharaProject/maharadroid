@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="app_name">MaharaDroid</string>
+    <string name="startup_text">Dobrodošli na MaharaDroid</string>
+    <string name="prefs_app_name">MaharaDroid možnosti</string>
+    
+    <string name="pref_upload_url_key">upload.uri</string>
+    <string name="pref_upload_url_title">URI za nalaganje</string>
+    <string name="pref_upload_url_summary">Vpišite URL za pošiljanje datotek na Maharo</string>
+    <string name="pref_upload_url_default">http://master.dev.mahara.org/artefact/file/mobileupload.php</string>
+
+    <string name="pref_upload_token_key">upload.token</string>
+    <string name="pref_upload_token_title">Žeton</string>
+    <string name="pref_upload_token_summary">Vpišite vaš žeton za nalaganje na Maharo</string>     
+
+    <string name="pref_upload_username_key">upload.username</string>
+    <string name="pref_upload_username_title">Uporabniško ime</string>
+    <string name="pref_upload_username_summary">Vpišite vaše Mahara uporabniško ime</string>     
+
+    <string name="prefcat_advanced">Napredno</string>
+
+    <string name="pref_upload_folder_key">upload.folder</string>
+    <string name="pref_upload_folder_title">Mapa za nalaganje</string>
+    <string name="pref_upload_folder_summary">Vpišite (osnovno) mapo, v katero boste nalagali vaše izdelke</string>
+    <string name="pref_upload_folder_default">MobileUploads</string>  
+
+    <string name="pref_upload_tags_key">upload.tags</string>
+    <string name="pref_upload_tags_title">Oznake izdelka</string>
+    <string name="pref_upload_tags_summary">Vpišite oznake (ločene s presledkom), ki bodo dodane vsem naloženim izdelkom</string>
+    <string name="pref_upload_tags_default">Android</string>  
+
+    <string name="pref_upload_view_key">upload.view</string>
+    <string name="pref_upload_view_title">Ustvari javni pogled</string>
+    <string name="pref_upload_view_summary">Samodejno ustvarim javni pogled te mape?</string>
+
+    <string name="pref_menu_reset">Ponastavi</string>
+    <string name="pref_menu_about">Vizitka</string>
+    
+    <string name="btnok">V redu</string>
+    <string name="btnupload">Naloži</string>
+    <string name="btnsendlabel">Pošlji</string>
+    <string name="btncancellabel">Prekliči</string>
+    
+	<string name="lbluploadoptions">Nastavitve nalaganja</string>
+	
+	<string name="artifact_retrieve_error">Napaka pri pridobivanju podrobnosti izdelka</string>
+    <string name="artifactsettings">Nastavitve izdelka</string>
+    <string name="transferprogress">Napredek prenosa datoteke</string>
+    <string name="uploadstarting">Nalaganje se začenja</string>
+    <string name="uploadfinished">Nalaganje je končano</string>
+    <string name="uploadfailed">Nalaganje neuspešno</string>
+    <string name="uploadingartifact">Nalagam izdelek</string>
+    <string name="uploading">Nalagam</string>
+    <string name="filetransfers">Prenosi datotek</string>
+    
+    <string name="upload_confirm_label">Da:</string>
+    <string name="upload_confirm_text">Datoteka, ki jo nameravam naložiti, je moja oz. imam pisno dovoljenje za njeno reprodukcijo in/ali distribucijo. Moja uporaba te datoteke ne krši nobenega izmed lokalnih zakonov o avtorskih in sorodnih pravicah. Ta datoteka se drži tudi Pravil in pogojev tega spletišča.</string>
+    <string name="upload_title_label">Naziv:</string>
+    <string name="upload_description_label">Opis:</string>
+    <string name="upload_tags_label">Oznake:</string>
+								
+        <!--  About page -->
+    <string name="about_title">MaharaDroid vizitka</string>
+    <string name="about_top_section_title">MaharaDroid</string>    
+	<string name="about_sponsors_section_title">Sponzorji</string>
+    <string name="about_code_contributors_section_title">Komponente tretjih strank</string>
+	<string name="about_licenses_section_title">Licence</string>
+	<string name="about_version_label">Različica</string>
+	<string name="about_license_label">Licenca</string>
+</resources>

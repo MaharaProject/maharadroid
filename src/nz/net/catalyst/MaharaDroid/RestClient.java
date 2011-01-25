@@ -150,6 +150,7 @@ public class RestClient {
 	public static JSONObject CallFunction(String url, String[] paramNames, String[] paramVals, Context context)
 	{
 		JSONObject json = new JSONObject();
+
 		SchemeRegistry supportedSchemes = new SchemeRegistry();
 		
 		// Register the "http" and "https" protocol schemes, they are
@@ -179,7 +180,7 @@ public class RestClient {
 		
 		if (paramNames.length != paramVals.length) {
 			Log.w(TAG, "Incompatible nuber of param names and values, bailing on upload!");
-			return json;
+			return null;
 		}
 		
 		SortedMap<String,String> sig_params = new TreeMap<String,String>();
@@ -220,43 +221,31 @@ public class RestClient {
 		    if (resEntity != null) {
 		    	String content = convertStreamToString(resEntity.getContent());
 		    	if ( response.getStatusLine().getStatusCode() == 200 ) {
-		    		try {
-		    			String new_token = content.toString().trim();
-	    				json.put("success", new_token);
-	    				Log.i(TAG, "success, updating token to : " + content.toString());
-					} catch (JSONException e) {
-						json = null;
+					try {
+		    			json = new JSONObject(content.toString());
+					} catch (JSONException e1) { 
+						Log.w(TAG, "Response 200 received but invalid JSON.");
+						json.put("fail", e1.getMessage());
+						if ( DEBUG) Log.d(TAG, "HTTP POST returned status code: " + response.getStatusLine());
 					}
 		    	} else {
 					Log.w(TAG, "File upload failed with response code:" + response.getStatusLine().getStatusCode());
-		    		try {
-						json.put("fail", response.getStatusLine().getReasonPhrase());
-						if ( DEBUG) Log.d(TAG, "HTTP POST returned status code: " + response.getStatusLine());
-					} catch (JSONException e) {
-						json = null;
-					}
+					json.put("fail", response.getStatusLine().getReasonPhrase());
+					if ( DEBUG) Log.d(TAG, "HTTP POST returned status code: " + response.getStatusLine());
 		    	}
 	    	} else {
 				Log.w(TAG, "Response does not contain a valid HTTP entity.");
-	    		try {
-					json.put("fail", "Artefact upload failed");
-					if ( DEBUG ) Log.d(TAG, "HTTP POST returned status code: " + response.getStatusLine());
-				} catch (JSONException e) {
-					json = null;
-				}
+				if ( DEBUG ) Log.d(TAG, "HTTP POST returned status code: " + response.getStatusLine());
 	    	}
 
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
-			json = new JSONObject();
 			try {
 				json.put("fail", e.getMessage());
-			} catch (JSONException e1) {
-				json = null;
-			}
+			} catch (JSONException e1) { }
 			e.printStackTrace();
-		}
+		} catch (JSONException e) { }
 		
 		httpclient.getConnectionManager().shutdown();
 

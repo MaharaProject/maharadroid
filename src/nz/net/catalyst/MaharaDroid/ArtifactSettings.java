@@ -34,6 +34,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,7 +59,8 @@ public class ArtifactSettings extends Activity implements OnClickListener {
 	private SharedPreferences mPrefs;
 	
 	private Bundle m_extras;
-	private String m_filepath = null;
+	private String [] uris = null;
+	private Boolean isMulti = null;
 	
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,30 +81,33 @@ public class ArtifactSettings extends Activity implements OnClickListener {
         	if ( DEBUG ) Log.d(TAG, "No extras .. nothing to do!");
         	finish();
         }
-        else {
-        	ContentResolver cr = getContentResolver();
-        	Uri uri = Uri.parse(m_extras.getString("uri"));
-			if ( DEBUG ) Log.d(TAG, "URI = '" + uri.toString() + "'");
-			
-        	// Get the filename of the media file and use that as the default title.
-        	Cursor cursor = cr.query(uri, new String[]{android.provider.MediaStore.MediaColumns.DATA}, null, null, null);
-			if (cursor != null) {
-				if ( DEBUG ) Log.d(TAG, "cursor query succeeded");
-				cursor.moveToFirst();
-				m_filepath = cursor.getString(0);
-				cursor.close();
-			} else {
-				if ( DEBUG ) Log.d(TAG, "cursor query failed");
-				// If nothing found by query then assume the file is good to go as is.
-				m_filepath = uri.getPath();				
-			}
-	
-			if (m_filepath != null) {			
-				String title = m_filepath.substring(m_filepath.lastIndexOf("/") + 1);
+
+        uris = m_extras.getStringArray("uri");
+
+        // If single - show the title (with default) and description
+    	if ( uris.length == 1 ) {
+    		isMulti = false;
+    		String filepath = getFilePath(uris[0]);
+			if (filepath != null) {	
+				// Default the title to the filename and make it all selected for easy replacement
+				String title = filepath.substring(filepath.lastIndexOf("/") + 1);
+
 				((EditText)findViewById(R.id.txtArtifactTitle)).setText(title);
 				((EditText)findViewById(R.id.txtArtifactTitle)).selectAll();
-				if ( DEBUG ) Log.d(TAG, "m_filepath = '" + m_filepath + "'");
+				if ( DEBUG ) Log.d(TAG, "filepath = '" + filepath + "'");
 			}
+        } else if ( uris.length > 1 ) {
+    		isMulti = true;
+ 
+    		LinearLayout l;
+    		l = (LinearLayout)this.findViewById(R.id.ArtifactTitleLayout);
+    		l.setVisibility(LinearLayout.GONE);
+    		l = (LinearLayout)this.findViewById(R.id.ArtifactDescriptionLayout);
+    		l.setVisibility(LinearLayout.GONE);
+    		
+        } else {
+	    	if ( DEBUG ) Log.d(TAG, "No uri's .. nothing to do!");
+	    	finish();
         }
 	}
 
@@ -130,20 +135,54 @@ public class ArtifactSettings extends Activity implements OnClickListener {
 			return;
 		}
 		
-		// uploader_intent will contain all of the necessary information about this
-		// upload in the Extras Bundle.
-		Intent uploader_intent = new Intent(this, TransferService.class);
-		uploader_intent.putExtra("filename", m_filepath);
-		uploader_intent.putExtra("title", ((EditText)findViewById(R.id.txtArtifactTitle)).getText().toString());
-		uploader_intent.putExtra("tags", ((EditText)findViewById(R.id.txtArtifactTags)).getText().toString());
-		uploader_intent.putExtra("description", ((EditText)findViewById(R.id.txtArtifactDescription)).getText().toString());
-		
-		// Start the uploader service and pass in the intent containing
-		// the upload information.
-		startService(uploader_intent);
-		
-		Toast.makeText(this, R.string.uploadstarting, Toast.LENGTH_SHORT).show();
+		for ( int i = 0; i < uris.length; i++ ) {
+    		String filepath = getFilePath(uris[i]);
+
+			// uploader_intent will contain all of the necessary information about this
+			// upload in the Extras Bundle.
+			Intent uploader_intent = new Intent(this, TransferService.class);
+			uploader_intent.putExtra("filename", filepath);
+			uploader_intent.putExtra("tags", ((EditText)findViewById(R.id.txtArtifactTags)).getText().toString());
+	
+			if ( isMulti ) {
+				// Set a default title but no description
+				String title = filepath.substring(filepath.lastIndexOf("/") + 1);
+				uploader_intent.putExtra("title", title);
+			} else {
+				uploader_intent.putExtra("title", ((EditText)findViewById(R.id.txtArtifactTitle)).getText().toString());
+				uploader_intent.putExtra("description", ((EditText)findViewById(R.id.txtArtifactDescription)).getText().toString());			
+			}
+				
+			// Start the uploader service and pass in the intent containing
+			// the upload information.
+			startService(uploader_intent);
+		}
+		Toast.makeText(this, R.string.uploadstarting, Toast.LENGTH_SHORT).show();		
 	}
+
+    private String getFilePath(String u) {
+    	ContentResolver cr = getContentResolver();
+    	Uri uri = Uri.parse(u);
+    	
+    	String file_path = null;
+    	
+		if ( DEBUG ) Log.d(TAG, "URI = '" + uri.toString() + "'");
+		
+    	// Get the filename of the media file and use that as the default title.
+    	Cursor cursor = cr.query(uri, new String[]{android.provider.MediaStore.MediaColumns.DATA}, null, null, null);
+		if (cursor != null) {
+			if ( DEBUG ) Log.d(TAG, "cursor query succeeded");
+			cursor.moveToFirst();
+			file_path = cursor.getString(0);
+			cursor.close();
+		} else {
+			if ( DEBUG ) Log.d(TAG, "cursor query failed");
+			// If nothing found by query then assume the file is good to go as is.
+			file_path = uri.getPath();				
+		}
+		return file_path;
+    }
+	
 	private void acceptConditions(Boolean accepted) {
 		final Button button = (Button)findViewById(R.id.btnUpload);
 		button.setEnabled(accepted);

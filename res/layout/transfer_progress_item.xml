@@ -20,7 +20,7 @@
 	  android:layout_height="fill_parent">
 	  
 		<TextView android:id="@+id/TransferPictureName"
-				  android:text="Picture"
+				  android:text="Artefact"
 				  android:gravity="bottom"
 				  android:textSize="8pt"
 				  android:layout_width="fill_parent"

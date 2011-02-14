@@ -46,7 +46,7 @@
  			-->
 			<LinearLayout
 				  xmlns:android="http://schemas.android.com/apk/res/android"
-				  android:id="@+id/ArtifactConfirmLayout"
+				  android:id="@+id/ArtifactTitleLayout"
 				  android:layout_width="fill_parent"
 				  android:layout_height="wrap_content"
 				  android:layout_marginTop="10dp"
@@ -71,8 +71,9 @@
 			</LinearLayout>
 			<LinearLayout
 				  xmlns:android="http://schemas.android.com/apk/res/android"
+				  android:id="@+id/ArtifactDescriptionLayout"
 				  android:layout_width="fill_parent"
-				  android:layout_height="wrap_content"
+  				  android:layout_height="wrap_content"
 				  android:layout_marginTop="10dp"
 				  android:orientation="horizontal">
 

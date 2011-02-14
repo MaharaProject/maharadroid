@@ -37,8 +37,6 @@ public class GlobalResources {
     public static final String INTENT_BIND_TRANSFER_SERVICE = "nz.net.catalyst.MaharaDroid.BIND_TRANSFER_SERVICE";
     public static final String INTENT_BIND_DOWNLOADER = "nz.net.catalyst.MaharaDroid.BIND_DOWNLOADER";
     public static final String INTENT_UPLOAD_PROGRESS_UPDATE = "nz.net.catalyst.MaharaDroid.UPLOAD_PROGRESS_UPDATE";
-    public static final String INTENT_DOWNLOAD_PROGRESS_UPDATE = "nz.net.catalyst.MaharaDroid.DOWNLOAD_PROGRESS_UPDATE";
-  
     
     public static final String TRANSFER_TYPE_UPLOAD = "Upload";
 

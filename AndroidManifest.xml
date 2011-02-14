@@ -45,6 +45,7 @@
 		          android:enabled="true" android:exported="true">
             <intent-filter>
 				<action android:name="android.intent.action.SEND" />
+				<action android:name="android.intent.action.SEND_MULTIPLE" />
 				<category android:name="android.intent.category.DEFAULT" />
    				<data android:mimeType="image/*" />				
    				<data android:mimeType="video/*" />
@@ -75,7 +76,8 @@
         
         <service android:name=".TransferService" android:label="@string/filetransfers"/>
     </application>
-    <uses-sdk android:minSdkVersion="3" />
+    <!--  API Level 4 aka 1.6 required for multi-send support -->
+    <uses-sdk android:minSdkVersion="4" /> 
 	<uses-permission android:name="android.permission.INTERNET"/>
        
 </manifest> 

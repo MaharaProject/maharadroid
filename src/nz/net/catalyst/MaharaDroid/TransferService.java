@@ -70,7 +70,6 @@ public class TransferService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		
 		mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 	}
 	
@@ -120,7 +119,7 @@ public class TransferService extends Service {
 							    			 upload_info.getString("description"),
 								    		 getApplicationContext());
 			        
-					publishProgress(new String[]{"start", upload_info.getString("title")});
+					publishProgress(new String[]{"finish", upload_info.getString("title")});
 					m_uploads.remove();
 			        if (result == null || result.has("fail")) {
 			        	String err_str = null;
@@ -221,7 +220,6 @@ public class TransferService extends Service {
 	@Override
 	public void onDestroy () {
 		super.onDestroy();
-		//mPrefs.unregisterOnSharedPreferenceChangeListener(this);
 		((NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE)).cancel(GlobalResources.UPLOADER_ID);
 		if (m_update_receiver != null) {
 			this.unregisterReceiver(m_update_receiver);
@@ -236,8 +234,7 @@ public class TransferService extends Service {
 		}
 		m_update_receiver = new NotificationProgressUpdateReceiver();
 		if (m_update_receiver != null) {
-			IntentFilter filter = new IntentFilter(GlobalResources.INTENT_DOWNLOAD_PROGRESS_UPDATE);
-			filter.addAction(GlobalResources.INTENT_UPLOAD_PROGRESS_UPDATE);
+			IntentFilter filter = new IntentFilter(GlobalResources.INTENT_UPLOAD_PROGRESS_UPDATE);
 			this.registerReceiver(m_update_receiver, filter);
 		}		
 	}

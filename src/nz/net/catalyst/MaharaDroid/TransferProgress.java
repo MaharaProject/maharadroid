@@ -164,6 +164,7 @@ public class TransferProgress extends Activity implements OnClickListener {
 		if (m_receiver != null) {
 			IntentFilter filter = new IntentFilter(GlobalResources.INTENT_UPLOAD_STARTED);
 			filter.addAction(GlobalResources.INTENT_UPLOAD_FINISHED);
+			filter.addAction(GlobalResources.INTENT_UPLOAD_FAILED);
 			this.registerReceiver(m_receiver, filter);
 		}
 	}

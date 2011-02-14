@@ -60,7 +60,7 @@ public class TransferService extends Service {
 	static final boolean VERBOSE = LogConfig.VERBOSE;
 	
 	private Notification m_upload_notification = null;
-	private NotificationProgressUpdateReceiver m_update_receiver = null;
+	//private NotificationProgressUpdateReceiver m_update_receiver = null;
 	private PendingIntent m_notify_activity = null;
 	private final IBinder m_binder = new TransferServiceBinder();
 	private UploadArtifactTask m_upload_task = null;
@@ -75,27 +75,27 @@ public class TransferService extends Service {
 	
 	// This is the receiver that we use to update the percentage progress display
     // for the current upload.
-	public class NotificationProgressUpdateReceiver extends BroadcastReceiver {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			Notification notification = null;
-			int id = -1;
-			if (intent.getAction().equals(GlobalResources.INTENT_UPLOAD_PROGRESS_UPDATE)) {
-	        	notification = m_upload_notification;
-	        	id = GlobalResources.UPLOADER_ID;
-	        }
-
-	        if (notification != null && id > 0) {
-	        	Bundle extras = intent.getExtras();
-	        	if (extras != null && extras.containsKey("percent")) {
-					RemoteViews nView = notification.contentView;
-					nView.setProgressBar(R.id.prgNotification, 100, extras.getInt("percent"), false);
-					notification.contentView = nView;
-					((NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE)).notify(id, notification);
-	        	}
-	        }
-		}
-	}
+//	public class NotificationProgressUpdateReceiver extends BroadcastReceiver {
+//		@Override
+//		public void onReceive(Context context, Intent intent) {
+//			Notification notification = null;
+//			int id = -1;
+//			if (intent.getAction().equals(GlobalResources.INTENT_UPLOAD_PROGRESS_UPDATE)) {
+//	        	notification = m_upload_notification;
+//	        	id = GlobalResources.UPLOADER_ID;
+//	        }
+//
+//	        if (notification != null && id > 0) {
+//	        	Bundle extras = intent.getExtras();
+//	        	if (extras != null && extras.containsKey("percent")) {
+//					RemoteViews nView = notification.contentView;
+//					nView.setProgressBar(R.id.prgNotification, 100, extras.getInt("percent"), false);
+//					notification.contentView = nView;
+//					((NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE)).notify(id, notification);
+//	        	}
+//	        }
+//		}
+//	}
 
 	// AsyncTask to upload a picture in the background.
 	private class UploadArtifactTask extends AsyncTask<Void, String, Object> {
@@ -221,9 +221,8 @@ public class TransferService extends Service {
 	public void onDestroy () {
 		super.onDestroy();
 		((NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE)).cancel(GlobalResources.UPLOADER_ID);
-		if (m_update_receiver != null) {
-			this.unregisterReceiver(m_update_receiver);
-		}
+		//if (m_update_receiver != null) 
+		//	this.unregisterReceiver(m_update_receiver);
 	}
 
 	@Override
@@ -232,11 +231,9 @@ public class TransferService extends Service {
 		if (extras != null) {
 			addUpload(intent.getExtras());
 		}
-		m_update_receiver = new NotificationProgressUpdateReceiver();
-		if (m_update_receiver != null) {
-			IntentFilter filter = new IntentFilter(GlobalResources.INTENT_UPLOAD_PROGRESS_UPDATE);
-			this.registerReceiver(m_update_receiver, filter);
-		}		
+		//m_update_receiver = new NotificationProgressUpdateReceiver();
+		//if (m_update_receiver != null) 
+		//	this.registerReceiver(m_update_receiver, new IntentFilter(GlobalResources.INTENT_UPLOAD_PROGRESS_UPDATE));
 	}
 	
 	@Override

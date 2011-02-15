@@ -49,6 +49,7 @@
     <string name="uploadstarting">Your Upload is Starting</string>
     <string name="uploadfinished">Your Upload is Finished</string>
     <string name="uploadfailed">Upload failed</string>
+    <string name="uploadnotavailable">Sorry you can only uploaded files as artefacts.</string>
     <string name="uploadingartifact">Uploading Artefact</string>
     <string name="uploading">Uploading</string>
     <string name="filetransfers">File Transfers</string>

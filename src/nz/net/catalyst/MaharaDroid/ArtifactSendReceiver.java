@@ -27,6 +27,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.Log;
+import android.widget.Toast;
 
 /*
  * The ArtifactSendReceiver class is taken from the PictureSendReceiver class
@@ -49,25 +51,35 @@ public class ArtifactSendReceiver extends Activity {
         super.onCreate(savedInstanceState);
         
         Intent intent = getIntent();
-		String [] uris = new String[]{};
+		Bundle extras = intent.getExtras();
+		String [] uris = null;
+		
+		if ( DEBUG ) 
+			Log.d(TAG, "Type: " + intent.getType() + 
+					 ", Stream: " + intent.hasExtra("android.intent.extra.STREAM") +
+					 ", Data: " + intent.getDataString() + 
+					 ", Flag(s): " + intent.getFlags());
         
 		if (intent.getAction().equals(Intent.ACTION_SEND)) {
-			Bundle extras = intent.getExtras();
 			if (extras.containsKey("android.intent.extra.STREAM")) {
-				Uri uri = (Uri)extras.get("android.intent.extra.STREAM");
-				Intent i = new Intent(this, ArtifactSettings.class);
+				Uri uri = (Uri) extras.get("android.intent.extra.STREAM");
 				uris = new String[] { uri.toString() };
-				i.putExtra("uri", uris);
-				startActivity(i);
 			}
-		} else	if (intent.getAction().equals(Intent.ACTION_SEND_MULTIPLE)) {
-			ArrayList<Parcelable> list = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
-			int c = 0;
-			uris = new String[list.size()];
-			for (Parcelable p : list) {
-				Uri uri = (Uri) p;
-				uris[c++] = uri.toString();
+		} else if (intent.getAction().equals(Intent.ACTION_SEND_MULTIPLE)) {
+			if (extras.containsKey("android.intent.extra.STREAM")) {
+				ArrayList<Parcelable> list = extras.getParcelableArrayList(Intent.EXTRA_STREAM);
+				int c = 0;
+				uris = new String[list.size()];
+				for (Parcelable p : list) {
+					Uri uri = (Uri) p;
+					uris[c++] = uri.toString();
+				}
 			}
+		}
+
+		if ( uris == null ) {
+			Toast.makeText(getApplicationContext(), R.string.uploadnotavailable, Toast.LENGTH_SHORT).show();
+		} else {
 			Intent i = new Intent(this, ArtifactSettings.class);
 			i.putExtra("uri", uris);
 			startActivity(i);

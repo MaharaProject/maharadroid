@@ -215,7 +215,7 @@ public class RestClient {
 			}
 		    httppost.setEntity(mp_entity);
 			
-			response = httpclient.execute(httppost);
+	    	response = httpclient.execute(httppost);
 			HttpEntity resEntity = response.getEntity();
 			
 		    if (resEntity != null) {
@@ -241,6 +241,11 @@ public class RestClient {
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
+			try {
+				json.put("fail", e.getMessage());
+			} catch (JSONException e1) { }
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
 			try {
 				json.put("fail", e.getMessage());
 			} catch (JSONException e1) { }

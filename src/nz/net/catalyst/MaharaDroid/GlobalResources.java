@@ -40,6 +40,9 @@ public class GlobalResources {
     
     public static final String TRANSFER_TYPE_UPLOAD = "Upload";
 
+	public static final String CONFIG_SCAN_INTENT = "com.google.zxing.client.android.SCAN";
+	public static final String CONFIG_SCAN_MODE = "QR_CODE_MODE";
+
 	public static int ERROR_DELAY_MS = 1000;
 
 	static final int UPLOADER_ID = 243;

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MaharaDroid</string>
+    <string name="startup_text">Benvinguts a MaharaDroid</string>
+    <string name="prefs_app_name">Preferències de MaharaDroid</string>
+
+    <string name="pref_upload_url_key">upload.uri</string>
+    <string name="pref_upload_url_title">URI de la pujada</string>
+    <string name="pref_upload_url_summary">Escriviu la URL per pujar fitxers a Mahara</string>
+    <string name="pref_upload_url_default">http://master.dev.mahara.org/artefact/file/mobileupload.php</string>
+
+    <string name="pref_upload_token_key">upload.token</string>
+    <string name="pref_upload_token_title">Token</string>
+    <string name="pref_upload_token_summary">Escriviu el vostre token de càrrega a Mahara</string>
+
+    <string name="pref_upload_username_key">upload.username</string>
+    <string name="pref_upload_username_title">Nom d\'usuari</string>
+    <string name="pref_upload_username_summary">Escriviu el vostre Nom d\'usuari a Mahara</string>
+
+    <string name="prefcat_advanced">Avançat</string>
+
+    <string name="pref_upload_folder_key">upload.folder</string>
+    <string name="pref_upload_folder_title">Carpeta de càrrega</string>
+    <string name="pref_upload_folder_summary">Escriviu el nom de la carpeta (base) on carregar els vostres artefactes</string>
+    <string name="pref_upload_folder_default">MobileUploads</string>
+
+    <string name="pref_upload_tags_key">upload.tags</string>
+    <string name="pref_upload_tags_title">Etiquetes</string>
+    <string name="pref_upload_tags_summary">Escriviu les etiquetes separades per espais per afegir a tots els artefactes carregats</string>
+    <string name="pref_upload_tags_default">Android</string>
+
+    <string name="pref_upload_view_key">upload.view</string>
+    <string name="pref_upload_view_title">Crea una Vista pública</string>
+    <string name="pref_upload_view_summary">Voleu crear automàticament una Vista pública d\'aquesta carpeta?</string>
+
+    <string name="pref_menu_reset">Reinicia</string>
+    <string name="pref_menu_about">Sobre</string>
+
+    <string name="btnok">OK</string>
+    <string name="btnupload">Carrega</string>
+    <string name="btnsendlabel">Envia</string>
+    <string name="btncancellabel">Cancel·la</string>
+
+	<string name="lbluploadoptions">Configuració de la càrrega</string>
+
+	<string name="artifact_retrieve_error">Hi ha hagut un error  al recuperar els detalls de l\'artefacte</string>
+    <string name="artifactsettings">Propietats de l\'artefacte</string>
+    <string name="transferprogress">Progrés en la transmissió del fitxer</string>
+    <string name="uploadstarting">Ha començat la càrrega</string>
+    <string name="uploadfinished">S\'ha acabat la càrrega</string>
+    <string name="uploadfailed">Ha fallat la càrrega</string>
+    <string name="uploadingartifact">Carregant artefacte</string>
+    <string name="uploading">Carregant</string>
+    <string name="filetransfers">Transferència de fitxers</string>
+
+    <string name="upload_confirm_label">Sí:</string>
+    <string name="upload_confirm_text">El fitxer que estic intentant carregar és meu o tinc l\'autorització expressa per reproduir i / o distribuir aquest article.
+    L\'ús que faré d\'aquest fitxer no infringeix la legislació de Drets d\'autor local.
+    Aquest fitxer també s\'afegeix als termes i condicions descrits en aquest lloc.</string>
+    <string name="upload_title_label">Títol:</string>
+    <string name="upload_description_label">Desc:</string>
+    <string name="upload_tags_label">Etiqueta(s):</string>
+
+        <!--  About page -->
+    <string name="about_title">Sobre MaharaDroid</string>
+    <string name="about_top_section_title">MaharaDroid</string>
+	<string name="about_sponsors_section_title">Patrocinadors</string>
+    <string name="about_code_contributors_section_title">Components de Tercers</string>
+	<string name="about_licenses_section_title">Llicències</string>
+	<string name="about_version_label">Versió</string>
+	<string name="about_license_label">Llicència</string>
+</resources>

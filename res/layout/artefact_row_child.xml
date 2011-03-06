@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+			  xmlns:android="http://schemas.android.com/apk/res/android"
+			  android:layout_width="fill_parent"
+			  android:layout_height="wrap_content"
+			  android:orientation="vertical">
+			<LinearLayout
+				  xmlns:android="http://schemas.android.com/apk/res/android"
+				  android:id="@+id/ArtifactTitleLayout"
+				  android:layout_width="fill_parent"
+				  android:layout_height="wrap_content"
+				  android:layout_marginTop="10dp"
+				  android:orientation="horizontal">
+
+					<TextView android:text="@string/upload_title_label"
+							  android:layout_width="50dip"
+							  android:singleLine="false"
+							  android:layout_height="wrap_content"
+			  				  android:textStyle="bold"
+			  				  style="@android:style/TextAppearance.Small">
+					</TextView>
+				  
+					<TextView 
+							  android:id="@+id/txtArtifactTitle"
+							  android:singleLine="true"
+							  android:layout_width="fill_parent"
+							  android:layout_height="wrap_content"
+  			  				  style="@android:style/TextAppearance.Small">
+				  	</TextView>
+					
+			</LinearLayout>
+			<LinearLayout
+				  xmlns:android="http://schemas.android.com/apk/res/android"
+				  android:id="@+id/ArtifactDescriptionLayout"
+				  android:layout_width="fill_parent"
+  				  android:layout_height="wrap_content"
+				  android:layout_marginTop="10dp"
+				  android:orientation="horizontal">
+
+					<TextView android:text="@string/upload_description_label"
+							  android:layout_width="50dip"
+							  android:singleLine="false"
+							  android:layout_height="wrap_content"
+			  				  android:textStyle="bold"
+			  				  style="@android:style/TextAppearance.Small">
+					</TextView>
+					<TextView android:id="@+id/txtArtifactDescription"
+							  android:singleLine="false"
+							  android:layout_width="fill_parent"
+							  android:layout_height="wrap_content"
+  			  				  style="@android:style/TextAppearance.Small">
+				  	</TextView>
+			</LinearLayout>
+			<LinearLayout
+				  xmlns:android="http://schemas.android.com/apk/res/android"
+				  android:layout_width="fill_parent"
+				  android:layout_height="wrap_content"
+				  android:layout_marginTop="10dp"
+				  android:orientation="horizontal">
+
+					<TextView android:text="@string/upload_tags_label"
+							  android:layout_width="50dip"
+							  android:singleLine="false"
+							  android:layout_height="wrap_content"
+			  				  android:textStyle="bold"
+			  				  style="@android:style/TextAppearance.Small">
+					</TextView>
+
+					<TextView  android:id="@+id/txtArtifactTags"
+							  android:singleLine="true"
+							  android:layout_width="fill_parent"
+							  android:layout_height="wrap_content"
+  			  				  style="@android:style/TextAppearance.Small">
+				  	</TextView>
+			</LinearLayout>
+			<LinearLayout
+				  xmlns:android="http://schemas.android.com/apk/res/android"
+				  android:layout_width="fill_parent"
+				  android:layout_height="wrap_content"
+				  android:layout_marginTop="10dp"
+				  android:orientation="horizontal">
+
+					<TextView android:text="@string/upload_time_label"
+							  android:layout_width="50dip"
+							  android:singleLine="false"
+							  android:layout_height="wrap_content"
+			  				  android:textStyle="bold"
+			  				  style="@android:style/TextAppearance.Small">
+					</TextView>
+			
+					<TextView  android:id="@+id/txtArtifactTime"
+							  android:layout_width="fill_parent"
+							  android:layout_height="wrap_content"
+  			  				  style="@android:style/TextAppearance.Small">
+				  	</TextView>
+			</LinearLayout>		
+					<TextView  android:id="@+id/txtArtifactFilename"
+							  android:singleLine="true"
+							  android:layout_width="fill_parent"
+							  android:layout_height="wrap_content"
+							  android:visibility="invisible">
+				  	</TextView>
+</LinearLayout>

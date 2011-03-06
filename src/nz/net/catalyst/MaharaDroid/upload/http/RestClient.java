@@ -18,7 +18,7 @@
  *  limitations under the License.
  */
 
-package nz.net.catalyst.MaharaDroid;
+package nz.net.catalyst.MaharaDroid.upload.http;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -29,6 +29,8 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Vector;
+
+import nz.net.catalyst.MaharaDroid.LogConfig;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;

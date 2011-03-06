@@ -45,5 +45,5 @@ public class GlobalResources {
 
 	public static int ERROR_DELAY_MS = 1000;
 
-	static final int UPLOADER_ID = 243;
+	public static final int UPLOADER_ID = 243;
 }

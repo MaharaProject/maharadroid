@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="nz.net.catalyst.MaharaDroid"
-      android:versionCode="6"
-      android:versionName="1.7">
-    <application android:icon="@drawable/icon" android:label="@string/app_name" android:debuggable="false">
+      android:versionCode="7"
+      android:versionName="1.8">
+    <application android:icon="@drawable/icon" android:label="@string/app_name"
+    		 android:debuggable="true" >
     
-        <activity android:name=".MaharaDroid"
-                  android:label="@string/app_name"
-                  android:theme="@android:style/Theme.Dialog">
+        <activity android:name=".ui.MaharaDroid" 
+                  android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -27,26 +27,27 @@
 			</intent-filter>
 		</activity>
 		
-	    <activity android:name=".ArtifactSettings" android:label="@string/artifactsettings">
+	    <activity android:name=".ui.ArtifactSettingsActivity" android:label="@string/artifactsettings">
             <intent-filter>
-                <action android:name="nz.net.catalyst.MaharaDroid.ArtifactSettings" />
+                <action android:name="nz.net.catalyst.MaharaDroid.ARTEFACTSETTINGS" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         
-        <activity android:name=".TransferProgress" android:label="@string/transferprogress">
+        <activity android:name=".ui.TransferProgress" android:label="@string/transferprogress">
             <intent-filter>
                 <action android:name="nz.net.catalyst.MaharaDroid.TRANSFERPROGRESS" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
-		<activity android:name=".ArtifactSendReceiver" android:icon="@drawable/icon" android:label="@string/app_name"
+		<activity android:name=".upload.ArtifactSenderActivity" android:icon="@drawable/icon" android:label="@string/app_name"
 		          android:enabled="true" android:exported="true">
             <intent-filter>
 				<action android:name="android.intent.action.SEND" />
 				<action android:name="android.intent.action.SEND_MULTIPLE" />
 				<category android:name="android.intent.category.DEFAULT" />
+   				<data android:mimeType="image/*" />
    				<data android:mimeType="video/*" />
    				<data android:mimeType="audio/*" />			
    				<data android:mimeType="application/*" />
@@ -56,10 +57,12 @@
    				<data android:mimeType="text/xml" />
  			</intent-filter>
         </activity>
-        <activity android:name=".EditPreferences"
-			android:label="@string/prefs_app_name" />
+        <activity android:name=".ui.EditPreferences"
+			android:label="@string/options_menu_prefs" />
+        <activity android:name=".ui.ArtefactExpandableListAdapterActivity"
+        	android:label="@string/options_menu_viewsaved" />
         
-        <service android:name=".TransferService" android:label="@string/filetransfers"/>
+        <service android:name=".upload.TransferService" android:label="@string/filetransfers"/>
     </application>
     <!--  API Level 4 aka 1.6 required for multi-send support -->
     <uses-sdk android:minSdkVersion="4" /> 

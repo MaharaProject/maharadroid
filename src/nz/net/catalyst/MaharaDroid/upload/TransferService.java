@@ -18,9 +18,18 @@
  *  limitations under the License.
  */
 
-package nz.net.catalyst.MaharaDroid;
+package nz.net.catalyst.MaharaDroid.upload;
 
 import java.util.LinkedList;
+
+import nz.net.catalyst.MaharaDroid.GlobalResources;
+import nz.net.catalyst.MaharaDroid.LogConfig;
+import nz.net.catalyst.MaharaDroid.R;
+import nz.net.catalyst.MaharaDroid.R.id;
+import nz.net.catalyst.MaharaDroid.R.layout;
+import nz.net.catalyst.MaharaDroid.R.string;
+import nz.net.catalyst.MaharaDroid.ui.TransferProgressActivity;
+import nz.net.catalyst.MaharaDroid.upload.http.RestClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,10 +38,8 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Binder;
@@ -42,15 +49,6 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
-
-/*
- * The GlobalResources class is taken from the GlobalResources class
- * written by Russel Stewart (rnstewart@gmail.com) as part of the Flickr Free
- * Android application. Changes were made to reduce support to simple HTTP POST
- * upload of content only.
- *
- * @author	Alan McNatty (alan.mcnatty@catalyst.net.nz)
- */
 
 public class TransferService extends Service { 
 	static final String TAG = LogConfig.getLogTag(TransferService.class);
@@ -212,7 +210,7 @@ public class TransferService extends Service {
 	}
 	
 	public class TransferServiceBinder extends Binder {
-        TransferService getService() {
+        public TransferService getService() {
             return TransferService.this;
         }
     }
@@ -259,7 +257,7 @@ public class TransferService extends Service {
 			// Create the status bar notification that will be displayed.
 			CharSequence tickerText = this.getString(R.string.uploadingartifact);
 			m_upload_notification = new Notification(android.R.drawable.stat_sys_upload, tickerText, System.currentTimeMillis());
-			m_notify_activity = PendingIntent.getActivity(this, 0, new Intent(this, TransferProgress.class), 0);
+			m_notify_activity = PendingIntent.getActivity(this, 0, new Intent(this, TransferProgressActivity.class), 0);
 			m_upload_notification.contentIntent = m_notify_activity;
 
 			RemoteViews nView = new RemoteViews(getPackageName(), R.layout.progress_notification_layout);
@@ -280,23 +278,23 @@ public class TransferService extends Service {
 	}
 
 	private String getUploadURLPref() {
-		return mPrefs.getString(getString(R.string.pref_upload_url_key), null);
+		return mPrefs.getString(getString(R.string.pref_upload_url_key), "");
 	}
 	private Boolean getUploadCreateViewPref() {
 		return mPrefs.getBoolean(getString(R.string.pref_upload_view_key), false);
 	}
 	private String getUploadFolderPref() {
-		return mPrefs.getString(getString(R.string.pref_upload_folder_key), null);
+		return mPrefs.getString(getString(R.string.pref_upload_folder_key), "");
 	}
 	public String getUploadAuthTokenPref() {
-		return mPrefs.getString(getString(R.string.pref_upload_token_key), null);
+		return mPrefs.getString(getString(R.string.pref_upload_token_key), "");
 	}
 	public String getUploadUsernamePref() {
-		return mPrefs.getString(getString(R.string.pref_upload_username_key), null);
+		return mPrefs.getString(getString(R.string.pref_upload_username_key), "");
 	}
 	public String getUploadTagsPref(String pref_tags) {
 		String tags = ( pref_tags != null ) ? pref_tags.trim() : "" ;	
-		return (mPrefs.getString(getString(R.string.pref_upload_tags_key), null) + " " + tags).trim();  
+		return (mPrefs.getString(getString(R.string.pref_upload_tags_key), "") + " " + tags).trim();  
 	}
 	
 	public void setUploadAuthTokenPref(String newToken) {

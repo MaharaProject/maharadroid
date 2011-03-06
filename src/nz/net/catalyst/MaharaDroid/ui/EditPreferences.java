@@ -19,7 +19,7 @@
  * along with ENUM Discoverer.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package nz.net.catalyst.MaharaDroid;
+package nz.net.catalyst.MaharaDroid.ui;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -37,13 +37,21 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+
+import nz.net.catalyst.MaharaDroid.GlobalResources;
+import nz.net.catalyst.MaharaDroid.LogConfig;
+import nz.net.catalyst.MaharaDroid.R;
 import nz.net.catalyst.MaharaDroid.ui.about.AboutActivity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
@@ -55,7 +63,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 
-public class EditPreferences extends PreferenceActivity implements OnSharedPreferenceChangeListener {
+public class EditPreferences extends PreferenceActivity implements OnSharedPreferenceChangeListener, OnClickListener {
 	static final String TAG = LogConfig.getLogTag(EditPreferences.class);
 	// whether DEBUG level logging is enabled (whether globally, or explicitly for this log tag)
 	static final boolean DEBUG = LogConfig.isDebug(TAG);
@@ -94,27 +102,41 @@ public class EditPreferences extends PreferenceActivity implements OnSharedPrefe
 	public boolean onOptionsItemSelected(MenuItem item) {
 		
 		switch (item.getItemId()) {
-		case R.id.about:
-			showAboutPage();
-			return true;
 		case R.id.reset:
 			resetToDefaults();
 			return true;
 		case R.id.scan:
-			try {
-				Intent intent = new Intent(GlobalResources.CONFIG_SCAN_INTENT);
-				intent.putExtra("SCAN_MODE", GlobalResources.CONFIG_SCAN_MODE);
-				startActivityForResult(intent, 0);
-		    } catch (ActivityNotFoundException e) {
-	        	Toast.makeText(this, getResources().getString(R.string.scan_not_available), 
-	        						Toast.LENGTH_SHORT).show();
-		    }
+			startScan();
+//			try {
+//				Intent intent = new Intent(GlobalResources.CONFIG_SCAN_INTENT);
+//				intent.putExtra("SCAN_MODE", GlobalResources.CONFIG_SCAN_MODE);
+//				startActivityForResult(intent, 0);
+//		    } catch (ActivityNotFoundException e) {
+//	        	Toast.makeText(this, getResources().getString(R.string.scan_not_available), 
+//	        						Toast.LENGTH_SHORT).show();
+//		    }
 	    	return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
+	private void startScan() {
+		//mMessage.setText(getString(R.string.qr_waiting));
+		if (VERBOSE)
+			Log.v(TAG, "Initiate scanning ...");
+		AlertDialog dialog = IntentIntegrator.initiateScan(this);
+		if (dialog == null) {
+			if (VERBOSE)
+				Log.v(TAG, "User already has Barcode Scanner installed.");
+				//zxingInstalled = true;
+		} else {
+			if (VERBOSE)
+				Log.v(TAG, "User has not installed Barcode Scanner, displaying dialog...");
+			dialog.setCancelable(false);
+			dialog.setButton(DialogInterface.BUTTON_NEGATIVE, null, this );
+			dialog.show();
+		}
+	}
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 		// refresh displayed values by restarting activity (a hack, but apparently there
@@ -128,11 +150,7 @@ public class EditPreferences extends PreferenceActivity implements OnSharedPrefe
 			}
 		}
 	}
-	
-	private void showAboutPage() {
-		
-		startActivity(new Intent(this, AboutActivity.class));
-	}
+
 	private void resetToDefaults() {
 		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -262,5 +280,9 @@ public class EditPreferences extends PreferenceActivity implements OnSharedPrefe
 				curValue = curValue + chars.trim();
 		}
 	}
-
+	@Override
+	public void onClick(DialogInterface dialog, int which) {
+		if ( which == DialogInterface.BUTTON_NEGATIVE )
+			finish();
+	}
 }

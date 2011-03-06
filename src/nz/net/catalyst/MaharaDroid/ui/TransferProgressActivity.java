@@ -18,11 +18,16 @@
  *  limitations under the License.
  */
 
-package nz.net.catalyst.MaharaDroid;
+package nz.net.catalyst.MaharaDroid.ui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+
+import nz.net.catalyst.MaharaDroid.GlobalResources;
+import nz.net.catalyst.MaharaDroid.LogConfig;
+import nz.net.catalyst.MaharaDroid.R;
+import nz.net.catalyst.MaharaDroid.upload.TransferService;
 
 import android.app.Activity;
 import android.app.NotificationManager;
@@ -51,8 +56,8 @@ import android.content.ServiceConnection;
  * @author	Alan McNatty (alan.mcnatty@catalyst.net.nz)
  */
 
-public class TransferProgress extends Activity implements OnClickListener {
-	static final String TAG = LogConfig.getLogTag(TransferProgress.class);
+public class TransferProgressActivity extends Activity implements OnClickListener {
+	static final String TAG = LogConfig.getLogTag(TransferProgressActivity.class);
 	// whether DEBUG level logging is enabled (whether globally, or explicitly for this log tag)
 	static final boolean DEBUG = LogConfig.isDebug(TAG);
 	// whether VERBOSE level logging is enabled
@@ -98,14 +103,9 @@ public class TransferProgress extends Activity implements OnClickListener {
     	        TextView v_tt = null, v_pn = null;
 	        	for (i = 0; i < lv.getChildCount(); ++i) {
 	        		progress_item = (LinearLayout)lv.getChildAt(i);
-	        		v_tt = (TextView)progress_item.findViewById(R.id.TransferType);
 	        		v_pn = (TextView)progress_item.findViewById(R.id.TransferPictureName);
 	        		if (v_tt != null && v_tt.getText().equals(transfer_type)
 	        			&& v_pn != null && v_pn.getText().equals(title)) {
-			        	TextView status_text = (TextView)(progress_item.findViewById(R.id.TransferPictureStatus));
-			        	if (status_text != null) {
-			        		status_text.setVisibility(View.GONE);
-			        	}
 			        	ProgressBar progress = (ProgressBar)(progress_item.findViewById(R.id.TransferProgressBar));
 			        	if (progress != null) {
 			        		progress.setVisibility(View.VISIBLE);
@@ -231,8 +231,8 @@ public class TransferProgress extends Activity implements OnClickListener {
 					this,
 					transferlist,
 					R.layout.transfer_progress_item,
-					new String[]{"title","status", "type"},
-					new int[]{R.id.TransferPictureName, R.id.TransferPictureStatus, R.id.TransferType}));
+					new String[]{"title"},
+					new int[]{R.id.TransferPictureName}));
 
 	        if (transferlist.isEmpty()) {
 				finish();

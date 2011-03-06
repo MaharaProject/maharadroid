@@ -18,12 +18,14 @@
  *  limitations under the License.
  */
 
-package nz.net.catalyst.MaharaDroid;
+package nz.net.catalyst.MaharaDroid.upload.http;
 
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+
+import nz.net.catalyst.MaharaDroid.LogConfig;
 
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;

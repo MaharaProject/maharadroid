@@ -27,12 +27,14 @@
 				 android:layout_toRightOf="@id/imgIcon"
 				 android:gravity="center_horizontal"
 				 android:id="@+id/prgNotification"
-				 android:indeterminate="false"
-				 android:progress="0"
-				 android:max="100"
+				 android:indeterminate="true"
+ 				 android:progressDrawable="@android:drawable/progress_horizontal"
+				 android:indeterminateDrawable="@android:drawable/progress_indeterminate_horizontal"				 
+				 android:minHeight="20dip"
+				 android:maxHeight="20dip" 
 				 android:layout_width="fill_parent"
 				 android:layout_height="wrap_content"
-				 style="?android:attr/progressBarStyleHorizontal">
+				 >
 	</ProgressBar>
 	
 </RelativeLayout>

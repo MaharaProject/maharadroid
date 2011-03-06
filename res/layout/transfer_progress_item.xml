@@ -20,40 +20,22 @@
 	  android:layout_height="fill_parent">
 	  
 		<TextView android:id="@+id/TransferPictureName"
-				  android:text="Artefact"
+				  android:text=""
 				  android:gravity="bottom"
 				  android:textSize="8pt"
 				  android:layout_width="fill_parent"
 				  android:layout_height="wrap_content">
 	    </TextView>
 	    
-		<TextView android:id="@+id/TransferType"
-				  android:text="Upload"
-				  android:gravity="center_vertical"
-				  android:padding="2dp"
-				  android:textSize="6pt"
-				  android:layout_width="fill_parent"
-				  android:layout_height="wrap_content">
-	    </TextView>
-	    
-		<TextView android:id="@+id/TransferPictureStatus"
-				  android:text="Pending"
-				  android:gravity="center_vertical"
-				  android:padding="2dp"
-				  android:textSize="6pt"
-				  android:layout_width="fill_parent"
-				  android:layout_height="wrap_content">
-	    </TextView>
-	    
 		<ProgressBar android:id="@+id/TransferProgressBar"
-					 android:indeterminate="false"
-					 android:progress="0"
-					 android:max="100"
-					 android:layout_width="fill_parent"
-					 android:layout_height="wrap_content"
-					 android:visibility="gone"
-					 style="?android:attr/progressBarStyleHorizontal">
-		</ProgressBar>
+			android:indeterminateOnly="true"
+			android:progressDrawable="@android:drawable/progress_horizontal"
+			android:indeterminateDrawable="@android:drawable/progress_indeterminate_horizontal"
+			android:minHeight="20dip"
+			android:maxHeight="20dip" 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+		/>
 		 
 	</LinearLayout>
 

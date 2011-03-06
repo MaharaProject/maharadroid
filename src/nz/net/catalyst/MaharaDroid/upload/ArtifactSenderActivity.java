@@ -18,9 +18,14 @@
  *  limitations under the License.
  */
 
-package nz.net.catalyst.MaharaDroid;
+package nz.net.catalyst.MaharaDroid.upload;
 
 import java.util.ArrayList;
+
+import nz.net.catalyst.MaharaDroid.LogConfig;
+import nz.net.catalyst.MaharaDroid.R;
+import nz.net.catalyst.MaharaDroid.R.string;
+import nz.net.catalyst.MaharaDroid.ui.ArtifactSettingsActivity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -38,9 +43,9 @@ import android.widget.Toast;
  * @author	Alan McNatty (alan.mcnatty@catalyst.net.nz)
  */
 
-public class ArtifactSendReceiver extends Activity {
+public class ArtifactSenderActivity extends Activity {
 
-	static final String TAG = LogConfig.getLogTag(ArtifactSendReceiver.class);
+	static final String TAG = LogConfig.getLogTag(ArtifactSenderActivity.class);
 	// whether DEBUG level logging is enabled (whether globally, or explicitly for this log tag)
 	static final boolean DEBUG = LogConfig.isDebug(TAG);
 	// whether VERBOSE level logging is enabled
@@ -80,7 +85,7 @@ public class ArtifactSendReceiver extends Activity {
 		if ( uris == null ) {
 			Toast.makeText(getApplicationContext(), R.string.uploadnotavailable, Toast.LENGTH_SHORT).show();
 		} else {
-			Intent i = new Intent(this, ArtifactSettings.class);
+			Intent i = new Intent(this, ArtifactSettingsActivity.class);
 			i.putExtra("uri", uris);
 			startActivity(i);
 		}

@@ -2,7 +2,14 @@
 <resources>
     <string name="app_name">MaharaDroid</string>
     <string name="startup_text">Welcome to MaharaDroid</string>
-    <string name="prefs_app_name">MaharaDroid Preferences</string>
+    
+    <string name="options_menu_prefs">Preferences</string>
+    <string name="options_menu_deleteall">Delete All</string>
+    <string name="options_menu_uploadall">Upload All</string>
+    <string name="options_menu_viewsaved">Saved Artefacts</string>
+
+    <string name="context_menu_delete">Delete</string>
+    <string name="context_menu_upload">Upload</string>
     
     <string name="pref_upload_url_key">upload.uri</string>
     <string name="pref_upload_url_title">Upload URI</string>
@@ -39,6 +46,7 @@
     
     <string name="btnok">OK</string>
     <string name="btnupload">Upload</string>
+    <string name="btnsave">Save</string>
     <string name="btnsendlabel">Send</string>
     <string name="btncancellabel">Cancel</string>
     
@@ -50,6 +58,8 @@
     <string name="uploadstarting">Your Upload is Starting</string>
     <string name="uploadfinished">Your Upload is Finished</string>
     <string name="uploadfailed">Upload failed</string>
+    <string name="savefailed">Save failed</string>
+    <string name="uploadsaved">Upload saved</string>
     <string name="uploadnotavailable">Sorry you can only uploaded files as artefacts.</string>
     <string name="uploadingartifact">Uploading Artefact</string>
     <string name="uploading">Uploading</string>
@@ -63,6 +73,7 @@
     <string name="upload_title_label">Title:</string>
     <string name="upload_description_label">Desc:</string>
     <string name="upload_tags_label">Tag(s):</string>
+    <string name="upload_time_label">Saved:</string>
 								
     <string name="load_config_download_error">Sorry there was an error downloading the configuration file.</string>
     <string name="load_config_error">Sorry there was an error parsing the configuration file.</string>

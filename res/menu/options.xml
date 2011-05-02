@@ -6,7 +6,4 @@
     <item android:id="@+id/option_pref"
           android:icon= "@android:drawable/ic_menu_preferences"
           android:title="@string/options_menu_prefs" />
-    <item android:id="@+id/view_saved_artefacts"
-          android:icon="@android:drawable/ic_menu_save"
-          android:title="@string/options_menu_viewsaved" />
 </menu>

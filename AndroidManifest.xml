@@ -2,12 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="nz.net.catalyst.MaharaDroid"
       android:versionCode="7"
-      android:versionName="1.8">
+      android:versionName="1.7">
     <application android:icon="@drawable/icon" android:label="@string/app_name"
-    		 android:debuggable="true" >
+    		 android:debuggable="false" >
     
-        <activity android:name=".ui.MaharaDroid" 
+        <activity android:name=".ui.ArtefactExpandableListAdapterActivity" 
                   android:label="@string/app_name" >
+                  <!-- 
+                   <activity android:name=".ui.ArtefactExpandableListAdapterActivity"
+        	android:label="@string/options_menu_viewsaved" /> -->
+                  
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -59,13 +63,12 @@
         </activity>
         <activity android:name=".ui.EditPreferences"
 			android:label="@string/options_menu_prefs" />
-        <activity android:name=".ui.ArtefactExpandableListAdapterActivity"
-        	android:label="@string/options_menu_viewsaved" />
         
         <service android:name=".upload.TransferService" android:label="@string/filetransfers"/>
     </application>
     <!--  API Level 4 aka 1.6 required for multi-send support -->
     <uses-sdk android:minSdkVersion="4" /> 
 	<uses-permission android:name="android.permission.INTERNET"/>
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
        
 </manifest> 

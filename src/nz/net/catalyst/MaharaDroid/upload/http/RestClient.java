@@ -247,6 +247,11 @@ public class RestClient {
 				json.put("fail", e.getMessage());
 			} catch (JSONException e1) { }
 			e.printStackTrace();
+		} catch (IllegalStateException e) {
+			try {
+				json.put("fail", e.getMessage());
+			} catch (JSONException e1) { }
+			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			try {
 				json.put("fail", e.getMessage());

@@ -1,28 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">MaharaDroid</string>
-    <string name="startup_text">Welcome to MaharaDroid</string>
+    
+    <string name="artefacts_banner_text">Open source eportfolios</string>
+    <string name="artefacts_banner_text2">[mah-har-rah;verb]: to think, thinking, thought</string>
+    <string name="artefacts_no_saved_artefacts">No saved artefacts</string>
     
     <string name="options_menu_prefs">Preferences</string>
     <string name="options_menu_deleteall">Delete All</string>
     <string name="options_menu_uploadall">Upload All</string>
     <string name="options_menu_viewsaved">Saved Artefacts</string>
 
-    <string name="context_menu_delete">Delete</string>
     <string name="context_menu_upload">Upload</string>
+    <string name="context_menu_view">View</string>
+    <string name="context_menu_delete">Delete</string>
     
     <string name="pref_upload_url_key">upload.uri</string>
     <string name="pref_upload_url_title">Upload URI</string>
     <string name="pref_upload_url_summary">Enter the URL to post files to Mahara</string>
     <string name="pref_upload_url_default">http://master.dev.mahara.org/artefact/file/mobileupload.php</string>
 
+    <string name="pref_upload_username_key">upload.username</string>
+    <string name="pref_upload_username_title">Username</string>
+    <string name="pref_upload_username_summary">Enter your Mahara username</string>     
+
     <string name="pref_upload_token_key">upload.token</string>
     <string name="pref_upload_token_title">Token</string>
     <string name="pref_upload_token_summary">Enter your Mahara upload token</string>     
 
-    <string name="pref_upload_username_key">upload.username</string>
-    <string name="pref_upload_username_title">Username</string>
-    <string name="pref_upload_username_summary">Enter your Mahara username</string>     
+    <string name="pref_upload_connection_key">upload.connection</string>
+    <string name="pref_upload_connection_title">Connection Type</string>
+    <string name="pref_upload_connection_summary">Restrict artefact upload to the following connection types (default is fall back to handset settings):</string>     
+    <string-array name="pref_upload_connection_entry">
+        <item>Default</item>
+        <item>WiFi only</item>
+        <item>Mobile only</item>
+    </string-array>
+    <string-array name="pref_upload_connection_entryValues">
+        <item></item>
+        <item>wifi</item>
+        <item>mobile</item>
+    </string-array>
 
     <string name="prefcat_advanced">Advanced</string>
 
@@ -63,6 +81,7 @@
     <string name="uploadnotavailable">Sorry you can only uploaded files as artefacts.</string>
     <string name="uploadingartifact">Uploading Artefact</string>
     <string name="uploading">Uploading</string>
+    <string name="uploadnoconnection">Sorry you don\'t have a working data connection to upload at this time.</string>
     <string name="filetransfers">File Transfers</string>
     
     <string name="upload_confirm_label">Yes:</string>

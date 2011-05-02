@@ -68,11 +68,6 @@ public class MaharaDroid extends Activity {
 				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				startActivity(intent);
 				break;
-			case R.id.view_saved_artefacts:
-				intent = new Intent(this, ArtefactExpandableListAdapterActivity.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				startActivity(intent);
-				break;
 		}
 		return true;
 	}

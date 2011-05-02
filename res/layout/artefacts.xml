@@ -1,15 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-		  xmlns:android="http://schemas.android.com/apk/res/android"
-		  android:layout_width="fill_parent"
-		  android:layout_height="fill_parent"
-		  android:orientation="vertical"
-		  >
-	<ExpandableListView android:id="@+id/listView"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:background="#fff"
+	    android:id="@+id/top"
+	    >
+	
+	   	<ImageView
+			android:id="@+id/banner"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:padding="2dp"
+			android:src="@drawable/banner"
+			android:layout_gravity="left"
+			android:scaleType="fitStart"
+		/>
+	</RelativeLayout>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/middle"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="10dp"
+    android:layout_below="@+id/top"
+    >
+
+	<TextView android:id="@+id/banner_text"
+		android:text="@string/artefacts_banner_text"
+		android:layout_width="wrap_content" 
+		android:singleLine="false" 
+		android:layout_height="wrap_content" 
+		android:textStyle="bold" 
+		android:layout_margin="5dp"
+		style="@android:style/TextAppearance.Large"
+		android:layout_below="@+id/banner"
+	/>
+	  							
+	<TextView android:id="@+id/banner_text2"
+		android:text="@string/artefacts_banner_text2"
+		android:layout_margin="5dp"
 		android:layout_width="fill_parent" 
-		android:layout_height="fill_parent" 
+		android:singleLine="false" 
+		android:layout_height="wrap_content" 
+		style="@android:style/TextAppearance.Small"
+		android:layout_below="@+id/banner_text"
+	  />
+</RelativeLayout>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bottom_heading"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#333"
+    android:layout_below="@+id/middle"
+    >			  
+	<TextView android:id="@+id/saved_artefacts_header"
+		android:text="@string/options_menu_viewsaved"
+		android:layout_margin="5dp"
+		android:layout_width="fill_parent" 
+		android:singleLine="true" 
+		android:layout_height="wrap_content" 
+		style="@android:style/TextAppearance.Medium"
+		android:layout_below="@+id/banner_text2"
+	/>
+</RelativeLayout>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bottom"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#000"
+    android:layout_below="@+id/bottom_heading"
+    >			  
+	<ExpandableListView android:id="@+id/listView"
 		android:scrollbars="none"
 		android:choiceMode="multipleChoice"
 		android:fastScrollEnabled="true"
+		android:layout_below="@+id/saved_artefacts_header"
+	    android:layout_weight="1"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:visibility="gone"
 		/>
-</LinearLayout>
+	<TextView android:id="@+id/no_saved_artefacts"
+		      android:text="@string/artefacts_no_saved_artefacts"
+			  android:layout_margin="0dp"
+			  android:layout_width="fill_parent" 
+			  android:singleLine="true" 
+			  android:layout_height="wrap_content" 
+	 		  style="@android:style/TextAppearance.Small"
+	 		  android:layout_below="@+id/listView"
+	  		  android:visibility="gone"
+			  />
+</RelativeLayout>
+</RelativeLayout>

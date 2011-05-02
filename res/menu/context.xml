@@ -3,6 +3,9 @@
     <item android:id="@+id/context_upload"
           android:icon="@android:drawable/ic_menu_upload"
           android:title="@string/context_menu_upload" />
+    <item android:id="@+id/context_view"
+          android:icon="@android:drawable/ic_menu_view"
+          android:title="@string/context_menu_view" />
     <item android:id="@+id/context_delete"
           android:icon="@android:drawable/ic_delete"
           android:title="@string/context_menu_delete" />

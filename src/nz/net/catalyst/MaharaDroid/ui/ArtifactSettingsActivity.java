@@ -20,13 +20,14 @@
 
 package nz.net.catalyst.MaharaDroid.ui;
 
+import java.io.File;
+
 import nz.net.catalyst.MaharaDroid.LogConfig;
 import nz.net.catalyst.MaharaDroid.R;
-import nz.net.catalyst.MaharaDroid.R.id;
-import nz.net.catalyst.MaharaDroid.R.layout;
-import nz.net.catalyst.MaharaDroid.R.string;
+import nz.net.catalyst.MaharaDroid.Utils;
 import nz.net.catalyst.MaharaDroid.data.Artefact;
 import nz.net.catalyst.MaharaDroid.data.ArtefactDataSQLHelper;
+import nz.net.catalyst.MaharaDroid.ui.about.AboutActivity;
 import nz.net.catalyst.MaharaDroid.upload.TransferService;
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -40,6 +41,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -74,6 +78,9 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 	private String [] uris = null;
 	private Boolean isMulti = false;
 	
+	private Button btnUpload;
+	private Button btnSave;
+	
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
@@ -87,12 +94,21 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
         
 		setContentView(R.layout.artifact_settings);
 		
+		btnUpload = (Button)findViewById(R.id.btnUpload);
+		btnUpload.setOnClickListener(this);
+		btnSave = (Button)findViewById(R.id.btnSave);
+		btnSave.setOnClickListener(this);
+		
 		((CheckBox)findViewById(R.id.chkUpload)).setOnClickListener(this);
-		((Button)findViewById(R.id.btnUpload)).setOnClickListener(this);
-		((Button)findViewById(R.id.btnSave)).setOnClickListener(this);
 		((Button)findViewById(R.id.btnCancel)).setOnClickListener(this);
 
+		// Check acceptance of upload conditions
 		checkAcceptanceOfConditions();
+		
+		// Check data connection
+    	if ( ! Utils.canUpload(this) ) {
+    		btnUpload.setEnabled(false);
+    	}
 
 		logData = new ArtefactDataSQLHelper(this);
 
@@ -110,20 +126,19 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 			((EditText)findViewById(R.id.txtArtifactId)).setText(a.getId().toString());
 
 	        if ( m_extras.containsKey("auto") ) {
-				InitiateUpload();
+				InitiateUpload(false);
 				finish();
 	        }
 			
         } else if ( m_extras.containsKey("uri") ) {         
 	    	if ( DEBUG ) Log.d(TAG, "Have a new upload");
-			((Button)findViewById(R.id.btnSave)).setEnabled(true);
 
         	uris = m_extras.getStringArray("uri");
         
 	        // If single - show the title (with default) and description
 	    	if ( uris.length == 1 ) {
 		    	if ( DEBUG ) Log.d(TAG, "Have a single upload");
-	    		String filepath = getFilePath(uris[0]);
+	    		String filepath = Utils.getFilePath(this, uris[0]);
 				if (filepath != null) {	
 					// Default the title to the filename and make it all selected for easy replacement
 					String title = filepath.substring(filepath.lastIndexOf("/") + 1);
@@ -161,12 +176,10 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 			acceptConditions(checkBox.isChecked());
 		}
 		else if (v.getId() == R.id.btnUpload) {
-			
-			InitiateUpload();
+			InitiateUpload(true);
 			finish();
 		}
 		else if (v.getId() == R.id.btnSave) {
-
 			InitiateSave();
 			finish();
 		}
@@ -175,13 +188,22 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 		}
 	}
 
-	private void InitiateUpload() {
+	private void InitiateUpload(boolean saveOnFail) {
 		if ( ! checkAcceptanceOfConditions() ) {
 			return;
 		}
+    	if ( ! Utils.canUpload(this) ) {
+			Toast.makeText(this, R.string.uploadnoconnection, Toast.LENGTH_SHORT).show();
+			if ( saveOnFail ) 
+				InitiateSave();
+			return;
+    	}
 		
 		for ( int i = 0; i < uris.length; i++ ) {
-    		String filename = getFilePath(uris[i]);
+    		String filename = Utils.getFilePath(this, uris[i]);
+			if (filename == null)
+				continue;
+
     		String title = "";
     		String description = "";
     		String tags = ((EditText)findViewById(R.id.txtArtifactTags)).getText().toString();
@@ -196,6 +218,8 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 
 			// uploader_intent will contain all of the necessary information about this
 			// upload in the Extras Bundle.
+			
+			//TODO make TransferService take a parcelable Artefact as input
 			Intent uploader_intent = new Intent(this, TransferService.class);
 
 			uploader_intent.putExtra("filename", filename);
@@ -207,7 +231,6 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 			// the upload information.
 			startService(uploader_intent);
 			Toast.makeText(this, R.string.uploadstarting, Toast.LENGTH_SHORT).show();
-			
 		}
 	}
 
@@ -217,10 +240,14 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 		}
 		
 		for ( int i = 0; i < uris.length; i++ ) {
-    		String filename = getFilePath(uris[i]);
+    		String filename = Utils.getFilePath(this, uris[i]);
+			if (filename == null)
+				continue;
+
     		String title = "";
     		String description = "";
     		String tags = ((EditText)findViewById(R.id.txtArtifactTags)).getText().toString();
+    		String id = ((EditText)findViewById(R.id.txtArtifactId)).getText().toString();
 
 			if ( isMulti ) {
 				// Set a default title but no description
@@ -230,38 +257,20 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 				description = ((EditText)findViewById(R.id.txtArtifactDescription)).getText().toString();			
 			}
 
-			Toast.makeText(this, R.string.uploadsaved, Toast.LENGTH_SHORT).show();		
+			Toast.makeText(this, R.string.uploadsaved, Toast.LENGTH_SHORT).show();
+			
 			// Log the event
-			addLog(uris[i], title, description, tags, false);
+			if ( id.length() > 0 ) {
+				updateLog(id, uris[i], title, description, tags, false);
+			} else {
+				addLog(uris[i], title, description, tags, false);
+			}
 		}
 	}
 
-    private String getFilePath(String u) {
-    	ContentResolver cr = getContentResolver();
-    	Uri uri = Uri.parse(u);
-    	
-    	String file_path = null;
-    	
-		if ( DEBUG ) Log.d(TAG, "URI = '" + uri.toString() + "'");
-		
-    	// Get the filename of the media file and use that as the default title.
-    	Cursor cursor = cr.query(uri, new String[]{android.provider.MediaStore.MediaColumns.DATA}, null, null, null);
-		if (cursor != null) {
-			if ( DEBUG ) Log.d(TAG, "cursor query succeeded");
-			cursor.moveToFirst();
-			file_path = cursor.getString(0);
-			cursor.close();
-		} else {
-			if ( DEBUG ) Log.d(TAG, "cursor query failed");
-			// If nothing found by query then assume the file is good to go as is.
-			file_path = uri.getPath();				
-		}
-		return file_path;
-    }
-	
 	private void acceptConditions(Boolean accepted) {
-		final Button button = (Button)findViewById(R.id.btnUpload);
-		button.setEnabled(accepted);
+		btnUpload.setEnabled(accepted);
+		btnSave.setEnabled(accepted);
 		
 		mPrefs.edit()
 			.putBoolean("Upload Conditions Confirmed", accepted)
@@ -270,8 +279,6 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 	}
 
 	private Boolean checkAcceptanceOfConditions() {
-		final Button btnUpload = (Button)findViewById(R.id.btnUpload);
-
 		// Hide the confirmation section if user has accepted T&C's
 		if ( DEBUG ) Log.d(TAG, "Upload Conditions Confirmed: " + mPrefs.getBoolean("Upload Conditions Confirmed", false));
         if ( mPrefs.getBoolean("Upload Conditions Confirmed", false) ) { 
@@ -280,6 +287,7 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
     		((TextView)findViewById(R.id.txtArtifactConfirm)).setVisibility(TextView.GONE);
     		((TextView)findViewById(R.id.txtArtifactConfirm)).invalidate();
 			btnUpload.setEnabled(true);
+			btnSave.setEnabled(true);
 			return true;
         }
         return false; 
@@ -297,5 +305,39 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 	    db.insert(ArtefactDataSQLHelper.TABLE, null, values);
 		logData.close();
 	}
+	private void updateLog(String id, String filename, String title, String description, String tags, Boolean uploaded) {
 
+		SQLiteDatabase db = logData.getWritableDatabase();
+	    ContentValues values = new ContentValues();
+	    values.put(ArtefactDataSQLHelper.TIME, System.currentTimeMillis());
+	    values.put(ArtefactDataSQLHelper.FILENAME, filename);
+	    values.put(ArtefactDataSQLHelper.TITLE, title);
+	    values.put(ArtefactDataSQLHelper.DESCRIPTION, description);
+	    values.put(ArtefactDataSQLHelper.TAGS, tags);
+	    values.put(ArtefactDataSQLHelper.UPLOADED, uploaded);
+	    db.update(ArtefactDataSQLHelper.TABLE, values, BaseColumns._ID + "= ?", new String[] { id });
+		logData.close();
+	}
+	public boolean onCreateOptionsMenu(Menu menu) {
+		boolean result = super.onCreateOptionsMenu(menu);
+
+		  MenuInflater inflater = getMenuInflater();
+		  inflater.inflate(R.menu.options, menu);
+		  return result;
+	}
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+		switch (item.getItemId()) {
+			case R.id.about:
+				startActivity(new Intent(this, AboutActivity.class));
+				break;
+			case R.id.option_pref:
+				Intent intent = new Intent(this, EditPreferences.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(intent);
+				break;
+		}
+		return true;
+	}
 }

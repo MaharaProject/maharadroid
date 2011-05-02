@@ -16,6 +16,14 @@
 		android:key="@string/pref_upload_token_key"
 		android:title="@string/pref_upload_token_title"
 		android:summary="@string/pref_upload_token_summary"	/>	
+    <ListPreference
+        android:key="@string/pref_upload_connection_key"
+        android:title="@string/pref_upload_connection_title"
+        android:summary="@string/pref_upload_connection_summary"
+        android:defaultValue=""
+        android:entries="@array/pref_upload_connection_entry"
+        android:entryValues="@array/pref_upload_connection_entryValues"
+        android:dialogTitle="@string/pref_upload_connection_title" />
 	
 	<PreferenceCategory
 		android:title="@string/prefcat_advanced">

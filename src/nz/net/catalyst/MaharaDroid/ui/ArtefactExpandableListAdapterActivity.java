@@ -30,6 +30,7 @@ import nz.net.catalyst.MaharaDroid.data.Artefact;
 import nz.net.catalyst.MaharaDroid.data.ArtefactDataSQLHelper;
 import nz.net.catalyst.MaharaDroid.ui.about.AboutActivity;
 import android.app.Activity;
+import android.app.ExpandableListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -46,15 +47,20 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnClickListener;
 import android.view.View.OnCreateContextMenuListener;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
 import android.widget.ExpandableListView.OnChildClickListener;
 
-public class ArtefactExpandableListAdapterActivity extends Activity implements OnChildClickListener, OnCreateContextMenuListener {
+public class ArtefactExpandableListAdapterActivity extends Activity implements OnCreateContextMenuListener {
 	static final String TAG = LogConfig.getLogTag(ArtefactExpandableListAdapterActivity.class);
 	// whether DEBUG level logging is enabled (whether globally, or explicitly
 	// for this log tag)
@@ -73,10 +79,16 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
+	    requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+
 	    setContentView(R.layout.artefacts);
+        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.windowtitle);
 	
+        ((TextView) findViewById(R.id.windowtitle_text)).setText(getString(R.string.app_name));
+        ((ImageView) findViewById(R.id.windowtitle_icon)).setImageResource(R.drawable.windowtitle_icon);
+        
         listview = (ExpandableListView) findViewById(R.id.listView);
-        listview.setOnChildClickListener(this);
+//        listview.setOnChildClickListener(this);
         registerForContextMenu(listview);
 
 	    loadSavedArtefacts();
@@ -232,7 +244,7 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 	}
 
 
-	public class ExpandableListAdapter extends BaseExpandableListAdapter implements OnChildClickListener, OnCreateContextMenuListener {
+	public class ExpandableListAdapter extends BaseExpandableListAdapter implements OnClickListener, OnCreateContextMenuListener {
 
 	    @Override
 	    public boolean areAllItemsEnabled()
@@ -302,6 +314,12 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 	        tv = (TextView) convertView.findViewById(R.id.txtArtifactTags);
 	        tv.setText(art.getTags());
 	        
+	        ((Button) convertView.findViewById(R.id.btnUpload)).setOnClickListener(this);
+	        ((Button) convertView.findViewById(R.id.btnUpload)).setTag(art);
+	        ((Button) convertView.findViewById(R.id.btnView)).setOnClickListener(this);
+	        ((Button) convertView.findViewById(R.id.btnView)).setTag(art);
+	        ((Button) convertView.findViewById(R.id.btnDelete)).setOnClickListener(this);
+	        ((Button) convertView.findViewById(R.id.btnDelete)).setTag(art);
 	        return convertView;
 	    }
 
@@ -351,62 +369,69 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 	    }
 
 		@Override
-		public boolean onChildClick(ExpandableListView parent, View v,
-				int groupPosition, int childPosition, long id) {
-			// TODO make this do the right thing
+		public void onClick(View v) {
 
-			Artefact a = (Artefact) getChild(groupPosition, childPosition);
-			uploadArtefact(a, false);
+			v.getTag();
+			if ( DEBUG )
+				Log.d(TAG, "onChildClick detected");
+			Artefact a = (Artefact) v.getTag();;
+			
+			switch (v.getId()) {
+			case R.id.btnUpload:
+				uploadArtefact(a, false);
+				break;
+			case R.id.btnView:
+				viewArtefact(a);
+				break;
+			case R.id.btnDelete:
+				deleteSavedArtefact(a.getId());
+				loadSavedArtefacts();
+				break;
+			}
+		}
 
-			return true;
-		}
-		@Override
-		public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-			MenuInflater inflater = getMenuInflater();
-			inflater.inflate(R.menu.context, menu);
-		}
 		public boolean onContextItemSelected(MenuItem item) {
+			// TODO Auto-generated method stub
 			Boolean delete = false, upload = false, view = false;
 			
 			switch (item.getItemId()) {
-			case R.id.context_upload:
-				upload = true;
-				break;
-			case R.id.context_view:
-				view = true;
-				break;
-			case R.id.context_delete:
-				delete = true;
-				break;
+				case R.id.context_upload:
+					upload = true;
+					break;
+				case R.id.context_view:
+					view = true;
+					break;
+				case R.id.context_delete:
+					delete = true;
 			}
 			
-	        ExpandableListContextMenuInfo info = (ExpandableListContextMenuInfo) item.getMenuInfo();
-            int groupPosition = ExpandableListView.getPackedPositionGroup(info.packedPosition); 
+			ExpandableListContextMenuInfo info = (ExpandableListContextMenuInfo) item.getMenuInfo();
+			int groupPosition = ExpandableListView.getPackedPositionGroup(info.packedPosition); 
 
-	        int type = ExpandableListView.getPackedPositionType(info.packedPosition);
-	        if (type == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
-	            int childPosition = ExpandableListView.getPackedPositionChild(info.packedPosition); 
-	            if ( DEBUG ) 
-	            	Log.d(TAG, "Child " + childPosition + " clicked in group " + groupPosition);
-	            
+			int type = ExpandableListView.getPackedPositionType(info.packedPosition);
+			if (type == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
+				int childPosition = ExpandableListView.getPackedPositionChild(info.packedPosition); 
+				if ( DEBUG ) 
+					Log.d(TAG, "Child " + childPosition + " clicked in group " + groupPosition);
+       
 				Artefact a = (Artefact) getChild(groupPosition, childPosition);
-				
+                   
 				if ( delete ) {
 					deleteSavedArtefact(a.getId());
 					loadSavedArtefacts();
-				} else if ( upload ) {	
+				} else if ( upload ) {  
 					uploadArtefact(a, true);
 				} else if ( view ) {
 					viewArtefact(a);
 				}
-	            return true;
-	        } else if (type == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
-		        String title = ((TextView) info.targetView).getText().toString();
+				return true;
+			} else if (type == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
+				String title = ((TextView) info.targetView).getText().toString();
 
-	            if ( DEBUG ) 
-	            	Log.d(TAG, title + ": Group " + groupPosition + " clicked");
-	            
-	            for ( int i = 0; i < getChildrenCount(groupPosition); i++ ) {
+				if ( DEBUG ) 
+					Log.d(TAG, title + ": Group " + groupPosition + " clicked");
+   
+				for ( int i = 0; i < getChildrenCount(groupPosition); i++ ) {
 					Artefact a = (Artefact) getChild(groupPosition, i);
 					if ( delete ) {
 						deleteSavedArtefact(a.getId());
@@ -415,23 +440,23 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 					} else if ( view ) {
 						viewArtefact(a);
 					}
-	            }
-	            if ( delete )
-	            	loadSavedArtefacts();
-	            return true;
-	        }
+				}
+				
+				if ( delete )
+					loadSavedArtefacts();
+					return true;
+				}
+	   
+				return false;                   
+	            //      deleteLog(null);
+		}
 
-	        return false;			
-			//	deleteLog(null);
+		public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+			                       MenuInflater inflater = getMenuInflater();
+			                       inflater.inflate(R.menu.context, menu);
 		}
 	}
 
-	@Override
-	public boolean onChildClick(ExpandableListView parent, View v,
-			int groupPosition, int childPosition, long id) {
-		adapter.onChildClick(parent, v, groupPosition, childPosition, id);
-		return false;
-	}
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		adapter.onCreateContextMenu(menu, v, menuInfo);
 	}

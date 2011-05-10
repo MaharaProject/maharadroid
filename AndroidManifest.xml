@@ -4,10 +4,10 @@
       android:versionCode="7"
       android:versionName="1.7">
     <application android:icon="@drawable/icon" android:label="@string/app_name"
-    		 android:debuggable="false" >
+    		 android:debuggable="true" >
     
         <activity android:name=".ui.ArtefactExpandableListAdapterActivity" 
-                  android:label="@string/app_name" >
+                  android:theme="@style/MaharaTheme">
                   <!-- 
                    <activity android:name=".ui.ArtefactExpandableListAdapterActivity"
         	android:label="@string/options_menu_viewsaved" /> -->
@@ -31,7 +31,8 @@
 			</intent-filter>
 		</activity>
 		
-	    <activity android:name=".ui.ArtifactSettingsActivity" android:label="@string/artifactsettings">
+	    <activity android:name=".ui.ArtifactSettingsActivity" 
+	    	      android:theme="@style/MaharaTheme">
             <intent-filter>
                 <action android:name="nz.net.catalyst.MaharaDroid.ARTEFACTSETTINGS" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -45,7 +46,8 @@
             </intent-filter>
         </activity>
 
-		<activity android:name=".upload.ArtifactSenderActivity" android:icon="@drawable/icon" android:label="@string/app_name"
+		<activity android:name=".upload.ArtifactSenderActivity" 
+				  android:icon="@drawable/icon" android:label="@string/app_name"
 		          android:enabled="true" android:exported="true">
             <intent-filter>
 				<action android:name="android.intent.action.SEND" />
@@ -61,7 +63,8 @@
    				<data android:mimeType="text/xml" />
  			</intent-filter>
         </activity>
-        <activity android:name=".ui.EditPreferences"
+        <activity 
+        	android:name=".ui.EditPreferences"
 			android:label="@string/options_menu_prefs" />
         
         <service android:name=".upload.TransferService" android:label="@string/filetransfers"/>

@@ -32,6 +32,7 @@ import nz.net.catalyst.MaharaDroid.upload.TransferService;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -45,10 +46,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -92,7 +96,14 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
         	finish();
         }
         
+	    requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+
 		setContentView(R.layout.artifact_settings);
+
+        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.windowtitle);
+    	
+        ((TextView) findViewById(R.id.windowtitle_text)).setText(getString(R.string.artifactsettings));
+        ((ImageView) findViewById(R.id.windowtitle_icon)).setImageResource(R.drawable.windowtitle_icon);
 		
 		btnUpload = (Button)findViewById(R.id.btnUpload);
 		btnUpload.setOnClickListener(this);
@@ -101,6 +112,11 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 		
 		((CheckBox)findViewById(R.id.chkUpload)).setOnClickListener(this);
 		((Button)findViewById(R.id.btnCancel)).setOnClickListener(this);
+
+        // Hide soft keyboard on initial load (it gets in the way)
+		InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.hideSoftInputFromWindow(((EditText)findViewById(R.id.txtArtifactTitle)).getWindowToken(), 
+				InputMethodManager.HIDE_IMPLICIT_ONLY);
 
 		// Check acceptance of upload conditions
 		checkAcceptanceOfConditions();
@@ -163,6 +179,7 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 		    	finish();
 	        }
         }
+        
 	}
 
 	public void onResume(Bundle savedInstanceState) {

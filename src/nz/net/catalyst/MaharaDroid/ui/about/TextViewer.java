@@ -31,6 +31,7 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Window;
 import android.widget.TextView;
 
 /**
@@ -43,7 +44,13 @@ public class TextViewer extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+//	    requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+
 		setContentView(R.layout.text_viewer);
+
+//        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.windowtitle);
+    	
+//        ((TextView) findViewById(R.id.windowtitle_text)).setText(getString(R.string.about_title));
 
 		Uri uri = getIntent().getData();
 

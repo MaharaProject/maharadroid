@@ -103,7 +103,6 @@
 			android:footerDividersEnabled="true"
 			android:groupIndicator="@drawable/expander_group"
 			/>
-			<!--    -->
 		<TextView android:id="@+id/no_saved_artefacts"
 			      android:text="@string/artefacts_no_saved_artefacts"
 				  android:layout_margin="0dp"

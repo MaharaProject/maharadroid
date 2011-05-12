@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">MaharaDroid</string>
     
-    <string name="artefacts_banner_text">Open source e-portfolios</string>
+    <string name="artefacts_banner_text">Open source ePortfolios</string>
     <string name="artefacts_banner_text2">[mah-har-rah;verb]: to think, thinking, thought</string>
     <string name="artefacts_no_saved_artefacts">No saved artefacts</string>
     

@@ -37,6 +37,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.util.Log;
 import android.widget.ImageView;
@@ -76,11 +77,17 @@ public class AboutActivity extends ListActivity {
 	
 	
 	public void onCreate(Bundle savedInstanceState) {
+//	    requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+
+//        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.windowtitle);
+    	
+        //((TextView) findViewById(R.id.windowtitle_text)).setText(getString(R.string.about_title));
+
 		super.onCreate(savedInstanceState);
 		  
 		parseAboutInfo();
 		
-		// Top ENUM Discoverer info section
+		// Top info section
 		String sectionTitle = mName;
 		AboutListAdapter section = new AboutListAdapter(R.layout.about_text, mMainInfo);
 		mSectionedListadapter.addSection(sectionTitle, section);

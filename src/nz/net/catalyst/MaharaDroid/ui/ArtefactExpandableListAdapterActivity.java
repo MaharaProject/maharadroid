@@ -33,6 +33,7 @@ import android.app.Activity;
 import android.app.ExpandableListActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -85,19 +86,34 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.windowtitle);
 	
         ((TextView) findViewById(R.id.windowtitle_text)).setText(getString(R.string.app_name));
-        ((ImageView) findViewById(R.id.windowtitle_icon)).setImageResource(R.drawable.windowtitle_icon);
+//        ((ImageView) findViewById(R.id.windowtitle_icon)).setVisibility(View.GONE);
         
         listview = (ExpandableListView) findViewById(R.id.listView);
 //        listview.setOnChildClickListener(this);
         registerForContextMenu(listview);
 
 	    loadSavedArtefacts();
+	    handleOrientationChange();
+
 	}
 	public void onResume() {
-	    super.onResume();
-	    
+	    super.onResume();   
 	    loadSavedArtefacts();		
-	}
+	    handleOrientationChange();
+	}    
+	
+    private void handleOrientationChange() {
+	    if ( getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ) {
+	    	findViewById(R.id.top).setVisibility(View.GONE);
+	    	findViewById(R.id.gradient).setVisibility(View.GONE);
+	    	findViewById(R.id.middle).setVisibility(View.GONE);
+	    } else {
+	    	findViewById(R.id.top).setVisibility(View.VISIBLE);
+	    	findViewById(R.id.gradient).setVisibility(View.VISIBLE);
+	    	findViewById(R.id.middle).setVisibility(View.VISIBLE);
+	    }
+    }
+	
   
 	@Override
 	public void onDestroy() {

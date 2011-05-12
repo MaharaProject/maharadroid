@@ -60,6 +60,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.Window;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -74,10 +76,8 @@ public class EditPreferences extends PreferenceActivity implements OnSharedPrefe
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		addPreferencesFromResource(R.xml.preferences);
-		
+		addPreferencesFromResource(R.xml.preferences);	
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
 		prefs.registerOnSharedPreferenceChangeListener(this);
 	}
 	

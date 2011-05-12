@@ -47,10 +47,9 @@ public class ArtefactDataSQLHelper extends SQLiteOpenHelper {
 			return;
 
 		String sql = null;
-		if (oldVersion == 1) 
-			sql = "";
-		if (oldVersion == 2)
-			sql = "";
+		// Version 7 is the first version with SQL
+//		if (oldVersion == 8) 
+//			sql = "";
 
 		Log.d("EventsData", "onUpgrade	: " + sql);
 		if (sql != null)

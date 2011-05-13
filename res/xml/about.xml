@@ -5,8 +5,8 @@
 	<main_info
 		name="MaharaDroid"
 		description="Android Artefact Uploader for Mahara."
-		version="1.0.0"
-		license="Apache License, Version 2.0"
+		version="1.7.0"
+		license="GNU GENERAL PUBLIC LICENSE, Version 3"
 		uri="http://code.google.com/p/maharadroid/" >
 		<link
 			text="Attribution notices from Apache 2.0 licensed third-party code"
@@ -31,10 +31,14 @@
 		name="flickrfree"
 		license="Apache License, Version 2.0"
 		uri="http://code.google.com/p/flickrfree" />
-	
+	<contributor
+		name="zxing"
+		license="Apache License, Version 2.0"
+		uri="http://code.google.com/p/zxing" />
+		
 	<!-- Licenses - The licenses mentioned in the above sections -->
 	<license
-		name="Apache License, Version 2.0"
-		uri="http://www.apache.org/licenses/LICENSE-2.0" />
+		name="GNU GENERAL PUBLIC LICENSE, Version 3.0"
+		uri="http://www.gnu.org/licenses/gpl.txt" />
 	
 </about>

@@ -1,9 +1,27 @@
 /*
  * MaharaDroid -  Artefact uploader
  * 
- * This file is part of ENUM Discoverer.
+ *  This file is part of MaharaDroid.
  * 
- * Copyright (C) 2009 SIDN and ISOC.nl
+ *  Copyright [2010] [Catalyst IT Limited]  
+ *  
+ *  This file is free software: you may copy, redistribute and/or modify it  
+ *  under the terms of the GNU General Public License as published by the  
+ *  Free Software Foundation, either version 3 of the License, or (at your  
+ *  option) any later version.  
+ *  
+ *  This file is distributed in the hope that it will be useful, but  
+ *  WITHOUT ANY WARRANTY; without even the implied warranty of  
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU  
+ *  General Public License for more details.  
+ *  
+ *  You should have received a copy of the GNU General Public License  
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.  
+ *
+ * This file incorporates work covered by the following copyright and  
+ * permission notice:  
+ *  
+ *    Copyright (C) 2009 SIDN and ISOC.nl
  *
  * ENUM Discoverer is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -39,14 +57,11 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 
-import nz.net.catalyst.MaharaDroid.GlobalResources;
 import nz.net.catalyst.MaharaDroid.LogConfig;
 import nz.net.catalyst.MaharaDroid.R;
-import nz.net.catalyst.MaharaDroid.ui.about.AboutActivity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -60,8 +75,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.Window;
-import android.widget.TextView;
 import android.widget.Toast;
 
 

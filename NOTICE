@@ -2,7 +2,7 @@
    ==  NOTICE file corresponding to the section 4 d of                    ==
    ==  the Apache License, Version 2.0,                                   ==
    ==  in this case for the Google Android code located in                ==
-   ==  src/nz/net/catalyst/android/*.                                      ==
+   ==  src/nz/net/catalyst/android/*.                                     ==
    =========================================================================
 
 Android Code
@@ -24,3 +24,30 @@ Copyright 2001-2010 The Apache Software Foundation
 This product includes software developed by
 The Apache Software Foundation (http://www.apache.org/).
 
+
+   =========================================================================
+   ==  NOTICE file corresponding to the section 4 d of                    ==
+   ==  the Apache License, Version 2.0,                                   ==
+   ==  in this case for the FlickrFree Android code located in            ==
+   ==  src/nz/net/catalyst/*.                                             ==
+   =========================================================================
+
+FlickrFree Code
+Copyright 2009 FlickrFree authors
+
+This product includes software developed by
+The FlickrFree Project (http://code.google.com/p/flickrfree).
+
+
+   =========================================================================
+   ==  NOTICE file corresponding to the section 4 d of                    ==
+   ==  the Apache License, Version 2.0,                                   ==
+   ==  in this case for the ZXing Android code located in                 ==
+   ==  src/com.google.zxing/*.                                            ==
+   =========================================================================
+
+ZXing Android Code
+Copyright 2009 ZXing authors
+
+This product includes software developed by
+The ZXing Project (http://code.google.com/p/zxing).

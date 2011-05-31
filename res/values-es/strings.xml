@@ -1,22 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">MaharaDroid</string>
-    <string name="startup_text">Bienvenido a MaharaDroid</string>
-    <string name="prefs_app_name">Preferencias de MaharaDroid</string>
-    
+
+    <string name="artefacts_banner_text">ePortfolios de código abierto</string>
+    <string name="artefacts_banner_text2">[mah-har-rah;verbo]: pensar, pensando, pensamiento</string>
+    <string name="artefacts_no_saved_artefacts">No hay artefactos guardados</string>
+
+    <string name="options_menu_prefs">Preferencias</string>
+    <string name="options_menu_deleteall">Borrar Todos</string>
+    <string name="options_menu_uploadall">Subir Todos</string>
+    <string name="options_menu_viewsaved">Artefactos Guardados</string>
+
+    <string name="context_menu_upload">Subir</string>
+    <string name="context_menu_view">Ver</string>
+    <string name="context_menu_delete">Borrar</string>
+
     <string name="pref_upload_url_key">upload.uri</string>
     <string name="pref_upload_url_title">URL de subida</string>
     <string name="pref_upload_url_summary">Introduzca la URL para subir ficheros a Mahara</string>
     <string name="pref_upload_url_default">http://master.dev.mahara.org/artefact/file/mobileupload.php</string>
 
-    <string name="pref_upload_token_key">upload.token</string>
-    <string name="pref_upload_token_title">Token</string>
-    <string name="pref_upload_token_summary">Introduzca su token de subida de Mahara</string>     
-
     <string name="pref_upload_username_key">upload.username</string>
     <string name="pref_upload_username_title">Nombre de usuario</string>
     <string name="pref_upload_username_summary">Introduzca su nombre de usuario de Mahara</string>     
 
+    <string name="pref_upload_token_key">upload.token</string>
+    <string name="pref_upload_token_title">Token</string>
+    <string name="pref_upload_token_summary">Introduzca su token de subida de Mahara</string>     
+
+    <string name="pref_upload_connection_key">upload.connection</string>
+    <string name="pref_upload_connection_title">Tipo de conexión</string>
+    <string name="pref_upload_connection_summary">Restringir la subida de artefactos a los siguientes tipos de conexiones (\'Por defecto\' usará los ajustes del terminal):</string>
+    <string-array name="pref_upload_connection_entry">
+        <item>Por defecto</item>
+        <item>Solo WiFi</item>
+        <item>Solo móvil</item>
+    </string-array>
+    <string-array name="pref_upload_connection_entryValues">
+        <item></item>
+        <item>wifi</item>
+        <item>mobile</item>
+    </string-array>
+ 
     <string name="prefcat_advanced">Avanzado</string>
 
     <string name="pref_upload_folder_key">upload.folder</string>
@@ -35,22 +60,27 @@
 
     <string name="pref_menu_reset">Reiniciar</string>
     <string name="pref_menu_about">Acerca de</string>
+    <string name="pref_menu_scan">Escanear</string>
     
     <string name="btnok">OK</string>
     <string name="btnupload">Subir</string>
     <string name="btnsendlabel">Enviar</string>
     <string name="btncancellabel">Cancelar</string>
     
-        <string name="lbluploadoptions">Ajustes de subida</string>
+    <string name="lbluploadoptions">Ajustes de subida</string>
         
-        <string name="artifact_retrieve_error">Error obteniendo los detalles del artefacto</string>
+    <string name="artifact_retrieve_error">Error obteniendo los detalles del artefacto</string>
     <string name="artifactsettings">Ajustes del artefacto</string>
     <string name="transferprogress">Progreso de transferencia del fichero</string>
     <string name="uploadstarting">Comienza la subida</string>
     <string name="uploadfinished">La subida ha finalizado</string>
     <string name="uploadfailed">La subida ha fallado</string>
+    <string name="savefailed">El guardado ha fallado</string>
+    <string name="uploadsaved">Subida guardada</string>
+    <string name="uploadnotavailable">Lo siento, solo puede subir ficheros como artefactos.</string>
     <string name="uploadingartifact">Subiendo Artefacto</string>
     <string name="uploading">Subiendo</string>
+    <string name="uploadnoconnection">Lo siento, no tiene una conexión de datos operativa para enviar en este momento.</string>
     <string name="filetransfers">Transferencias de ficheros</string>
     
     <string name="upload_confirm_label">Sí:</string>
@@ -63,13 +93,19 @@
     <string name="upload_title_label">Título:</string>
     <string name="upload_description_label">Desc:</string>
     <string name="upload_tags_label">Etiqueta(s):</string>
+    <string name="upload_time_label">Guardado:</string>
+								
+    <string name="load_config_download_error">Lo siento, ha habido un error descargando el fichero de configuración.</string>
+    <string name="load_config_error">Lo siento, ha habido un error interpretando el fichero de configuración.</string>
+    <string name="load_config_success">Fichero de configuración cargado con éxito.</string>
+    <string name="scan_not_available">Lo siento, necesita instalar ZXing Barcode Scanner para esto.</string>
                                                                 
-        <!--  About page -->
+    <!--  About page -->
     <string name="about_title">Acerca de MaharaDroid</string>
     <string name="about_top_section_title">MaharaDroid</string>    
-        <string name="about_sponsors_section_title">Espónsores</string>
+    <string name="about_sponsors_section_title">Espónsores</string>
     <string name="about_code_contributors_section_title">Componentes de terceras partes</string>
-        <string name="about_licenses_section_title">Licencias</string>
-        <string name="about_version_label">Versión</string>
-        <string name="about_license_label">Licencia</string>
+    <string name="about_licenses_section_title">Licencias</string>
+    <string name="about_version_label">Versión</string>
+    <string name="about_license_label">Licencia</string>
 </resources>

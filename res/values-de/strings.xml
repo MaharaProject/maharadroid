@@ -1,72 +1,113 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">MaharaDroid</string>
-    <string name="startup_text">Willkommen zu MaharaDroid</string>
-    <string name="prefs_app_name">MaharaDroid-Einstellungen</string>
-    
-    <string name="pref_upload_url_key">upload.uri</string>
-    <string name="pref_upload_url_title">Upload URI</string>
-    <string name="pref_upload_url_summary">Tippen Sie die ULR zu Mahara ein, wo die Dateien gespeichert werden sollen.</string>
-    <string name="pref_upload_url_default">http://master.dev.mahara.org/artefact/file/mobileupload.php</string>
+	<string name="app_name">MaharaDroid</string>
 
-    <string name="pref_upload_token_key">upload.token</string>
-    <string name="pref_upload_token_title">Sicherheitswort</string>
-    <string name="pref_upload_token_summary">Tippen Sie das Sicherheitswort zum Upload nach Mahara ein.</string>     
+	<string name="artefacts_banner_text">Open Source ePortfolios</string>
+	<string name="artefacts_banner_text2">[mah-har-rah;Verb]: denken, nachdenken; Gedanken</string>
+	<string name="artefacts_no_saved_artefacts">Keine gespeicherten Artefakte</string>
 
-    <string name="pref_upload_username_key">upload.username</string>
-    <string name="pref_upload_username_title">Benutzername</string>
-    <string name="pref_upload_username_summary">Tippen Sie Ihren Mahara-Benutzernamen ein.</string>     
+	<string name="options_menu_prefs">Einstellungen</string>
+	<string name="options_menu_deleteall">Alle löschen</string>
+	<string name="options_menu_uploadall">Alle hochladen</string>
+	<string name="options_menu_viewsaved">Gespeicherte Artefakte</string>
 
-    <string name="prefcat_advanced">Erweiterte Einstellungen</string>
+	<string name="context_menu_upload">Upload</string>
+	<string name="context_menu_view">Ansehen</string>
+	<string name="context_menu_delete">Löschen</string>
 
-    <string name="pref_upload_folder_key">upload.folder</string>
-    <string name="pref_upload_folder_title">Upload-Ordner</string>
-    <string name="pref_upload_folder_summary">Tippen Sie den Namen des Ordners ein, in dem die hochgeladenen Dateien gespeichert werden sollen.</string>
-    <string name="pref_upload_folder_default">MobileUploads</string>  
+	<string name="pref_upload_url_key">upload.uri</string>
+	<string name="pref_upload_url_title">Upload URI</string>
+	<string name="pref_upload_url_summary">Tippen Sie die ULR zu Mahara ein, wo die Dateien gespeichert werden sollen.</string>
+	<string name="pref_upload_url_default">http://master.dev.mahara.org/artefact/file/mobileupload.php</string>
 
-    <string name="pref_upload_tags_key">upload.tags</string>
-    <string name="pref_upload_tags_title">Tags</string>
-    <string name="pref_upload_tags_summary">Tippen Sie die Stichwörter ein (durch Leerzeichen getrennt), die allen hochgeladenen Dateien beigefügt werden sollen.</string>
-    <string name="pref_upload_tags_default">Android</string>  
+	<string name="pref_upload_username_key">upload.username</string>
+	<string name="pref_upload_username_title">Benutzername</string>
+	<string name="pref_upload_username_summary">Tippen Sie Ihren Mahara-Benutzernamen ein.</string>
 
-    <string name="pref_upload_view_key">upload.view</string>
-    <string name="pref_upload_view_title">Erstellen einer öffentlichen Ansicht</string>
-    <string name="pref_upload_view_summary">Soll eine öffentliche Ansicht automatisch erstellt werden?</string>
+	<string name="pref_upload_token_key">upload.token</string>
+	<string name="pref_upload_token_title">Sicherheitswort</string>
+	<string name="pref_upload_token_summary">Tippen Sie das Sicherheitswort zum Upload nach Mahara ein.</string>
 
-    <string name="pref_menu_reset">Zurücksetzen</string>
-    <string name="pref_menu_about">Über</string>
-    
-    <string name="btnok">OK</string>
-    <string name="btnupload">Upload</string>
-    <string name="btnsendlabel">Senden</string>
-    <string name="btncancellabel">Abbrechen</string>
-    
+	<string name="pref_upload_connection_key">upload.connection</string>
+	<string name="pref_upload_connection_title">Verbindungstyp</string>
+	<string name="pref_upload_connection_summary">Beschränken Sie den Upload von Artefakten auf den folgenden Verbindungstyp (die Standardeinstellung nutzt die allgemeinen Einstellungen vom Mobiltelefon)</string>
+
+	<string-array name="pref_upload_connection_entry">
+		<item>Standard</item>
+		<item>nur WiFi</item>
+		<item>nur mobiles Internet</item>
+	</string-array>
+	<string-array name="pref_upload_connection_entryValues">
+        	<item></item>
+	        <item>wifi</item>
+	       	<item>mobile</item>
+	</string-array>
+
+	<string name="prefcat_advanced">Erweiterte Einstellungen</string>
+
+	<string name="pref_upload_folder_key">upload.folder</string>
+	<string name="pref_upload_folder_title">Upload-Ordner</string>
+	<string name="pref_upload_folder_summary">Tippen Sie den Namen des Ordners ein, in dem die hochgeladenen Dateien gespeichert werden sollen.</string>
+
+	<string name="pref_upload_folder_default">MobilUploads</string>
+	<string name="pref_upload_tags_key">upload.tags</string>
+	<string name="pref_upload_tags_title">Tags für die Artefakte</string>
+	<string name="pref_upload_tags_summary">Tippen Sie die Stichwörter ein (durch Leerzeichen getrennt), die allen hochgeladenen Dateien beigefügt werden sollen.</string>
+
+	<string name="pref_upload_tags_default">Android</string>
+	<string name="pref_upload_view_key">upload.view</string>
+	<string name="pref_upload_view_title">Erstellen einer öffentlichen Ansicht</string>
+	<string name="pref_upload_view_summary">Soll automatisch eine öffentliche Ansicht von diesem Ordner erstellt werden?</string>
+
+	<string name="pref_menu_reset">Zurücksetzen</string>
+	<string name="pref_menu_about">Über</string>
+	<string name="pref_menu_scan">Scan</string>
+
+	<string name="btnok">OK</string>
+	<string name="btnupload">Upload</string>
+	<string name="btnsave">Speichern</string>
+	<string name="btndelete">Löschen</string>
+	<string name="btnsendlabel">Senden</string>
+	<string name="btnview">Ansehen</string>
+	<string name="btncancellabel">Abbrechen</string>
+
 	<string name="lbluploadoptions">Upload-Einstellungen</string>
-	
-	<string name="artifact_retrieve_error">Fehler beim Abrufen der Artefakt-Details</string>
-    <string name="artifactsettings">Artefakt-Einstellungen</string>
-    <string name="transferprogress">Fortschritt des Dateitransfers</string>
-    <string name="uploadstarting">Upload beginnt.</string>
-    <string name="uploadfinished">Upload ist beendet.</string>
-    <string name="uploadfailed">Upload fehlgeschlagen</string>
-    <string name="uploadingartifact">Artefakt wird hochgeladen</string>
-    <string name="uploading">Hochladen</string>
-    <string name="filetransfers">Datei-Transfers</string>
-    
-    <string name="upload_confirm_label">Ja:</string>
-    <string name="upload_confirm_text">Die Datei, die ich hochladen will, gehört mir oder ich habe 
-    									die ausdrückliche Genehmigung dieses Element zu benutzen.  
-    									Meine Verwendung dieser Datei verstößt gegen keine Copyright Bestimmung. 
-    									Die Datei entspricht ebenso den Benutzerbestimmungen dieser Site.</string>
-    <string name="upload_title_label">Titel:</string>
-    <string name="upload_description_label">Beschreibung:</string>
-    <string name="upload_tags_label">Tag(s):</string>
-								
-        <!--  About page -->
-    <string name="about_title">Über MaharaDroid</string>
-    <string name="about_top_section_title">MaharaDroid</string>    
+
+	<string name="artifact_retrieve_error">Fehler beim Abrufen der Details zum artefakt</string>
+	<string name="artifactsettings">Artefakt-Einstellungen</string>
+	<string name="transferprogress">Fortschritt des Dateitransfers</string>
+	<string name="uploadstarting">Der Upload beginnt.</string>
+	<string name="uploadfinished">Der Upload ist beendet.</string>
+	<string name="uploadfailed">Der Upload ist fehlgeschlagen.</string>
+	<string name="savefailed">Speichere den fehlgeschlagenen Upload.</string>
+	<string name="uploadsaved">Upload gespeichert</string>
+	<string name="uploadnotavailable">Sie können nur Dateien hochladen.</string>
+	<string name="uploadingartifact">Das Artefakt wird hochgeladen.</string>
+	<string name="uploading">Hochladen</string>
+	<string name="uploadnoconnection">Sie haben keine Verbindung zum Internet.</string>
+	<string name="filetransfers">Datei-Übertragungen</string>
+
+	<string name="upload_confirm_label">Ja:</string>
+	<string name="upload_confirm_text">Die Datei, die ich hochladen will, gehört mir oder ich habe
+		die ausdrückliche Genehmigung dieses Element zu benutzen. Meine Verwendung dieser Datei 
+		verstößt gegen keine Urheberrechtsbestimmung.  Die Datei entspricht ebenso  
+		den Benutzerbestimmungen der ePortfolio-Site, zu der ich sie hochlade.
+	</string>
+	<string name="upload_title_label">Titel:</string>
+	<string name="upload_description_label">Beschreibung:</string>
+	<string name="upload_tags_label">Tag(s):</string>
+	<string name="upload_time_label">Gespeichert:</string>
+
+	<string name="load_config_download_error">Es kam zu Problemen beim Herunterladen der Einstellungen.</string>
+	<string name="load_config_error">Es gab ein Problem beim Parsing der Einstellungen.</string>
+	<string name="load_config_success">Die Einstellungen wurden erfolgreich geladen.</string>
+	<string name="scan_not_available">Sie müssen ZXing Barcode Scanner für diese Funktion installieren.</string>
+
+	<!-- About Page -->
+	<string name="about_title">Über MaharaDroid</string>
+	<string name="about_top_section_title">MaharaDroid</string>
 	<string name="about_sponsors_section_title">Sponsoren</string>
-    <string name="about_code_contributors_section_title">Bestandteile Dritter</string>
+	<string name="about_code_contributors_section_title">Komponenten von anderen Entwicklern</string>
 	<string name="about_licenses_section_title">Lizenzen</string>
 	<string name="about_version_label">Version</string>
 	<string name="about_license_label">Lizenz</string>

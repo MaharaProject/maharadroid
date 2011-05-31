@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MaharaDroid</string>
+    
+    <string name="artefacts_banner_text">ePortfolios Open source</string>
+    <string name="artefacts_banner_text2">[mah-har-rah;verb]: pensée, pensant, pensée</string>
+    <string name="artefacts_no_saved_artefacts">Aucune production enregistrée</string>
+    
+    <string name="options_menu_prefs">Préférences</string>
+    <string name="options_menu_deleteall">Tout supprimer</string>
+    <string name="options_menu_uploadall">Tout télécharger</string>
+    <string name="options_menu_viewsaved">Productions enregistrées</string>
+
+    <string name="context_menu_upload">Déposer</string>
+    <string name="context_menu_view">Afficher</string>
+    <string name="context_menu_delete">Supprimer</string>
+    
+    <string name="pref_upload_url_key">upload.uri</string>
+    <string name="pref_upload_url_title">Upload URI</string>
+    <string name="pref_upload_url_summary">Entrez l\'URL pour déposer les fichiers dans Mahara</string>
+    <string name="pref_upload_url_default">http://master.dev.mahara.org/artefact/file/mobileupload.php</string>
+
+    <string name="pref_upload_username_key">upload.username</string>
+    <string name="pref_upload_username_title">Nom d\'utilisateur</string>
+    <string name="pref_upload_username_summary">Entrez votre nom d\'utilisateur de Mahara</string>     
+
+    <string name="pref_upload_token_key">upload.token</string>
+    <string name="pref_upload_token_title">Jeton</string>
+    <string name="pref_upload_token_summary">Entrez votre jeton d\'identification pour déposer les fichiers dans Mahara</string>     
+
+    <string name="pref_upload_connection_key">upload.connection</string>
+    <string name="pref_upload_connection_title">Type de connexion</string>
+    <string name="pref_upload_connection_summary">Restreindre les dépôts de productions aux types de connexion suivantes : (par défaut est la valeur définie dans les préférences de votre appareil):</string>     
+    <string-array name="pref_upload_connection_entry">
+        <item>Défaut</item>
+        <item>Seulement en WiFi</item>
+        <item>Seulement en mobile</item>
+    </string-array>
+    <string-array name="pref_upload_connection_entryValues">
+        <item></item>
+        <item>wifi</item>
+        <item>mobile</item>
+    </string-array>
+
+    <string name="prefcat_advanced">Avancés</string>
+
+    <string name="pref_upload_folder_key">upload.folder</string>
+    <string name="pref_upload_folder_title">Dossier de dépôt</string>
+    <string name="pref_upload_folder_summary">Entrez le dossier (de base) dans lequel seront dépôsées vos productions</string>
+    <string name="pref_upload_folder_default">MobileUploads</string>  
+
+    <string name="pref_upload_tags_key">upload.tags</string>
+    <string name="pref_upload_tags_title">Tags des productions</string>
+    <string name="pref_upload_tags_summary">Entrez les tags (séparés par des virgules) à ajouter à chaque production déposée</string>
+    <string name="pref_upload_tags_default">Android</string>  
+
+    <string name="pref_upload_view_key">upload.view</string>
+    <string name="pref_upload_view_title">Créer une Page publique</string>
+    <string name="pref_upload_view_summary">Créer automatiquement une Page publique pour afficher le contenu de ce dossier ?</string>
+
+    <string name="pref_menu_reset">Remise à zéro</string>
+    <string name="pref_menu_about">À propos</string>
+    <string name="pref_menu_scan">Parcourir</string>
+    
+    <string name="btnok">OK</string>
+    <string name="btnupload">Déposer</string>
+    <string name="btnsave">Enregistrer</string>
+    <string name="btndelete">Supprimer</string>
+    <string name="btnsendlabel">Envoyer</string>
+    <string name="btnview">Afficher</string>
+    <string name="btncancellabel">Annuler</string>
+    
+	<string name="lbluploadoptions">Préférences de dépôt</string>
+	
+	<string name="artifact_retrieve_error">Erreur en cherchant les informations sur cette Production</string>
+    <string name="artifactsettings">Préférences de Production</string>
+    <string name="transferprogress">Transfert de fichier en cours</string>
+    <string name="uploadstarting">Votre envoi de fichier(s) a commencé</string>
+    <string name="uploadfinished">Votre envoi de fichier(s) est terminé</string>
+    <string name="uploadfailed">Echec de l\'envoi</string>
+    <string name="savefailed">Echec d\'enregistrement</string>
+    <string name="uploadsaved">Fichier(s) envoyé(s) et sauvé(s)</string>
+    <string name="uploadnotavailable">Désolé, vous ne pouvez déposer des fichier que commme Production.</string>
+    <string name="uploadingartifact">Déposer Production</string>
+    <string name="uploading">Dépôt en cours</string>
+    <string name="uploadnoconnection">Désolé, vou n\'avez pas de connexion pour procéder à l\'envoi.</string>
+    <string name="filetransfers">Transfert de fichiers</string>
+    
+    <string name="upload_confirm_label">Oui:</string>
+    <string name="upload_confirm_text">Je suis l\'auteur du fichier que je vais déposer, ou j\'en détiens les droits pour le reproduire et/ou pour le difuser. Mon utilisation de ce document n\'enfreint aucun droit local ou internation sur le Copyright. Ce document adhére aux Conditions d\'utilisation en vigueurs sur ce site.</string>
+    <string name="upload_title_label">Titre:</string>
+    <string name="upload_description_label">Désc:</string>
+    <string name="upload_tags_label">Tag(s):</string>
+    <string name="upload_time_label">Enregistré :</string>
+								
+    <string name="load_config_download_error">Désolé, une erreur s\'est produite lors du téléchargement du fichier de configuration.</string>
+    <string name="load_config_error">Désolé, une erreur s\'est produite lors de la lecture du fichier de configuration.</string>
+    <string name="load_config_success">Fichier de configuration chargé avec succès.</string>
+    <string name="scan_not_available">Désolé, vous devez installer ZXing Barcode Scanner pour effectuer cette opération.</string>
+								
+    <!--  About page -->
+    <string name="about_title">À propos de MaharaDroid</string>
+    <string name="about_top_section_title">MaharaDroid</string>    
+	<string name="about_sponsors_section_title">Sponsors</string>
+    <string name="about_code_contributors_section_title">Composents tiers</string>
+	<string name="about_licenses_section_title">Licenses</string>
+	<string name="about_version_label">Version</string>
+	<string name="about_license_label">License</string>
+</resources>

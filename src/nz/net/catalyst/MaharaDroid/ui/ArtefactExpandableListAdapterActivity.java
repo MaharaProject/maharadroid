@@ -94,27 +94,12 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
         registerForContextMenu(listview);
 
 	    loadSavedArtefacts();
-	    handleOrientationChange();
-
 	}
+
 	public void onResume() {
 	    super.onResume();   
 	    loadSavedArtefacts();		
-	    handleOrientationChange();
 	}    
-	
-    private void handleOrientationChange() {
-	    if ( getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ) {
-	    	findViewById(R.id.top).setVisibility(View.GONE);
-	    	findViewById(R.id.gradient).setVisibility(View.GONE);
-	    	findViewById(R.id.middle).setVisibility(View.GONE);
-	    } else {
-	    	findViewById(R.id.top).setVisibility(View.VISIBLE);
-	    	findViewById(R.id.gradient).setVisibility(View.VISIBLE);
-	    	findViewById(R.id.middle).setVisibility(View.VISIBLE);
-	    }
-    }
-	
   
 	@Override
 	public void onDestroy() {

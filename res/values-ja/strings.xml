@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MaharaDroid</string>
+    
+    <string name="artefacts_banner_text">Open source ePortfolios</string>
+    <string name="artefacts_banner_text2">[mah-har-rah;verb]: to think, thinking, thought</string>
+    <string name="artefacts_no_saved_artefacts">保存されたアーティファクトはありません。</string>
+    
+    <string name="options_menu_prefs">プリファレンス</string>
+    <string name="options_menu_deleteall">すべてを削除する</string>
+    <string name="options_menu_uploadall">すべてをアップロードする</string>
+    <string name="options_menu_viewsaved">アーティファクトを保存する</string>
+
+    <string name="context_menu_upload">アップロード</string>
+    <string name="context_menu_view">表示</string>
+    <string name="context_menu_delete">削除</string>
+    
+    <string name="pref_upload_url_key">upload.uri</string>
+    <string name="pref_upload_url_title">アップロードURI</string>
+    <string name="pref_upload_url_summary">MaharaにファイルをアップロードするためのURIを入力してください。</string>
+    <string name="pref_upload_url_default">http://master.dev.mahara.org/artefact/file/mobileupload.php</string>
+
+    <string name="pref_upload_username_key">upload.username</string>
+    <string name="pref_upload_username_title">ユーザ名</string>
+    <string name="pref_upload_username_summary">あなたのMaharaユーザ名を入力してください。</string>
+
+    <string name="pref_upload_token_key">upload.token</string>
+    <string name="pref_upload_token_title">トークン</string>
+    <string name="pref_upload_token_summary">あなたのMaharaアップロードトークンを入力してください。</string>
+
+    <string name="pref_upload_connection_key">upload.connection</string>
+    <string name="pref_upload_connection_title">接続タイプ</string>
+    <string name="pref_upload_connection_summary">アーティファクトのアップロードを以下の接続タイプに制限します (デフォルトはハンドセットの設定に依存します):</string>
+    <string-array name="pref_upload_connection_entry">
+        <item>デフォルト</item>
+        <item>WiFiのみ</item>
+        <item>モバイルのみ</item>
+    </string-array>
+    <string-array name="pref_upload_connection_entryValues">
+        <item></item>
+        <item>wifi</item>
+        <item>モバイル</item>
+    </string-array>
+
+    <string name="prefcat_advanced">高度な設定</string>
+
+    <string name="pref_upload_folder_key">upload.folder</string>
+    <string name="pref_upload_folder_title">アップロードフォルダ</string>
+    <string name="pref_upload_folder_summary">あなたがアーティファクトをアップロードするベースフォルダを入力してください。</string>
+    <string name="pref_upload_folder_default">モバイルアップロード</string>  
+
+    <string name="pref_upload_tags_key">upload.tags</string>
+    <string name="pref_upload_tags_title">アーティファクトタグ</string>
+    <string name="pref_upload_tags_summary">アップロードされるアーティファクトすべてに付加されるタグ (スペース区切り) を入力してください。</string>
+    <string name="pref_upload_tags_default">Android</string>  
+
+    <string name="pref_upload_view_key">upload.view</string>
+    <string name="pref_upload_view_title">パブリックビューを作成する</string>
+    <string name="pref_upload_view_summary">このフォルダのパブリックビューを自動的に作成しますか?</string>
+
+    <string name="pref_menu_reset">リセット</string>
+    <string name="pref_menu_about">About</string>
+    <string name="pref_menu_scan">スキャン</string>
+    
+    <string name="btnok">OK</string>
+    <string name="btnupload">アップロード</string>
+    <string name="btnsave">保存</string>
+    <string name="btndelete">削除</string>
+    <string name="btnsendlabel">送信</string>
+    <string name="btnview">表示</string>
+    <string name="btncancellabel">キャンセル</string>
+    
+	<string name="lbluploadoptions">アップロード設定</string>
+	
+	<string name="artifact_retrieve_error">アーティファクト詳細の検索中にエラーが発生しました。</string>
+    <string name="artifactsettings">アーティファクト設定</string>
+    <string name="transferprogress">ファイル転送進捗</string>
+    <string name="uploadstarting">あなたのアップロードが開始されます。</string>
+    <string name="uploadfinished">あなたのアップロードが終了しました。</string>
+    <string name="uploadfailed">アップロードに失敗しました。</string>
+    <string name="savefailed">保存に失敗しました。</string>
+    <string name="uploadsaved">アップロードが保存されました。</string>
+    <string name="uploadnotavailable">申し訳ございません、あなたはアーティファクトとしてのみファイルをアップロードできます。</string>
+    <string name="uploadingartifact">アーティファクトのアップロード</string>
+    <string name="uploading">アップロード</string>
+    <string name="uploadnoconnection">申し訳ございません、現在、あなたにはアップロードするためのデータ接続が確立されていません。</string>
+    <string name="filetransfers">ファイル転送</string>
+    
+    <string name="upload_confirm_label">Yes:</string>
+    <string name="upload_confirm_text">私がアップロードしようとしているファイルは、私の所有物、または複製または配布が許可されたものです。
+    							 私がこのファイルを使用することにより、国内の著作権法に違反することはありません。
+    							 また、このファイルはサイトの使用条件に合致しています。</string>
+    <string name="upload_title_label">タイトル:</string>
+    <string name="upload_description_label">説明:</string>
+    <string name="upload_tags_label">タグ:</string>
+    <string name="upload_time_label">保存:</string>
+								
+    <string name="load_config_download_error">申し訳ございません、設定ファイルのダウンロード中にエラーが発生しました。</string>
+    <string name="load_config_error">申し訳ございません、設定ファイルの構文解析中にエラーが発生しました。</string>
+    <string name="load_config_success">設定ファイルが正常に読み込まれました。</string>
+    <string name="scan_not_available">申し訳ございません、あなたはZXingバーコードスキャナをインストールする必要があります。</string>
+								
+    <!--  About page -->
+    <string name="about_title">About MaharaDroid</string>
+    <string name="about_top_section_title">MaharaDroid</string>    
+	<string name="about_sponsors_section_title">Sponsors</string>
+    <string name="about_code_contributors_section_title">Third Party Components</string>
+	<string name="about_licenses_section_title">Licenses</string>
+	<string name="about_version_label">Version</string>
+	<string name="about_license_label">License</string>
+</resources>

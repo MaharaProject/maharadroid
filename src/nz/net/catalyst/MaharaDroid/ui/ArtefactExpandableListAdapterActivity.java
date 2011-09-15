@@ -107,6 +107,12 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
     		artefactData.close();
 	    super.onDestroy();
 	}
+	@Override
+	public void onPause() {
+    	if ( artefactData != null )
+    		artefactData.close();
+	    super.onDestroy();
+	}
 
 	private Integer loadSavedArtefacts() {
 		Integer items = 0; 
@@ -120,7 +126,7 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 	    Cursor cursor = db.query(ArtefactDataSQLHelper.TABLE, null, null, null, null,
 	        null, null);
 	    
-	    startManagingCursor(cursor);
+	    //startManagingCursor(cursor);
 
 	    while (cursor.moveToNext()) {
 	        Long id = cursor.getLong(0);
@@ -183,7 +189,7 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 	    Cursor cursor = db.query(ArtefactDataSQLHelper.TABLE, null, null, null, null,
 	        null, null);
 	    
-	    startManagingCursor(cursor);
+	    //startManagingCursor(cursor);
 
 	    while (cursor.moveToNext()) {
 	        Long id = cursor.getLong(0);

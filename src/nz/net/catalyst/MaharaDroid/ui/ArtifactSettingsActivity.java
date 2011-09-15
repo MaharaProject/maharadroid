@@ -99,6 +99,7 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 		
 		btnUpload = (Button)findViewById(R.id.btnUpload);
 		btnUpload.setOnClickListener(this);
+		
 		btnSave = (Button)findViewById(R.id.btnSave);
 		btnSave.setOnClickListener(this);
 		
@@ -114,14 +115,14 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 		checkAcceptanceOfConditions();
 		
 		// Check data connection
-    	if ( ! Utils.canUpload(this) ) {
-    		btnUpload.setEnabled(false);
-    	}
-
+		if ( ! Utils.canUpload(this) ) {
+			btnUpload.setEnabled(false);
+		}
+		
 		logData = new ArtefactDataSQLHelper(this);
 
         if ( m_extras.containsKey("artefact") ) {
-	    	if ( DEBUG ) Log.d(TAG, "Have a save artefact to upload");
+	    	if ( DEBUG ) Log.d(TAG, "Have a saved artefact to upload");
 
         	Artefact a = m_extras.getParcelable("artefact");
 
@@ -176,7 +177,7 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 
 	public void onResume(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-		checkAcceptanceOfConditions();        
+		checkAcceptanceOfConditions();   
 	}
 	
 	public void onClick(View v) {
@@ -198,6 +199,7 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 	}
 
 	private void InitiateUpload(boolean saveOnFail) {
+    	if ( DEBUG ) Log.d(TAG, "initiate upload called.");
 		if ( ! checkAcceptanceOfConditions() ) {
 			return;
 		}
@@ -210,6 +212,8 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 		
 		for ( int i = 0; i < uris.length; i++ ) {
     		String filename = Utils.getFilePath(this, uris[i]);
+	    	if ( DEBUG ) Log.d(TAG, "about to initiate upload of '" + filename + "'");
+
 			if (filename == null)
 				continue;
 
@@ -276,7 +280,7 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 			}
 		}
 	}
-
+	
 	private void acceptConditions(Boolean accepted) {
 		btnUpload.setEnabled(accepted);
 		btnSave.setEnabled(accepted);

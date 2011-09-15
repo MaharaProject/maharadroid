@@ -2,14 +2,14 @@
 <resources>
     <string name="app_name">MaharaDroid</string>
     
-    <string name="artefacts_banner_text">Open source ePortfolios</string>
+    <string name="artefacts_banner_text">オープンソース eポートフォリオ</string>
     <string name="artefacts_banner_text2">[mah-har-rah;verb]: to think, thinking, thought</string>
     <string name="artefacts_no_saved_artefacts">保存されたアーティファクトはありません。</string>
     
     <string name="options_menu_prefs">プリファレンス</string>
     <string name="options_menu_deleteall">すべてを削除する</string>
     <string name="options_menu_uploadall">すべてをアップロードする</string>
-    <string name="options_menu_viewsaved">アーティファクトを保存する</string>
+    <string name="options_menu_viewsaved">保存済みアーティファクト</string>
 
     <string name="context_menu_upload">アップロード</string>
     <string name="context_menu_view">表示</string>
@@ -30,7 +30,7 @@
 
     <string name="pref_upload_connection_key">upload.connection</string>
     <string name="pref_upload_connection_title">接続タイプ</string>
-    <string name="pref_upload_connection_summary">アーティファクトのアップロードを以下の接続タイプに制限します (デフォルトはハンドセットの設定に依存します):</string>
+    <string name="pref_upload_connection_summary">アーティファクトのアップロードを選択した接続タイプに制限します (デフォルトはハンドセットの設定に依存します):</string>
     <string-array name="pref_upload_connection_entry">
         <item>デフォルト</item>
         <item>WiFiのみ</item>
@@ -46,7 +46,7 @@
 
     <string name="pref_upload_folder_key">upload.folder</string>
     <string name="pref_upload_folder_title">アップロードフォルダ</string>
-    <string name="pref_upload_folder_summary">あなたがアーティファクトをアップロードするベースフォルダを入力してください。</string>
+    <string name="pref_upload_folder_summary">あなたがアーティファクトをアップロードするベースフォルダを指定してください。</string>
     <string name="pref_upload_folder_default">モバイルアップロード</string>  
 
     <string name="pref_upload_tags_key">upload.tags</string>

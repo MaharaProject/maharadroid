@@ -59,17 +59,23 @@ public class Utils {
         	allowMobile = true;
         
 		ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-
 		NetworkInfo info = cm.getActiveNetworkInfo();
-		int netType = info.getType();
 
-		if (netType == ConnectivityManager.TYPE_WIFI) {
-		    if ( allowWiFi && info.isConnected() ) 
-		    	return true;
-		} else if (netType == ConnectivityManager.TYPE_MOBILE) {
-		    if ( allowMobile && info.isConnected() ) 
-		        return true;
+		if ( info != null ) { 
+			int netType = info.getType();
+
+			if (netType == ConnectivityManager.TYPE_WIFI) {
+			    if ( allowWiFi && info.isConnected() ) 
+			    	return true;
+			} else if (netType == ConnectivityManager.TYPE_MOBILE) {
+			    if ( allowMobile && info.isConnected() ) 
+			        return true;
+			}
+		} else {  
+			// Assume we're a mobile (we're an Android after all) 
+	        return ( allowMobile );
 		}
+		
         return false;
 	}
     public static String getFilePath(Context context, String u) {
@@ -86,7 +92,12 @@ public class Utils {
 			if (cursor != null) {
 				if ( DEBUG ) Log.d(TAG, "cursor query succeeded");
 				cursor.moveToFirst();
-				file_path = cursor.getString(0);
+				try { 
+					file_path = cursor.getString(0);
+				} catch ( android.database.CursorIndexOutOfBoundsException e ) { 
+					if ( DEBUG ) Log.d(TAG, "couldn't get file_path from cursor");
+					return null;
+				}
 				cursor.close();
 			} else {
 				if ( DEBUG ) Log.d(TAG, "cursor query failed");

@@ -19,15 +19,15 @@ package nz.net.catalyst.MaharaDroid.authenticator;
 import nz.net.catalyst.MaharaDroid.R;
 import nz.net.catalyst.MaharaDroid.authenticator.AuthenticatorActivity;
 import nz.net.catalyst.MaharaDroid.provider.MaharaProvider;
+import nz.net.catalyst.MaharaDroid.ui.ArtefactExpandableListAdapterActivity;
 import nz.net.catalyst.MaharaDroid.ui.EditPreferences;
 import nz.net.catalyst.MaharaDroid.GlobalResources;
 import nz.net.catalyst.MaharaDroid.LogConfig;
+import nz.net.catalyst.MaharaDroid.Utils;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
-import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.os.Bundle;
@@ -87,9 +87,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 
         if ( DEBUG ) Log.d(TAG, "AuthenticatorActivity request new: " + mRequestNewAccount);
         
-        mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-
-        showNotification(getText(R.string.login_authenticating), null, null);
+        Utils.showNotification(NOTIFICATION, getText(R.string.login_authenticating), null, null, this);
         
     	MaharaAuthHandler.attemptAuth(mUsername, mHandler, AuthenticatorActivity.this);
     	finish();
@@ -135,16 +133,17 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         
         if (authToken != null) {
             finishLogin(username, authToken);
-            showNotification(getText(R.string.auth_result_success), null, null);
+            Utils.showNotification(NOTIFICATION, getText(R.string.auth_result_success), null, 
+            					new Intent(this, ArtefactExpandableListAdapterActivity.class), this);
             
         } else {
             Log.e(TAG, "onAuthenticationResult: failed to authenticate");
 
             // In this sample, we'll use the same text for the ticker and the expanded notification
 
-            showNotification(getText(R.string.auth_result_fail_short), 
+            Utils.showNotification(NOTIFICATION, getText(R.string.auth_result_fail_short), 
             				 getText(R.string.auth_result_fail_long), 
-            					new Intent(this, EditPreferences.class));
+            					new Intent(this, EditPreferences.class), this);
 
     		//Toast.makeText(this, getString(R.string.auth_result_fail), Toast.LENGTH_LONG).show();
         }
@@ -152,32 +151,5 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
    
     public void isAuthenctiated() {
     	
-    }
-    /**
-     * Show a notification while this service is running.
-     */
-    private void showNotification(CharSequence title, CharSequence description, Intent intent) {
-        // Set the icon, scrolling text and timestamp
-        Notification notification = new Notification(R.drawable.icon_notify, title,
-                System.currentTimeMillis());
-
-        PendingIntent contentIntent = null;
-        // The PendingIntent to launch our activity if the user selects this notification
-        if ( intent != null ) { 
-        	contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
-        }
-        if ( description == null ) {
-        	description = title;
-        }
-        
-        // Set the info for the views that show in the notification panel.
-        notification.setLatestEventInfo(this, title, description, contentIntent);
-        notification.flags = Notification.FLAG_AUTO_CANCEL;
-
-        // Send the notification.
-        mNM.notify(NOTIFICATION, notification);
-    }
-    private void cancelNotification() {
-    	mNM.cancel(NOTIFICATION);
     }
 }

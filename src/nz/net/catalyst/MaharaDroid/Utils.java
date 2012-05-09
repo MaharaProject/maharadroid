@@ -26,8 +26,12 @@ import java.io.File;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
@@ -149,4 +153,38 @@ public class Utils {
         }
 		return newToken;
     }
+    
+    /**
+     * Show a notification while this service is running.
+     */
+    public static void showNotification(int id, CharSequence title, CharSequence description, Intent intent, Context mContext) {
+    	NotificationManager mNM = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+    	
+        // Set the icon, scrolling text and timestamp
+        Notification notification = new Notification(R.drawable.icon_notify, title,
+                System.currentTimeMillis());
+
+        PendingIntent contentIntent = null;
+        // The PendingIntent to launch our activity if the user selects this notification
+        if ( intent != null ) { 
+        	contentIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
+        }
+        if ( description == null ) {
+        	description = title;
+        }
+        
+        // Set the info for the views that show in the notification panel.
+        notification.setLatestEventInfo(mContext, title, description, contentIntent);
+        notification.flags = Notification.FLAG_AUTO_CANCEL;
+
+        // Send the notification.
+        mNM.notify(id, notification);
+    }
+
+	public static void cancelNotification(int id, Context mContext) {
+    	NotificationManager mNM = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+
+    	mNM.cancel(id);
+    }
+
 }

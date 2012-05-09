@@ -65,8 +65,9 @@ public class MaharaAuthHandler {
         if ( username == null ) {
         	username = mPrefs.getString(context.getResources().getString(R.string.pref_auth_username_key), "");
         }
-        
-        JSONObject result = RestClient.AuthSync(authSyncURI, token, username, context);
+    	Long lastsync = mPrefs.getLong("lastsync", 0);
+
+    	JSONObject result = RestClient.AuthSync(authSyncURI, token, username, lastsync, context);
         token = Utils.updateTokenFromResult(result, context);
 		sendResult(username, token, handler, context);
 

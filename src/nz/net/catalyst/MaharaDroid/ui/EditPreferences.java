@@ -97,6 +97,9 @@ public class EditPreferences extends PreferenceActivity implements OnSharedPrefe
 		
 	@Override
 	protected void onDestroy() {
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		prefs.unregisterOnSharedPreferenceChangeListener(this);
+		
 		if(VERBOSE) Log.v(TAG, "On destroy received ... ");
 		// If the username and token have 
 		if ( authDetailsChanged ) {
@@ -105,9 +108,6 @@ public class EditPreferences extends PreferenceActivity implements OnSharedPrefe
 			startActivity(new Intent(this, AuthenticatorActivity.class));
 		}
 
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		prefs.unregisterOnSharedPreferenceChangeListener(this);
-		
 		super.onDestroy();
 	}
 	
@@ -171,6 +171,8 @@ public class EditPreferences extends PreferenceActivity implements OnSharedPrefe
 				}
 			}
 		} else if ( key == getString(R.string.pref_auth_username_key)) {
+			authDetailsChanged = true;
+		} else if ( key == getString(R.string.pref_sync_url_key)) {
 			authDetailsChanged = true;
 		}
 	}

@@ -59,6 +59,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 
 import nz.net.catalyst.MaharaDroid.LogConfig;
 import nz.net.catalyst.MaharaDroid.R;
+import nz.net.catalyst.MaharaDroid.authenticator.AuthenticatorActivity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -77,13 +78,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-
 public class EditPreferences extends PreferenceActivity implements OnSharedPreferenceChangeListener, OnClickListener {
 	static final String TAG = LogConfig.getLogTag(EditPreferences.class);
 	// whether DEBUG level logging is enabled (whether globally, or explicitly for this log tag)
 	static final boolean DEBUG = LogConfig.isDebug(TAG);
 	// whether VERBOSE level logging is enabled
 	static final boolean VERBOSE = LogConfig.VERBOSE;
+	static boolean authDetailsChanged = false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -93,10 +94,17 @@ public class EditPreferences extends PreferenceActivity implements OnSharedPrefe
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		prefs.registerOnSharedPreferenceChangeListener(this);
 	}
-	
+		
 	@Override
 	protected void onDestroy() {
-		
+		if(VERBOSE) Log.v(TAG, "On destroy received ... ");
+		// If the username and token have 
+		if ( authDetailsChanged ) {
+			// force login.
+			if(VERBOSE) Log.v(TAG, "Starting auth activity ... ");
+			startActivity(new Intent(this, AuthenticatorActivity.class));
+		}
+
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		prefs.unregisterOnSharedPreferenceChangeListener(this);
 		
@@ -154,13 +162,16 @@ public class EditPreferences extends PreferenceActivity implements OnSharedPrefe
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 		// refresh displayed values by restarting activity (a hack, but apparently there
 		// isn't a nicer way)
-		if ( key == getString(R.string.pref_upload_token_key)) {
+		if ( key == getString(R.string.pref_auth_token_key)) {
+			authDetailsChanged = true;
 			if ( this.getCallingActivity() != null ) { 
 				if ( DEBUG ) Log.d(TAG, "Calling activity is '" + this.getCallingActivity().getClassName().toString());
 				if ( this.getCallingActivity().getClassName().toString() == "ArtifactSendReceiver" ) {
 					finish();
 				}
 			}
+		} else if ( key == getString(R.string.pref_auth_username_key)) {
+			authDetailsChanged = true;
 		}
 	}
 

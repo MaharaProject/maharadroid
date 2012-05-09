@@ -146,7 +146,7 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 				Log.w(TAG, "Artefact '" + title + 
 							"' file [" + filename + 
 							"] no longer exists, deleting from saved artefacts");
-				deleteSavedArtefact(id);
+				artefactData.deleteSavedArtefact(id);
 			}
 		}
 
@@ -167,59 +167,45 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 		
 		return items;
 	}
-	private void uploadArtefact(Artefact a, Boolean auto) {
-		Intent i = new Intent(this, ArtifactSettingsActivity.class);
-		i.putExtra("artefact", (Parcelable) a);
-		if ( auto ) 
-			i.putExtra("auto", "yes please");
-		startActivity(i);
-	}
-	private void viewArtefact(Artefact a) {
-		if ( DEBUG ) 
-			Log.d(TAG, "New intent to view '" + a.getFilename() + "'");
-		Intent i = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(a.getFilename()));
-		startActivity(i);
-	}
-	
-	private void uploadAllSavedArtefacts() {
-    	if ( artefactData == null )
-    		artefactData = new ArtefactDataSQLHelper(this);
-
-    	SQLiteDatabase db = artefactData.getReadableDatabase();
-	    Cursor cursor = db.query(ArtefactDataSQLHelper.TABLE, null, null, null, null,
-	        null, null);
-	    
-	    //startManagingCursor(cursor);
-
-	    while (cursor.moveToNext()) {
-	        Long id = cursor.getLong(0);
-	        Long time = cursor.getLong(1);	
-			String filename = cursor.getString(2);
-			String title = cursor.getString(3);
-			String description = cursor.getString(4);
-			String tags = cursor.getString(5);
-			Artefact a = new Artefact(id, time, filename, title, description, tags);
-			uploadArtefact(a, true);
-		}
-		artefactData.close();
-	}
-    //---deletes a particular item---
-    public boolean deleteSavedArtefact(long id) {
-    	if ( artefactData == null )
-    		artefactData = new ArtefactDataSQLHelper(this);
-
-    	SQLiteDatabase db = artefactData.getWritableDatabase();
-        return db.delete(ArtefactDataSQLHelper.TABLE, BaseColumns._ID + "=" + id, null) > 0;
-    }
-    //---deletes all items---
-    public boolean deleteAllSavedArtefacts() {
-    	if ( artefactData == null )
-    		artefactData = new ArtefactDataSQLHelper(this);
-
-		SQLiteDatabase db = artefactData.getWritableDatabase();
-        return db.delete(ArtefactDataSQLHelper.TABLE, null, null) > 0;
-        
-    }
+//	public void uploadAllSavedArtefacts() {
+//    	if ( artefactData == null )
+//    		artefactData = new ArtefactDataSQLHelper(this);
+//
+//    	SQLiteDatabase db = artefactData.getReadableDatabase();
+//	    Cursor cursor = db.query(ArtefactDataSQLHelper.TABLE, null, null, null, null,
+//	        null, null);
+//	    
+//	    //startManagingCursor(cursor);
+//
+//	    while (cursor.moveToNext()) {
+//	        Long id = cursor.getLong(0);
+//	        Long time = cursor.getLong(1);	
+//			String filename = cursor.getString(2);
+//			String title = cursor.getString(3);
+//			String description = cursor.getString(4);
+//			String tags = cursor.getString(5);
+//			Artefact a = new Artefact(id, time, filename, title, description, tags);
+//			a.upload(true, this);
+//		}
+//		artefactData.close();
+//	}
+//    //---deletes a particular item---
+//    public boolean deleteSavedArtefact(long id) {
+//    	if ( artefactData == null )
+//    		artefactData = new ArtefactDataSQLHelper(this);
+//
+//    	SQLiteDatabase db = artefactData.getWritableDatabase();
+//        return db.delete(ArtefactDataSQLHelper.TABLE, BaseColumns._ID + "=" + id, null) > 0;
+//    }
+//    //---deletes all items---
+//    private boolean deleteAllSavedArtefacts() {
+//    	if ( artefactData == null )
+//    		artefactData = new ArtefactDataSQLHelper(this);
+//
+//		SQLiteDatabase db = artefactData.getWritableDatabase();
+//        return db.delete(ArtefactDataSQLHelper.TABLE, null, null) > 0;
+//        
+//    }
 	public boolean onCreateOptionsMenu(Menu menu) {
 		boolean result = super.onCreateOptionsMenu(menu);
 
@@ -232,11 +218,11 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 
 		switch (item.getItemId()) {
 			case R.id.option_delete:
-				deleteAllSavedArtefacts();
+				artefactData.deleteAllSavedArtefacts();
 				loadSavedArtefacts();
 				break;
 			case R.id.option_upload:
-				uploadAllSavedArtefacts();
+				artefactData.uploadAllSavedArtefacts();
 				loadSavedArtefacts();
 				break;
 			case R.id.about:
@@ -386,13 +372,13 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 			
 			switch (v.getId()) {
 			case R.id.btnUpload:
-				uploadArtefact(a, false);
+				a.upload(false, context);
 				break;
 			case R.id.btnView:
-				viewArtefact(a);
+				a.view(context);
 				break;
 			case R.id.btnDelete:
-				deleteSavedArtefact(a.getId());
+				artefactData.deleteSavedArtefact(a.getId());
 				loadSavedArtefacts();
 				break;
 			}
@@ -425,12 +411,12 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 				Artefact a = (Artefact) getChild(groupPosition, childPosition);
                    
 				if ( delete ) {
-					deleteSavedArtefact(a.getId());
+					artefactData.deleteSavedArtefact(a.getId());
 					loadSavedArtefacts();
 				} else if ( upload ) {  
-					uploadArtefact(a, true);
+					a.upload(true, context);
 				} else if ( view ) {
-					viewArtefact(a);
+					a.view(context);
 				}
 				return true;
 			} else if (type == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
@@ -442,11 +428,11 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 				for ( int i = 0; i < getChildrenCount(groupPosition); i++ ) {
 					Artefact a = (Artefact) getChild(groupPosition, i);
 					if ( delete ) {
-						deleteSavedArtefact(a.getId());
+						artefactData.deleteSavedArtefact(a.getId());
 					} else if ( upload ) {
-						uploadArtefact(a, true);
+						a.upload(true, context);
 					} else if ( view ) {
-						viewArtefact(a);
+						a.view(context);
 					}
 				}
 				

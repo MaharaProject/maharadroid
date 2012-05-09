@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="nz.net.catalyst.MaharaDroid"
-      android:versionCode="8"
-      android:versionName="1.8">
+      android:versionCode="10"
+      android:versionName="2.0">
     <application android:icon="@drawable/icon" android:label="@string/app_name"
-    		 android:debuggable="false" >
+    		 android:debuggable="true" >
     
         <activity android:name=".ui.ArtefactExpandableListAdapterActivity" 
         		  android:label="@string/app_name" 
@@ -15,7 +15,9 @@
                   
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="nz.net.catalyst.MaharaDroid.LAUNCHER" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 		<activity android:name=".ui.about.AboutActivity"
@@ -71,11 +73,47 @@
         <activity  android:name=".ui.EditPreferences"
 				   android:label="@string/options_menu_prefs" />
         
+     	<activity android:name=".authenticator.AuthenticatorActivity"
+     	    android:theme="@android:style/Theme.Dialog"
+            android:excludeFromRecents="true" />
+        	    
         <service android:name=".upload.TransferService" android:label="@string/filetransfers"/>
+    	<service android:name=".authenticator.AccountAuthenticatorService"
+	    		android:exported="true">
+	    	<intent-filter>
+	    		<action android:name="android.accounts.AccountAuthenticator" />
+	    	</intent-filter>
+	    	<meta-data android:name="android.accounts.AccountAuthenticator"
+	    			android:resource="@xml/authenticator" />
+	    </service>
+	    
+   	    <!-- sync-adapter service -->
+	    <service android:name=".syncadapter.SyncAdapterService"
+	    		android:icon="@drawable/icon"
+        		android:label="@string/app_name"
+	    		android:exported="true">
+	    	<intent-filter>
+	    		<action android:name="android.content.SyncAdapter" />
+	    	</intent-filter>
+	    	<meta-data android:name="android.content.SyncAdapter"
+	    			android:resource="@xml/syncadapter" />
+	    </service>
+	    <provider android:name=".provider.MaharaProvider"
+	        android:authorities="nz.net.catalyst" android:enabled="true">
+	    </provider>
+    	    
     </application>
     <!--  API Level 4 aka 1.6 required for multi-send support -->
-    <uses-sdk android:minSdkVersion="4" /> 
+    <!--  API Level 5 aka 2.0 required for Account & Sync support -->
+    <uses-sdk android:minSdkVersion="5" /> 
 	<uses-permission android:name="android.permission.INTERNET"/>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_SYNC_STATS" />
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />     
        
 </manifest> 

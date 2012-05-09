@@ -26,10 +26,24 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Vector;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import nz.net.catalyst.MaharaDroid.LogConfig;
 
@@ -43,6 +57,7 @@ import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -55,6 +70,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 /*
@@ -72,9 +88,8 @@ public class RestClient {
 	static final boolean DEBUG = LogConfig.isDebug(TAG);
 	// whether VERBOSE level logging is enabled
 	static final boolean VERBOSE = LogConfig.VERBOSE;
-    private static final int CONNECTION_TIMEOUT = 15000000;
-    
-    private static String convertStreamToString(InputStream is) {
+    private static final int CONNECTION_TIMEOUT = 15000; // 15seconds
+	private static String convertStreamToString(InputStream is) {
 		/*
 		 * To convert the InputStream to String we use the BufferedReader.readLine()
 		 * method. We iterate until the BufferedReader return null which means
@@ -149,19 +164,73 @@ public class RestClient {
 		
 		return CallFunction(url, paramNames, paramVals, context);
 	}
+	public static JSONObject AuthSync(String url, String token, String username, Context context){
+		Vector<String> pNames = new Vector<String>();
+		Vector<String> pVals = new Vector<String>();
+		
+		if ( token != null ) {
+			pNames.add("token");
+			pVals.add(token);
+		}
+		if ( username != null ) {
+			pNames.add("username");
+			pVals.add(username);
+		}
+		
+		String [] paramNames, paramVals;
+		paramNames = paramVals = new String[]{};
+		paramNames = pNames.toArray(paramNames);
+		paramVals = pVals.toArray(paramVals);
+		
+		return CallFunction(url, paramNames, paramVals, context);
+	}
 
+	private static SSLSocketFactory getSocketFactory(Boolean d) {
+        // Enable debug mode to ignore all certificates
+        if ( DEBUG ) {
+        	KeyStore trustStore;
+        	try {
+				trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+				trustStore.load(null, null);
+				SSLSocketFactory sf = new DebugSSLSocketFactory(trustStore);
+		        sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+		        return sf;
+	
+			} catch (KeyStoreException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			} catch (NoSuchAlgorithmException e3) {
+				// TODO Auto-generated catch block
+				e3.printStackTrace();
+			} catch (CertificateException e3) {
+				// TODO Auto-generated catch block
+				e3.printStackTrace();
+			} catch (IOException e3) {
+				// TODO Auto-generated catch block
+				e3.printStackTrace();
+			} catch (KeyManagementException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			} catch (UnrecoverableKeyException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+        }
+    	
+    	return SSLSocketFactory.getSocketFactory();		
+	}
+	
 	public static JSONObject CallFunction(String url, String[] paramNames, String[] paramVals, Context context)
 	{
 		JSONObject json = new JSONObject();
 
 		SchemeRegistry supportedSchemes = new SchemeRegistry();
-		
-		// Register the "http" and "https" protocol schemes, they are
-		// required by the default operator to look up socket factories.
-		
+
+        SSLSocketFactory sf = getSocketFactory(DEBUG);        
+			
 		//TODO we make assumptions about ports.
 		supportedSchemes.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-		supportedSchemes.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
+		supportedSchemes.register(new Scheme("https", sf, 443));
 		
 		HttpParams http_params = new BasicHttpParams();
 		ClientConnectionManager ccm = new ThreadSafeClientConnManager(http_params, supportedSchemes);
@@ -189,6 +258,7 @@ public class RestClient {
 		SortedMap<String,String> sig_params = new TreeMap<String,String>();
 		
 		HttpResponse response = null;
+	    HttpPost httppost = new HttpPost(url);
 
 		try {
 		    File file = null;
@@ -208,11 +278,10 @@ public class RestClient {
 	    		sig_params.put(paramNames[i], paramVals[i]);
 	    	}
 	    	
-		    HttpPost httppost = new HttpPost(url);
-		    
-		    MultipartEntityMonitored mp_entity = new MultipartEntityMonitored(context, title);
-
-		    mp_entity.addPart("userfile", new FileBody(file));
+	    	MultipartEntityMonitored mp_entity = new MultipartEntityMonitored(context, title);
+	    	if ( file != null ) {
+	    		mp_entity.addPart("userfile", new FileBody(file));
+	    	}
 			for (Map.Entry<String,String> entry : sig_params.entrySet()) {
 				mp_entity.addPart(entry.getKey(), new StringBody(entry.getValue()));
 			}
@@ -263,5 +332,6 @@ public class RestClient {
 		httpclient.getConnectionManager().shutdown();
 
 		return json;
+		
 	}
 }

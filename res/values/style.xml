@@ -49,8 +49,8 @@ Active text field border: #6398C1
 	</style>
 
      <!-- Set the theme for the window title -->
-     <!-- NOTE: setting android:textAppearence to style defined above -->
-     <style name="MaharaWindowTitle" parent="android:WindowTitle">
+     <!-- NOTE: setting android:textAppearence to style defined above--> 
+     <style name="MaharaWindowTitle"> <!-- parent="android:WindowTitle">-->
           <item name="android:textAppearance">@style/MaharaWindowTitleText</item>
       </style>
 </resources>

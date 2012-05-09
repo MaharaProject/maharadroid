@@ -9,13 +9,18 @@
 		android:summary="@string/pref_upload_url_summary"
 		android:defaultValue="@string/pref_upload_url_default" />	
 	<EditTextPreference
-		android:key="@string/pref_upload_username_key"
-		android:title="@string/pref_upload_username_title"
-		android:summary="@string/pref_upload_username_summary"	/>	
+		android:key="@string/pref_sync_url_key"
+		android:title="@string/pref_sync_url_title"
+		android:summary="@string/pref_sync_url_summary"
+		android:defaultValue="@string/pref_sync_url_default" />	
+		<EditTextPreference
+		android:key="@string/pref_auth_username_key"
+		android:title="@string/pref_auth_username_title"
+		android:summary="@string/pref_auth_username_summary"	/>	
 	<EditTextPreference
-		android:key="@string/pref_upload_token_key"
-		android:title="@string/pref_upload_token_title"
-		android:summary="@string/pref_upload_token_summary"	/>	
+		android:key="@string/pref_auth_token_key"
+		android:title="@string/pref_auth_token_title"
+		android:summary="@string/pref_auth_token_summary"	/>	
     <ListPreference
         android:key="@string/pref_upload_connection_key"
         android:title="@string/pref_upload_connection_title"

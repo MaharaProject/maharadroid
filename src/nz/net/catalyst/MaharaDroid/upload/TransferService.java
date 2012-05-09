@@ -26,9 +26,6 @@ import java.util.LinkedList;
 import nz.net.catalyst.MaharaDroid.GlobalResources;
 import nz.net.catalyst.MaharaDroid.LogConfig;
 import nz.net.catalyst.MaharaDroid.R;
-import nz.net.catalyst.MaharaDroid.R.id;
-import nz.net.catalyst.MaharaDroid.R.layout;
-import nz.net.catalyst.MaharaDroid.R.string;
 import nz.net.catalyst.MaharaDroid.ui.TransferProgressActivity;
 import nz.net.catalyst.MaharaDroid.upload.http.RestClient;
 
@@ -288,10 +285,10 @@ public class TransferService extends Service {
 		return mPrefs.getString(getString(R.string.pref_upload_folder_key), "");
 	}
 	public String getUploadAuthTokenPref() {
-		return mPrefs.getString(getString(R.string.pref_upload_token_key), "");
+		return mPrefs.getString(getString(R.string.pref_auth_token_key), "");
 	}
 	public String getUploadUsernamePref() {
-		return mPrefs.getString(getString(R.string.pref_upload_username_key), "");
+		return mPrefs.getString(getString(R.string.pref_auth_username_key), "");
 	}
 	public String getUploadTagsPref(String pref_tags) {
 		String tags = ( pref_tags != null ) ? pref_tags.trim() : "" ;	
@@ -302,7 +299,7 @@ public class TransferService extends Service {
 		if ( DEBUG ) Log.d(TAG, "New Token is '" + newToken + "'");
 			
 		mPrefs.edit()
-			.putString(getString(R.string.pref_upload_token_key), newToken)
+			.putString(getString(R.string.pref_auth_token_key), newToken)
 			.commit()
 		;
 	}

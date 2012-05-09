@@ -23,6 +23,9 @@ package nz.net.catalyst.MaharaDroid;
 
 import java.io.File;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -112,5 +115,38 @@ public class Utils {
 				return null;
 		}
 		return file_path;
+    }
+    
+    public static String updateTokenFromResult(JSONObject json, Context mContext) {
+    	String newToken = null;
+        if (json == null || json.has("fail")) {
+        	String err_str = null;
+        	try {
+        		err_str = (json == null) ? "Unknown Failure" : json.getString("fail");
+        	} catch (JSONException e) {
+        		err_str = "Unknown Failure";
+        	}
+    		Log.e(TAG, "Auth fail: " + err_str);
+
+        } else if ( json.has("success") ) {
+        	try {
+        		newToken = json.getString("success");
+
+        		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+    			mPrefs.edit()
+        			.putString(mContext.getResources().getString(R.string.pref_auth_token_key), newToken)
+        			.commit()
+        		;
+        		
+        		// Here we want to check a check-sum for 'last-modified' and if newer content exists 
+        		// then process out new user-data
+        		Log.e(TAG, "Token found, re-keying auth-token");
+        		
+        		        		
+        	} catch (JSONException e) {
+        		Log.e(TAG, "Failed to get success token from result.");
+        	}
+        }
+		return newToken;
     }
 }

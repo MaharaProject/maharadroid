@@ -22,6 +22,7 @@
 package nz.net.catalyst.MaharaDroid.data;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
@@ -31,6 +32,7 @@ import android.util.Log;
 public class ArtefactDataSQLHelper extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "maharadroid_upload_log.db";
 	private static final int DATABASE_VERSION = 1;
+	private static Context mContext;
 
 	// Table name
 	public static final String TABLE = "upload_log";
@@ -45,6 +47,7 @@ public class ArtefactDataSQLHelper extends SQLiteOpenHelper {
 
 	public ArtefactDataSQLHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+		mContext = context;
 	}
 
 	@Override
@@ -75,5 +78,35 @@ public class ArtefactDataSQLHelper extends SQLiteOpenHelper {
 		if (sql != null)
 			db.execSQL(sql);
 	}
+	
+	public void uploadAllSavedArtefacts() {
+    	SQLiteDatabase db = this.getReadableDatabase();
+	    Cursor cursor = db.query(ArtefactDataSQLHelper.TABLE, null, null, null, null,
+	        null, null);
+	    
+	    //startManagingCursor(cursor);
+
+	    while (cursor.moveToNext()) {
+	        Long id = cursor.getLong(0);
+	        Long time = cursor.getLong(1);	
+			String filename = cursor.getString(2);
+			String title = cursor.getString(3);
+			String description = cursor.getString(4);
+			String tags = cursor.getString(5);
+			Artefact a = new Artefact(id, time, filename, title, description, tags);
+			a.upload(true, mContext);
+		}
+	}
+    //---deletes a particular item---
+    public boolean deleteSavedArtefact(Long id) {
+    	SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(ArtefactDataSQLHelper.TABLE, BaseColumns._ID + "=" + id, null) > 0;
+    }
+    //---deletes all items---
+    public boolean deleteAllSavedArtefacts() {
+		SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(ArtefactDataSQLHelper.TABLE, null, null) > 0;
+        
+    }
 
 }

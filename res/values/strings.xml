@@ -20,13 +20,18 @@
     <string name="pref_upload_url_summary">Enter the URL to post files to Mahara</string>
     <string name="pref_upload_url_default">http://master.dev.mahara.org/artefact/file/mobileupload.php</string>
 
-    <string name="pref_upload_username_key">upload.username</string>
-    <string name="pref_upload_username_title">Username</string>
-    <string name="pref_upload_username_summary">Enter your Mahara username</string>     
+    <string name="pref_sync_url_key">sync.uri</string>
+    <string name="pref_sync_url_title">Sync URI</string>
+    <string name="pref_sync_url_summary">Enter the sync URL to Mahara</string>
+    <string name="pref_sync_url_default">http://master.dev.mahara.org/artefact/file/mobilesync.php</string>
+        
+    <string name="pref_auth_username_key">auth.username</string>
+    <string name="pref_auth_username_title">Username</string>
+    <string name="pref_auth_username_summary">Enter your Mahara username</string>     
 
-    <string name="pref_upload_token_key">upload.token</string>
-    <string name="pref_upload_token_title">Token</string>
-    <string name="pref_upload_token_summary">Enter your Mahara upload token</string>     
+    <string name="pref_auth_token_key">auth.token</string>
+    <string name="pref_auth_token_title">Token</string>
+    <string name="pref_auth_token_summary">Enter your Mahara mobile token</string>     
 
     <string name="pref_upload_connection_key">upload.connection</string>
     <string name="pref_upload_connection_title">Connection Type</string>
@@ -100,7 +105,15 @@
     <string name="load_config_error">Sorry there was an error parsing the configuration file.</string>
     <string name="load_config_success">Successfully loaded the configuration file.</string>
     <string name="scan_not_available">Sorry you need to install ZXing Barcode Scanner for this.</string>
-								
+		
+    <string name="login_authenticating">Authenticating...</string>
+    <string name="only_one_account">Currently you may only have at most one account at any one time.</string>
+
+    <string name="auth_result_no_connection">Server address or port number incorrect</string>
+    <string name="auth_result_success">Authentication successful!</string>
+    <string name="auth_result_fail_short">Authentication failed</string>
+    <string name="auth_result_fail_long">Authentication failed, check your connection and user token.</string>     				
+        		
     <!--  About page -->
     <string name="about_title">About MaharaDroid</string>
     <string name="about_top_section_title">MaharaDroid</string>    

@@ -26,6 +26,7 @@ import java.util.LinkedList;
 import nz.net.catalyst.MaharaDroid.GlobalResources;
 import nz.net.catalyst.MaharaDroid.LogConfig;
 import nz.net.catalyst.MaharaDroid.R;
+import nz.net.catalyst.MaharaDroid.Utils;
 import nz.net.catalyst.MaharaDroid.ui.TransferProgressActivity;
 import nz.net.catalyst.MaharaDroid.upload.http.RestClient;
 
@@ -38,13 +39,10 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
-import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -60,13 +58,10 @@ public class TransferService extends Service {
 	private PendingIntent m_notify_activity = null;
 	private final IBinder m_binder = new TransferServiceBinder();
 	private UploadArtifactTask m_upload_task = null;
-	// application preferences
-	private SharedPreferences mPrefs;
-	
+
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 	}
 	
 	// This is the receiver that we use to update the percentage progress display
@@ -98,22 +93,23 @@ public class TransferService extends Service {
 		
 		@Override
 		protected Object doInBackground(Void... params) {
+			Context mContext = getApplicationContext();
 			Bundle upload_info = null;
 			while (m_uploads.size() > 0) {
 				upload_info = m_uploads.get(0);
 				if (upload_info != null) {
 					publishProgress(new String[]{"start", upload_info.getString("title")});
 			        JSONObject result = RestClient.UploadArtifact(
-			        						 getUploadURLPref(), 
-			        						 getUploadAuthTokenPref(),
-			        						 getUploadUsernamePref(),
-			        						 getUploadCreateViewPref(),
-			        						 getUploadFolderPref(),
-			        						 getUploadTagsPref(upload_info.getString("tags")),
+			        						 Utils.getUploadURLPref(mContext), 
+			        						 Utils.getUploadAuthTokenPref(mContext),
+			        						 Utils.getUploadUsernamePref(mContext),
+			        						 Utils.getUploadCreateViewPref(mContext),
+			        						 Utils.getUploadFolderPref(mContext),
+			        						 Utils.getUploadTagsPref(upload_info.getString("tags"), mContext),
 			        						 upload_info.getString("filename"),
 							    			 upload_info.getString("title"),
 							    			 upload_info.getString("description"),
-								    		 getApplicationContext());
+							    			 mContext);
 			        
 					publishProgress(new String[]{"finish", upload_info.getString("title")});
 					m_uploads.remove();
@@ -127,11 +123,7 @@ public class TransferService extends Service {
 						publishProgress("fail", err_str);
 			        	m_uploads.clear();
 			        } else if ( result.has("success") ) {
-			        	try {
-							setUploadAuthTokenPref(result.getString("success"));
-						} catch (JSONException e) {
-							Log.e(TAG, "Failed to get success token from result.");
-						}
+			        	Utils.updateTokenFromResult(result, mContext);
 			        }
 				}
 			}
@@ -173,6 +165,7 @@ public class TransferService extends Service {
 					getApplicationContext().sendBroadcast(broadcast_intent);
 
 					((NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE)).cancel(GlobalResources.UPLOADER_ID);
+					// TODO change to notification
 					Toast.makeText(getApplicationContext(), getResources().getString(R.string.uploadfailed) + ": " + progress[1], Toast.LENGTH_SHORT).show();
 					stopSelf();
 				}
@@ -187,7 +180,7 @@ public class TransferService extends Service {
 		protected void onPostExecute(Object result) {
 			// When all uploads are finished, kill the status bar upload notification and stop the
 			// Uploader service.
-			Toast.makeText(getApplicationContext(), R.string.uploadfinished, Toast.LENGTH_SHORT).show();
+			//Toast.makeText(getApplicationContext(), R.string.uploadfinished, Toast.LENGTH_SHORT).show();
 			((NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE)).cancel(GlobalResources.UPLOADER_ID);
 			
 			stopSelf();
@@ -275,32 +268,4 @@ public class TransferService extends Service {
 		}
 	}
 
-	private String getUploadURLPref() {
-		return mPrefs.getString(getString(R.string.pref_upload_url_key), "");
-	}
-	private Boolean getUploadCreateViewPref() {
-		return mPrefs.getBoolean(getString(R.string.pref_upload_view_key), false);
-	}
-	private String getUploadFolderPref() {
-		return mPrefs.getString(getString(R.string.pref_upload_folder_key), "");
-	}
-	public String getUploadAuthTokenPref() {
-		return mPrefs.getString(getString(R.string.pref_auth_token_key), "");
-	}
-	public String getUploadUsernamePref() {
-		return mPrefs.getString(getString(R.string.pref_auth_username_key), "");
-	}
-	public String getUploadTagsPref(String pref_tags) {
-		String tags = ( pref_tags != null ) ? pref_tags.trim() : "" ;	
-		return (mPrefs.getString(getString(R.string.pref_upload_tags_key), "") + " " + tags).trim();  
-	}
-	
-	public void setUploadAuthTokenPref(String newToken) {
-		if ( DEBUG ) Log.d(TAG, "New Token is '" + newToken + "'");
-			
-		mPrefs.edit()
-			.putString(getString(R.string.pref_auth_token_key), newToken)
-			.commit()
-		;
-	}
 }

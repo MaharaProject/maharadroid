@@ -21,6 +21,36 @@
 		android:key="@string/pref_auth_token_key"
 		android:title="@string/pref_auth_token_title"
 		android:summary="@string/pref_auth_token_summary"	/>	
+	<PreferenceCategory
+		android:title="@string/prefcat_advanced">
+
+	<ListPreference
+		android:key="@string/pref_upload_journal_key"
+		android:title="@string/pref_upload_journal_title"
+		android:summary="@string/pref_upload_journal_summary"
+		android:defaultValue="@string/pref_upload_journal_default"  
+		android:entries="@array/pref_upload_journal_entry"
+        android:entryValues="@array/pref_upload_journal_entryValues"
+        android:dialogTitle="@string/pref_upload_journal_title" />
+
+	<ListPreference
+		android:key="@string/pref_upload_folder_key"
+		android:title="@string/pref_upload_folder_title"
+		android:summary="@string/pref_upload_folder_summary"
+		android:defaultValue="@string/pref_upload_folder_default" 
+		android:entries="@array/pref_upload_folder_entry"
+        android:entryValues="@array/pref_upload_folder_entryValues"
+        android:dialogTitle="@string/pref_upload_folder_title" />
+			
+	<ListPreference
+		android:key="@string/pref_upload_tags_key"
+		android:title="@string/pref_upload_tags_title"
+		android:summary="@string/pref_upload_tags_summary"
+		android:defaultValue="@string/pref_upload_tags_default"
+        android:entries="@array/pref_upload_tags_entry"
+        android:entryValues="@array/pref_upload_tags_entryValues"
+        android:dialogTitle="@string/pref_upload_tags_title" />	
+
     <ListPreference
         android:key="@string/pref_upload_connection_key"
         android:title="@string/pref_upload_connection_title"
@@ -30,20 +60,6 @@
         android:entryValues="@array/pref_upload_connection_entryValues"
         android:dialogTitle="@string/pref_upload_connection_title" />
 	
-	<PreferenceCategory
-		android:title="@string/prefcat_advanced">
-
-	<EditTextPreference
-		android:key="@string/pref_upload_folder_key"
-		android:title="@string/pref_upload_folder_title"
-		android:summary="@string/pref_upload_folder_summary"
-		android:defaultValue="@string/pref_upload_folder_default" />	
-	<EditTextPreference
-		android:key="@string/pref_upload_tags_key"
-		android:title="@string/pref_upload_tags_title"
-		android:summary="@string/pref_upload_tags_summary"
-		android:defaultValue="@string/pref_upload_tags_default" />	
-
 	</PreferenceCategory>
 			
 </PreferenceScreen>

@@ -35,7 +35,7 @@ safe_require('artefact', 'blog');
 $json = array();
 
 if (!get_config('allowmobileuploads')) {
-    jsonreplyfinal(array('fail' => 'Mobile uploads disabled'));
+    jsonreply(array('fail' => 'Mobile uploads disabled'));
 }
 
 $token = '';
@@ -46,7 +46,7 @@ try {
 catch (ParameterException $e) { }
 
 if ($token == '') {
-    jsonreplyfinal(array('fail' => 'Auth token cannot be blank'));
+    jsonreply(array('fail' => 'Auth token cannot be blank'));
 }
 
 $username = '';
@@ -56,7 +56,7 @@ try {
 catch (ParameterException $e) { }
 
 if ($username == '') {
-    jsonreplyfinal(array('fail' => 'Username cannot be blank'));
+    jsonreply(array('fail' => 'Username cannot be blank'));
 }
 
 $USER = new User();
@@ -65,7 +65,7 @@ try {
     $USER->find_by_mobileuploadtoken($token, $username);
 }
 catch (AuthUnknownUserException $e) {
-    jsonreplyfinal(array('fail' => 'Invalid user token'));
+    jsonreply(array('fail' => 'Invalid user token'));
 }
 
 // error_log(var_dump($USER));
@@ -77,24 +77,29 @@ try {
 }
 catch (ParameterException $e) { }
 
-$activity = get_records_sql_array('select n.id, n.subject, n.message 
+$activity_arr = get_records_sql_array('select n.id, n.subject, n.message 
 					from {notification_internal_activity} n, {activity_type} a
 					where n.type=a.id and n.read=0 and '
 					. db_format_tsfield('n.ctime', '') . ' >= ? and n.usr= ? ', 
 					array($lastsync + 0, $USER->id));
-if ( $activity ) 
-  $json['activity'] = $activity;
+if ( count($activity_arr) ) 
+  $json['activity'] = $activity_arr;
 
 // OK - let's add tags
 
+$tags_arr = array();
 
 $tagsort = param_alpha('ts', null) != 'freq' ? 'alpha' : 'freq';
-$tags = get_my_tags(null, false, $tagsort);
 
-if ( $tags ) 
-  $json['tags'] = $tags;
+foreach (get_my_tags(null, false, $tagsort) as $tag) {
+    $tags_arr[] = array("id" => $tag->tag, "tag" => $tag->tag);
+}
+
+if ( count($tags_arr) > 0 ) 
+  $json['tags'] = $tags_arr;
 
 // OK - let's add journals
+$blogs_arr = array();
 
 $blogs = (object) array(
     'offset' => param_integer('offset', 0),
@@ -103,24 +108,32 @@ $blogs = (object) array(
 
 list($blogs->count, $blogs->data) = ArtefactTypeBlog::get_blog_list($blogs->limit, $blogs->offset);
 
-//foreach ( $blogs->data  as $blog ) {
-//  unset($blog['deletefrom']); // just because it's large
-//}
+foreach ($blogs->data as $blog) {
+    if ( ! $blog->locked ) {
+        $blogs_arr[] = array("id" => $blog->id, "blog" => $blog->title);
+    }
+}
 
-if ( $blogs->data ) 
-  $json['blogs'] = $blogs->data;
+if ( count($blogs_arr) > 0 ) 
+  $json['blogs'] = $blogs_arr;
 
 // OK - let's add folders
 
+$folders_arr = array();
 $folders = ArtefactTypeFile::get_my_files_data(0, $USER->id, null, null, array("artefacttype" => array("folder")));
 
-if ( $folders ) 
-  $json['folders'] = $folders;
+foreach ($folders as $folder) {
+    if ( ! $folder->locked ) {
+        $folders_arr[] = array("id" => $folder->id, "folder" => $folder->title);
+    }
+}
+if ( count($folders_arr) > 0 ) 
+  $json['folders'] = $folders_arr;
 
-// Here we need to create a new hash - update our own store of it and return it too the handset
-jsonreplyfinal ( array("success" => $USER->refresh_mobileuploadtoken() ));
+// Here we need to create a new hash - update our own store of it and return it to the handset
+jsonreply( array("success" => $USER->refresh_mobileuploadtoken($token) ));
 
-function jsonreplyfinal ( $arr ) {
+function jsonreply( $arr ) {
   global $json;
   if ( $json ) 
     $arr['sync'] = $json;

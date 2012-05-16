@@ -16,18 +16,13 @@
 
 package nz.net.catalyst.MaharaDroid.authenticator;
 
-import nz.net.catalyst.MaharaDroid.R;
 import nz.net.catalyst.MaharaDroid.authenticator.AuthenticatorActivity;
 import nz.net.catalyst.MaharaDroid.provider.MaharaProvider;
-import nz.net.catalyst.MaharaDroid.ui.ArtefactExpandableListAdapterActivity;
-import nz.net.catalyst.MaharaDroid.ui.EditPreferences;
 import nz.net.catalyst.MaharaDroid.GlobalResources;
 import nz.net.catalyst.MaharaDroid.LogConfig;
-import nz.net.catalyst.MaharaDroid.Utils;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
-import android.app.NotificationManager;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.os.Bundle;
@@ -46,12 +41,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	static final boolean VERBOSE = LogConfig.VERBOSE;
 
     private AccountManager mAccountManager;
-    private NotificationManager mNM;
-    
-    // Unique Identification Number for the Notification.
-    // We use it on Notification start, and to cancel it.
-    private int NOTIFICATION = R.string.login_authenticating;
-    
     /**
      * If set we are just checking that the user knows their credentials; this
      * doesn't cause the user's password to be changed on the device.
@@ -87,65 +76,31 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 
         if ( DEBUG ) Log.d(TAG, "AuthenticatorActivity request new: " + mRequestNewAccount);
         
-        Utils.showNotification(NOTIFICATION, getText(R.string.login_authenticating), null, null, this);
-        
     	MaharaAuthHandler.attemptAuth(mUsername, mHandler, AuthenticatorActivity.this);
     	finish();
-    }
-
-    /**
-     * 
-     * Called when response is received from the server for authentication
-     * request. See onAuthenticationResult(). Sets the
-     * AccountAuthenticatorResult which is sent back to the caller. Also sets
-     * the authToken in AccountManager for this account.
-     * 
-     * @param the confirmCredentials result.
-     */
-
-    protected void finishLogin(String username, String authToken) {
-    	if ( DEBUG ) Log.d(TAG, "finishLogin()");
-        final Account account = new Account(username, GlobalResources.ACCOUNT_TYPE);
-
-        if (mRequestNewAccount) {
-            mAccountManager.addAccountExplicitly(account, authToken, null);
-            // Set contacts sync for this account.
-            ContentResolver.setSyncAutomatically(account, MaharaProvider.AUTHORITY, true);
-            ContentResolver.setIsSyncable(account, MaharaProvider.AUTHORITY, 1);
-        } else {
-            mAccountManager.setPassword(account, authToken);
-        }
-        
-        final Intent intent = new Intent();
-        intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, username);
-        intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, GlobalResources.ACCOUNT_TYPE);
-        setAccountAuthenticatorResult(intent.getExtras());
-        setResult(RESULT_OK, intent);
-        finish();
     }
 
     /**
      * Called when the authentication process completes (see attemptLogin()).
      */
     public void onAuthenticationResult(String username, String authToken) {
-        if ( DEBUG ) Log.d(TAG, "onAuthenticationResult(" + authToken + ")");
-        // Hide the progress dialog
-        
+        // If we have an auth token create the account
         if (authToken != null) {
-            finishLogin(username, authToken);
-            Utils.showNotification(NOTIFICATION, getText(R.string.auth_result_success), null, 
-            					new Intent(this, ArtefactExpandableListAdapterActivity.class), this);
+            final Account account = new Account(username, GlobalResources.ACCOUNT_TYPE);
+
+            if (mRequestNewAccount) {
+                mAccountManager.addAccountExplicitly(account, null, null);
+                // Set contacts sync for this account.
+                ContentResolver.setSyncAutomatically(account, MaharaProvider.AUTHORITY, true);
+                ContentResolver.setIsSyncable(account, MaharaProvider.AUTHORITY, 1);
+            }
             
-        } else {
-            Log.e(TAG, "onAuthenticationResult: failed to authenticate");
-
-            // In this sample, we'll use the same text for the ticker and the expanded notification
-
-            Utils.showNotification(NOTIFICATION, getText(R.string.auth_result_fail_short), 
-            				 getText(R.string.auth_result_fail_long), 
-            					new Intent(this, EditPreferences.class), this);
-
-    		//Toast.makeText(this, getString(R.string.auth_result_fail), Toast.LENGTH_LONG).show();
+            final Intent intent = new Intent();
+            intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, username);
+            intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, GlobalResources.ACCOUNT_TYPE);
+            setAccountAuthenticatorResult(intent.getExtras());
+            setResult(RESULT_OK, intent);
+            finish();
         }
     }
    

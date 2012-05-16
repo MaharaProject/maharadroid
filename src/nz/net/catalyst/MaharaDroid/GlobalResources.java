@@ -50,6 +50,7 @@ public class GlobalResources {
 	
 	public static final String ACCOUNT_TYPE = "nz.net.catalyst.MaharaDroid.account";
 	public static final String AUTHTOKEN_TYPE = "nz.net.catalyst.MaharaDroid.account";
+	public static final String CONTENT_URL = "nz.net.catalyst.MaharaDroid.provider";
 	public static final String SYNC_AUTHORITY = "nz.net.catalyst";
     public static final int REGISTRATION_TIMEOUT = 30 * 1000; // ms
 	

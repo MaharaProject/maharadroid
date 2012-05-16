@@ -23,13 +23,16 @@ package nz.net.catalyst.MaharaDroid;
 
 import java.io.File;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ContentProviderClient;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -37,6 +40,7 @@ import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -50,8 +54,7 @@ public class Utils {
 	
 	public static boolean canUpload(Context mContext) {
 		
-		SharedPreferences mPrefs;
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         boolean allowWiFi = false, allowMobile = false;
 
         String mSetting = mPrefs.getString(mContext.getResources().getString(R.string.pref_upload_connection_key), "");
@@ -166,7 +169,9 @@ public class Utils {
 
         PendingIntent contentIntent = null;
         // The PendingIntent to launch our activity if the user selects this notification
-        if ( intent != null ) { 
+        if ( intent == null ) {
+        	contentIntent = PendingIntent.getActivity(mContext, 0, new Intent(), 0);
+        } else {
         	contentIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
         }
         if ( description == null ) {
@@ -186,5 +191,111 @@ public class Utils {
 
     	mNM.cancel(id);
     }
+	public static long processSyncResults(JSONObject result, ContentProviderClient myProvider, Context mContext) {
+		// TODO Auto-generated method stub
+		long numUpdates = 0;
+		try {
+        	JSONObject syncObj = result.getJSONObject("sync");
+    		//Log.i(TAG, syncObj.toString());
+        	if ( syncObj.has("activity") ) {
+        		JSONArray notArr = syncObj.getJSONArray("activity");
+    			for (int i=0; i<notArr.length(); i++) {
+        	        Utils.showNotification(Integer.parseInt(notArr.getJSONObject(i).getString("id")), 
+        	        		notArr.getJSONObject(i).getString("subject"), notArr.getJSONObject(i).getString("message"), 
+        	        		null, mContext);
+        			numUpdates++;
+    			}
+        	} 
+        	if ( syncObj.has("tags") ) {
+        		long newItems = updateListPreferenceFromJSON(myProvider, syncObj.getJSONArray("tags"), "tag");
+    			numUpdates += newItems;
+        	}
+        	if ( syncObj.has("blogs") ) {
+        		long newItems = updateListPreferenceFromJSON(myProvider, syncObj.getJSONArray("blogs"), "blog");
+    			numUpdates += newItems;
+        	}
+        	if ( syncObj.has("folders") ) {
+        		long newItems = updateListPreferenceFromJSON(myProvider, syncObj.getJSONArray("folders"), "folder");
+    			numUpdates += newItems;
+        	}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
+		// Save last sync time
+		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+
+		mPrefs.edit()
+			.putLong("lastsync", System.currentTimeMillis()/1000)
+			.commit()
+			;
+		
+		return numUpdates;
+	}
+
+	private static long updateListPreferenceFromJSON(ContentProviderClient myProvider, JSONArray jsonArray, String fieldName) throws JSONException, RemoteException {
+		int items = jsonArray.length();
+		
+		ContentValues[] cv = new ContentValues[items];
+		Uri uri = Uri.parse(GlobalResources.CONTENT_URL + "/" + fieldName);
+		
+		Log.i(TAG, jsonArray.toString());
+
+		for (int i=0; i<items; i++) {
+			String value = jsonArray.getJSONObject(i).getString(fieldName);
+			String id = jsonArray.getJSONObject(i).getString("id");
+
+			Log.i(TAG, "id: " + id + ", value: " + value);
+
+			//if ( myProvider.query(uri, null, null, null, null) != null ) {
+			if ( cv[i] == null )
+				cv[i] = new ContentValues();
+			
+			cv[i].put("ID", id);
+			cv[i].put("VALUE", value);
+			//}
+		}
+		// TODO add a 'last_seen' column and delete any last_seen < this_sync
+		myProvider.delete(uri, null, null); // delete them all
+		
+		myProvider.bulkInsert(uri, cv);
+
+		return items;
+	}
+	
+	public static String getUploadURLPref(Context mContext) {
+		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+
+		return mPrefs.getString(mContext.getResources().getString(R.string.pref_upload_url_key), "");
+	}
+	public static Boolean getUploadCreateViewPref(Context mContext) {
+		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+
+		return mPrefs.getBoolean(mContext.getResources().getString(R.string.pref_upload_view_key), false);
+	}
+	public static String getUploadFolderPref(Context mContext) {
+		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+
+		return mPrefs.getString(mContext.getResources().getString(R.string.pref_upload_folder_key), "");
+	}
+	public static String getUploadAuthTokenPref(Context mContext) {
+		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+
+		return mPrefs.getString(mContext.getResources().getString(R.string.pref_auth_token_key), "");
+	}
+	public static String getUploadUsernamePref(Context mContext) {
+		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+
+		return mPrefs.getString(mContext.getResources().getString(R.string.pref_auth_username_key), "");
+	}
+	public static String getUploadTagsPref(String pref_tags, Context mContext) {
+		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+
+		String tags = ( pref_tags != null ) ? pref_tags.trim() : "" ;	
+		return (mPrefs.getString(mContext.getResources().getString(R.string.pref_upload_tags_key), "") + " " + tags).trim();  
+	}
 }

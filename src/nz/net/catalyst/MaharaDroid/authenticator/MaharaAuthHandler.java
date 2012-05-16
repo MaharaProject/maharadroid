@@ -20,8 +20,10 @@ public class MaharaAuthHandler {
 	// whether VERBOSE level logging is enabled
 	static final boolean VERBOSE = LogConfig.VERBOSE;
 
-//    private static HttpClient mHttpClient;
-	
+    // Unique Identification Number for the Notification.
+    // We use it on Notification start, and to cancel it.
+    private static int NOTIFICATION = R.string.login_authenticating;
+    
     /**
      * Executes the network requests on a separate thread.
      * 
@@ -48,28 +50,39 @@ public class MaharaAuthHandler {
      * password.
      * 
      * @param handler The hander instance from the calling UI thread.
-     * @param context The context of the calling Activity.
+     * @param mContext The context of the calling Activity.
      * @return boolean The boolean result indicating whether the user was
      *         successfully authenticated.
      */
-    public static boolean authenticate(String username, Handler handler, final Context context) {
+    public static boolean authenticate(String username, Handler handler, final Context mContext) {
 
     	// application preferences
-    	SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+    	SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
     	
-		String authSyncURI = mPrefs.getString(context.getResources().getString(R.string.pref_sync_url_key).toString(),
-				context.getResources().getString(R.string.pref_sync_url_default).toString());
+		String authSyncURI = mPrefs.getString(mContext.getResources().getString(R.string.pref_sync_url_key).toString(),
+				mContext.getResources().getString(R.string.pref_sync_url_default).toString());
 		
-    	String token = mPrefs.getString(context.getResources().getString(R.string.pref_auth_token_key), "");
+    	String token = mPrefs.getString(mContext.getResources().getString(R.string.pref_auth_token_key), "");
     	
         if ( username == null ) {
-        	username = mPrefs.getString(context.getResources().getString(R.string.pref_auth_username_key), "");
+        	username = mPrefs.getString(mContext.getResources().getString(R.string.pref_auth_username_key), "");
         }
     	Long lastsync = mPrefs.getLong("lastsync", 0);
 
-    	JSONObject result = RestClient.AuthSync(authSyncURI, token, username, lastsync, context);
-        token = Utils.updateTokenFromResult(result, context);
-		sendResult(username, token, handler, context);
+        Utils.showNotification(NOTIFICATION, mContext.getResources().getText(R.string.login_authenticating), 
+        						null, null, mContext);
+    	
+    	JSONObject result = RestClient.AuthSync(authSyncURI, token, username, lastsync, mContext);
+        token = Utils.updateTokenFromResult(result, mContext);
+
+        if ( token != null ) {
+        	Utils.showNotification(NOTIFICATION, mContext.getResources().getText(R.string.auth_result_success), null, 
+        			null , mContext);
+        } else {
+        	Utils.showNotification(NOTIFICATION, mContext.getResources().getText(R.string.auth_result_fail_short), 
+        			mContext.getResources().getText(R.string.auth_result_fail_long), null, mContext);
+        }
+		sendResult(username, token, handler, mContext);
 
         return (token == null);
     }

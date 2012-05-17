@@ -241,7 +241,7 @@ public class Utils {
 		int items = jsonArray.length();
 		
 		ContentValues[] cv = new ContentValues[items];
-		Uri uri = Uri.parse(GlobalResources.CONTENT_URL + "/" + fieldName);
+		Uri uri = Uri.parse("content://" + GlobalResources.CONTENT_URL + "/" + fieldName);
 		
 		Log.i(TAG, jsonArray.toString());
 
@@ -249,9 +249,11 @@ public class Utils {
 			String value = jsonArray.getJSONObject(i).getString(fieldName);
 			String id = jsonArray.getJSONObject(i).getString("id");
 
-			Log.i(TAG, "id: " + id + ", value: " + value);
+			Log.v(TAG, "saving " + fieldName + " [ id: " + id + ", value: " + value + "]");
 
-			//if ( myProvider.query(uri, null, null, null, null) != null ) {
+			// test provider query
+			myProvider.query(uri, null, null, null, null);
+			
 			if ( cv[i] == null )
 				cv[i] = new ContentValues();
 			

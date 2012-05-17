@@ -1,8 +1,6 @@
 package nz.net.catalyst.MaharaDroid.provider;
 
-import nz.net.catalyst.MaharaDroid.GlobalResources;
 import android.content.ContentProvider;
-import android.content.ContentProviderClient;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -13,8 +11,6 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
 public class MaharaProvider extends ContentProvider {
-
-	public static final String AUTHORITY = GlobalResources.SYNC_AUTHORITY;
 
 	private SQLiteDatabase sqlDB;
 	private DatabaseHelper dbHelper;

@@ -91,8 +91,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
             if (mRequestNewAccount) {
                 mAccountManager.addAccountExplicitly(account, null, null);
                 // Set contacts sync for this account.
-                ContentResolver.setSyncAutomatically(account, MaharaProvider.AUTHORITY, true);
-                ContentResolver.setIsSyncable(account, MaharaProvider.AUTHORITY, 1);
+                ContentResolver.setSyncAutomatically(account, GlobalResources.SYNC_AUTHORITY, true);
+                ContentResolver.setIsSyncable(account, GlobalResources.SYNC_AUTHORITY, 1);
             }
             
             final Intent intent = new Intent();

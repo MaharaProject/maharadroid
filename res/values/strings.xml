@@ -4,12 +4,12 @@
     
     <string name="artefacts_banner_text">Open source ePortfolios</string>
     <string name="artefacts_banner_text2">[mah-har-rah;verb]: to think, thinking, thought</string>
-    <string name="artefacts_no_saved_artefacts">No saved artefacts</string>
+    <string name="artefacts_no_saved_artefacts">Nothing saved.</string>
     
     <string name="options_menu_prefs">Preferences</string>
     <string name="options_menu_deleteall">Delete All</string>
     <string name="options_menu_uploadall">Upload All</string>
-    <string name="options_menu_viewsaved">Saved Files</string>
+    <string name="options_menu_viewsaved">Saved</string>
 
     <string name="context_menu_upload">Upload</string>
     <string name="context_menu_view">View</string>
@@ -37,36 +37,15 @@
 
     <string name="pref_upload_journal_key">upload.journal</string>
     <string name="pref_upload_journal_title">Journal</string>
-    <string name="pref_upload_journal_summary">Enter the Journal to post to</string>
-    <string name="pref_upload_journal_default">My Mobile Journal</string>  
-    <string-array name="pref_upload_journal_entry">
-        <item>My Mobile Journal</item>
-    </string-array>
-    <string-array name="pref_upload_journal_entryValues">
-        <item>My Mobile Journal</item>
-    </string-array>
+    <string name="pref_upload_journal_summary">Select the default journal to post to</string>
         
     <string name="pref_upload_folder_key">upload.folder</string>
     <string name="pref_upload_folder_title">Upload Folder</string>
-    <string name="pref_upload_folder_summary">Enter the (base) folder to upload your artefacts into</string>
-    <string name="pref_upload_folder_default">MobileUploads</string>  
-    <string-array name="pref_upload_folder_entry">
-        <item>MobileUploads</item>
-    </string-array>
-    <string-array name="pref_upload_folder_entryValues">
-        <item>MobileUploads</item>
-    </string-array>
+    <string name="pref_upload_folder_summary">Select the default folder to upload your files into</string>
         
     <string name="pref_upload_tags_key">upload.tags</string>
-    <string name="pref_upload_tags_title">Artefact Tags</string>
-    <string name="pref_upload_tags_summary">Enter the tags (space separated) to add to all uploaded artefacts</string>
-    <string name="pref_upload_tags_default">Android</string>  
-    <string-array name="pref_upload_tags_entry">
-        <item>Android</item>
-    </string-array>
-    <string-array name="pref_upload_tags_entryValues">
-        <item>Android</item>
-    </string-array>
+    <string name="pref_upload_tags_title">Tags</string>
+    <string name="pref_upload_tags_summary">Select the default tag to add to all uploaded files/journals</string>
         
     <string name="pref_upload_connection_key">upload.connection</string>
     <string name="pref_upload_connection_title">Connection Type</string>
@@ -96,15 +75,15 @@
     
 	<string name="lbluploadoptions">Upload Settings</string>
 	
-	<string name="artifact_retrieve_error">Error Retrieving File Details</string>
+	<string name="artifact_retrieve_error">Error Retrieving Details</string>
     <string name="artifactsettings">Settings</string>
-    <string name="transferprogress">File Transfer Progress</string>
+    <string name="transferprogress">Upload progress</string>
     <string name="uploadstarting">Your Upload is Starting</string>
     <string name="uploadfinished">Your Upload is Finished</string>
     <string name="uploadfailed">Upload failed</string>
     <string name="savefailed">Save failed</string>
     <string name="uploadsaved">Upload saved</string>
-    <string name="uploadnotavailable">Sorry you can only uploaded files as artefacts.</string>
+    <string name="uploadnotavailable">Sorry you can only uploaded files.</string>
     <string name="uploadingartifact">Uploading ...</string>
     <string name="uploading">Uploading</string>
     <string name="uploadnoconnection">Sorry you don\'t have a working data connection to upload at this time.</string>

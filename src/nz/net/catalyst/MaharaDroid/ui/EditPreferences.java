@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -57,19 +58,24 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 
+import nz.net.catalyst.MaharaDroid.GlobalResources;
 import nz.net.catalyst.MaharaDroid.LogConfig;
 import nz.net.catalyst.MaharaDroid.R;
 import nz.net.catalyst.MaharaDroid.authenticator.AuthenticatorActivity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -93,6 +99,49 @@ public class EditPreferences extends PreferenceActivity implements OnSharedPrefe
 		addPreferencesFromResource(R.xml.preferences);	
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		prefs.registerOnSharedPreferenceChangeListener(this);
+
+		loadPreferenceLists(getResources().getString(R.string.pref_upload_journal_key), "blog");
+		loadPreferenceLists(getResources().getString(R.string.pref_upload_tags_key), "tag");
+		loadPreferenceLists(getResources().getString(R.string.pref_upload_folder_key), "folder");
+	}
+	
+	private void loadPreferenceLists(String pref_key, String pref_table) {
+		
+    	ContentResolver cr = this.getContentResolver();
+    	Uri uri = Uri.parse("content://" + GlobalResources.CONTENT_URL + "/" + pref_table);
+    	
+    	Cursor cursor = cr.query(uri, new String[] { "ID", "VALUE" }, null, null, null);
+		ListPreference lp = (ListPreference) findPreference(pref_key);
+
+		if (lp != null && cursor != null) {
+			//if ( DEBUG ) Log.d(TAG, "cursor query succeeded [" + cursor.getCount() + " rows, " + cursor.getColumnCount() + " columns]");
+			try { 
+				cursor.moveToFirst();
+	
+				CharSequence entries[] = new String[cursor.getCount()];
+				CharSequence entryValues[] = new String[cursor.getCount()];
+				int i = 0;
+
+				while(!cursor.isAfterLast()) {
+				
+					//if ( DEBUG ) Log.d(TAG, "row [" + i + "]");
+					entryValues[i] = cursor.getString(0);
+					entries[i] = cursor.getString(1);
+					i++;
+					cursor.moveToNext();
+				}
+				cursor.close();
+
+				lp.setEntries(entries);
+			    lp.setEntryValues(entryValues);
+			} catch ( android.database.CursorIndexOutOfBoundsException e ) { 
+				if ( DEBUG ) Log.d(TAG, "couldn't get file_path from cursor");
+				return;
+			}
+		} else {
+			if ( DEBUG ) Log.d(TAG, "cursor query failed");
+			return;
+		}
 	}
 		
 	@Override

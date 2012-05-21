@@ -27,6 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import nz.net.catalyst.MaharaDroid.R;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -56,6 +57,12 @@ public class Utils {
 		
 		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         boolean allowWiFi = false, allowMobile = false;
+        
+        // Haven't confirmed upload conditions.
+        // TODO validate it's OK to have this here.
+        if ( ! mPrefs.getBoolean("Upload Conditions Confirmed", false) ) {
+        	return false;
+        }
 
         String mSetting = mPrefs.getString(mContext.getResources().getString(R.string.pref_upload_connection_key), "");
         
@@ -95,7 +102,7 @@ public class Utils {
     	
 		if ( DEBUG ) Log.d(TAG, "URI = '" + uri.toString() + "', scheme = '" + uri.getScheme() + "'");
 
-		if ( uri.getScheme().equals("content") ) {
+		if ( uri.getScheme() != null && uri.getScheme().equals("content") ) {
 	    	// Get the filename of the media file and use that as the default title.
 	    	ContentResolver cr = context.getContentResolver();
 	    	Cursor cursor = cr.query(uri, new String[]{android.provider.MediaStore.MediaColumns.DATA}, null, null, null);
@@ -120,6 +127,15 @@ public class Utils {
 			File t = new File(file_path);
 			if ( ! t.exists() )
 				return null;
+		}
+		
+		if ( DEBUG ) Log.d(TAG, "file path = '" + file_path + "'");
+
+		// Online image not in gallery
+		// TODO check http://jimmi1977.blogspot.co.nz/2012/01/android-api-quirks-getting-image-from.html
+		//      for workaround
+		if ( file_path == "null" ){
+			return null;
 		}
 		return file_path;
     }
@@ -273,11 +289,6 @@ public class Utils {
 		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 
 		return mPrefs.getString(mContext.getResources().getString(R.string.pref_upload_url_key), "");
-	}
-	public static Boolean getUploadCreateViewPref(Context mContext) {
-		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-
-		return mPrefs.getBoolean(mContext.getResources().getString(R.string.pref_upload_view_key), false);
 	}
 	public static String getUploadFolderPref(Context mContext) {
 		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);

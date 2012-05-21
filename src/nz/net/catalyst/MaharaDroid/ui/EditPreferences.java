@@ -110,7 +110,8 @@ public class EditPreferences extends PreferenceActivity implements OnSharedPrefe
     	ContentResolver cr = this.getContentResolver();
     	Uri uri = Uri.parse("content://" + GlobalResources.CONTENT_URL + "/" + pref_table);
     	
-    	Cursor cursor = cr.query(uri, new String[] { "ID", "VALUE" }, null, null, null);
+    	
+    	Cursor cursor = cr.query(uri, GlobalResources.CONTENT_FIELDS, null, null, null);
 		ListPreference lp = (ListPreference) findPreference(pref_key);
 
 		if (lp != null && cursor != null) {
@@ -177,14 +178,6 @@ public class EditPreferences extends PreferenceActivity implements OnSharedPrefe
 			return true;
 		case R.id.scan:
 			startScan();
-//			try {
-//				Intent intent = new Intent(GlobalResources.CONFIG_SCAN_INTENT);
-//				intent.putExtra("SCAN_MODE", GlobalResources.CONFIG_SCAN_MODE);
-//				startActivityForResult(intent, 0);
-//		    } catch (ActivityNotFoundException e) {
-//	        	Toast.makeText(this, getResources().getString(R.string.scan_not_available), 
-//	        						Toast.LENGTH_SHORT).show();
-//		    }
 	    	return true;
 		default:
 			return super.onOptionsItemSelected(item);

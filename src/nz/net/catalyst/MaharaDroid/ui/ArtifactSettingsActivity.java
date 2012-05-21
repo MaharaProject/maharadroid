@@ -235,15 +235,17 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 			//TODO make TransferService take a parcelable Artefact as input
 			Intent uploader_intent = new Intent(this, TransferService.class);
 
-			uploader_intent.putExtra("filename", filename);
-			uploader_intent.putExtra("title", title);
-			uploader_intent.putExtra("description", description);
-			uploader_intent.putExtra("tags", tags);
-				
+			//uploader_intent.putExtra("filename", filename);
+			//uploader_intent.putExtra("title", title);
+			//uploader_intent.putExtra("description", description);
+			//uploader_intent.putExtra("tags", tags);
+			Artefact a = new Artefact(new Long(0), new Long(0), filename, title, description, tags);
+			uploader_intent.putExtra("artefact", a);
+			
 			// Start the uploader service and pass in the intent containing
 			// the upload information.
 			startService(uploader_intent);
-			Toast.makeText(this, R.string.uploadstarting, Toast.LENGTH_SHORT).show();
+			//Toast.makeText(this, R.string.uploadstarting, Toast.LENGTH_SHORT).show();
 		}
 	}
 

@@ -21,17 +21,24 @@
 
 package nz.net.catalyst.MaharaDroid.ui;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 
+import nz.net.catalyst.MaharaDroid.GlobalResources;
 import nz.net.catalyst.MaharaDroid.LogConfig;
 import nz.net.catalyst.MaharaDroid.R;
 import nz.net.catalyst.MaharaDroid.Utils;
 import nz.net.catalyst.MaharaDroid.data.Artefact;
 import nz.net.catalyst.MaharaDroid.data.ArtefactDataSQLHelper;
+import nz.net.catalyst.MaharaDroid.ui.EditPreferences.ConfigXMLHandler;
 import nz.net.catalyst.MaharaDroid.ui.about.AboutActivity;
 import android.app.Activity;
 import android.app.ExpandableListActivity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -41,6 +48,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.BaseColumns;
+import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -77,6 +86,8 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 	private ExpandableListAdapter adapter;
 	
 	private ExpandableListView listview;
+	
+	private Uri imageUri = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -136,7 +147,10 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 			String description = cursor.getString(4);
 			String tags = cursor.getString(5);
 			
-			// TODO: check if file exists 
+			// TODO: check if file exists
+			if ( filename == null ) {
+				artefactData.deleteSavedArtefact(id);
+			}
 			
 			if ( Utils.getFilePath(this, filename) != null ) {
 				Artefact a = new Artefact(id, time, filename, title, description, tags);
@@ -167,45 +181,6 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 		
 		return items;
 	}
-//	public void uploadAllSavedArtefacts() {
-//    	if ( artefactData == null )
-//    		artefactData = new ArtefactDataSQLHelper(this);
-//
-//    	SQLiteDatabase db = artefactData.getReadableDatabase();
-//	    Cursor cursor = db.query(ArtefactDataSQLHelper.TABLE, null, null, null, null,
-//	        null, null);
-//	    
-//	    //startManagingCursor(cursor);
-//
-//	    while (cursor.moveToNext()) {
-//	        Long id = cursor.getLong(0);
-//	        Long time = cursor.getLong(1);	
-//			String filename = cursor.getString(2);
-//			String title = cursor.getString(3);
-//			String description = cursor.getString(4);
-//			String tags = cursor.getString(5);
-//			Artefact a = new Artefact(id, time, filename, title, description, tags);
-//			a.upload(true, this);
-//		}
-//		artefactData.close();
-//	}
-//    //---deletes a particular item---
-//    public boolean deleteSavedArtefact(long id) {
-//    	if ( artefactData == null )
-//    		artefactData = new ArtefactDataSQLHelper(this);
-//
-//    	SQLiteDatabase db = artefactData.getWritableDatabase();
-//        return db.delete(ArtefactDataSQLHelper.TABLE, BaseColumns._ID + "=" + id, null) > 0;
-//    }
-//    //---deletes all items---
-//    private boolean deleteAllSavedArtefacts() {
-//    	if ( artefactData == null )
-//    		artefactData = new ArtefactDataSQLHelper(this);
-//
-//		SQLiteDatabase db = artefactData.getWritableDatabase();
-//        return db.delete(ArtefactDataSQLHelper.TABLE, null, null) > 0;
-//        
-//    }
 	public boolean onCreateOptionsMenu(Menu menu) {
 		boolean result = super.onCreateOptionsMenu(menu);
 
@@ -222,7 +197,7 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 				loadSavedArtefacts();
 				break;
 			case R.id.option_upload:
-				artefactData.uploadAllSavedArtefacts();
+				artefactData.uploadAllSavedArtefacts(true);
 				loadSavedArtefacts();
 				break;
 			case R.id.about:
@@ -233,8 +208,37 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				startActivity(intent);
 				break;
+			case R.id.option_account:
+				//i.putExtra(Settings.EXTRA_AUTHORITIES, new String[] {GlobalResources.ACCOUNT_TYPE});
+				
+				startActivity(new Intent(Settings.ACTION_SYNC_SETTINGS).putExtra(Settings.EXTRA_AUTHORITIES, new String[] {GlobalResources.SYNC_AUTHORITY}));
+				break;
+			case R.id.option_camera:
+				//define the file-name to save photo taken by Camera activity
+				String fileName = "maharadroid-tmp.jpg";
+				//create parameters for Intent with filename
+				ContentValues values = new ContentValues();
+				values.put(MediaStore.Images.Media.TITLE, fileName);
+				values.put(MediaStore.Images.Media.DESCRIPTION,"Image capture by camera for MaharaDroid");
+				//imageUri is the current activity attribute, define and save it for later usage (also in onSaveInstanceState)
+				imageUri = getContentResolver().insert(
+						MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+				//create new Intent
+				Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+				i.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+				i.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+				startActivityForResult(i, 0); 
+				break;
 		}
 		return true;
+	}
+	public void onActivityResult(int requestCode, int resultCode, Intent intent) { 
+		
+        if (resultCode == Activity.RESULT_OK) {
+        	Intent i = new Intent(this, ArtifactSettingsActivity.class);
+        	i.putExtra("uri", new String[] { imageUri.toString() });
+        	startActivity(i);        	
+        }
 	}
 
 

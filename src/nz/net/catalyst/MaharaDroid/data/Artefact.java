@@ -22,6 +22,7 @@
 package nz.net.catalyst.MaharaDroid.data;
 
 import nz.net.catalyst.MaharaDroid.ui.ArtifactSettingsActivity;
+import nz.net.catalyst.MaharaDroid.upload.TransferService;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -132,11 +133,16 @@ public class Artefact extends Object implements Parcelable {
 	}
 	
 	public void upload(Boolean auto, Context mContext) {
-		Intent i = new Intent(mContext, ArtifactSettingsActivity.class);
+		Intent i = new Intent(mContext, TransferService.class);
 		i.putExtra("artefact", (Parcelable) this);
 		if ( auto ) 
 			i.putExtra("auto", "yes please");
-		mContext.startActivity(i);
+		mContext.startService(i);
+	}
+	public void delete(Context mContext) {
+        ArtefactDataSQLHelper artefactData = new ArtefactDataSQLHelper(mContext);
+        artefactData.deleteSavedArtefact(id);
+        artefactData.close();
 	}
 	public void view(Context mContext) {
 		Intent i = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(this.getFilename()));

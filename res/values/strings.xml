@@ -7,6 +7,8 @@
     <string name="artefacts_no_saved_artefacts">Nothing saved.</string>
     
     <string name="options_menu_prefs">Preferences</string>
+    <string name="options_menu_account">Account &amp; Sync</string>
+    <string name="options_menu_camera">Camera</string>
     <string name="options_menu_deleteall">Delete All</string>
     <string name="options_menu_uploadall">Upload All</string>
     <string name="options_menu_viewsaved">Saved</string>
@@ -33,6 +35,20 @@
     <string name="pref_auth_token_title">Token</string>
     <string name="pref_auth_token_summary">Enter your Mahara mobile token</string>     
 
+    <string name="pref_upload_connection_key">upload.connection</string>
+    <string name="pref_upload_connection_title">Connection Type</string>
+    <string name="pref_upload_connection_summary">Restrict upload to the following connection types (default is fall back to handset settings):</string>     
+    <string-array name="pref_upload_connection_entry">
+        <item>Default</item>
+        <item>WiFi only</item>
+        <item>Mobile only</item>
+    </string-array>
+    <string-array name="pref_upload_connection_entryValues">
+        <item></item>
+        <item>wifi</item>
+        <item>mobile</item>
+    </string-array>
+    
     <string name="prefcat_advanced">Advanced</string>
 
     <string name="pref_upload_journal_key">upload.journal</string>
@@ -47,20 +63,10 @@
     <string name="pref_upload_tags_title">Tags</string>
     <string name="pref_upload_tags_summary">Select the default tag to add to all uploaded files/journals</string>
         
-    <string name="pref_upload_connection_key">upload.connection</string>
-    <string name="pref_upload_connection_title">Connection Type</string>
-    <string name="pref_upload_connection_summary">Restrict upload to the following connection types (default is fall back to handset settings):</string>     
-    <string-array name="pref_upload_connection_entry">
-        <item>Default</item>
-        <item>WiFi only</item>
-        <item>Mobile only</item>
-    </string-array>
-    <string-array name="pref_upload_connection_entryValues">
-        <item></item>
-        <item>wifi</item>
-        <item>mobile</item>
-    </string-array>
-
+    <string name="pref_sync_periodic_key">sync.periodic</string>
+    <string name="pref_sync_periodic_title">Periodic Sync</string>
+    <string name="pref_sync_periodic_summary">Enter the time in minutes to force a perioidc sync (leave blank for none)</string>
+    
     <string name="pref_menu_reset">Reset</string>
     <string name="pref_menu_about">About</string>
     <string name="pref_menu_scan">Scan</string>

@@ -1,5 +1,6 @@
 package nz.net.catalyst.MaharaDroid.provider;
 
+import nz.net.catalyst.MaharaDroid.GlobalResources;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
@@ -17,7 +18,6 @@ public class MaharaProvider extends ContentProvider {
 
 	private static final String DATABASE_NAME = "maharadroid_sync.db";
 	private static final int DATABASE_VERSION = 1;
-	private static final String[] TABLES = new String[] { "tag", "blog", "folder" };
 	private static final String TAG = "MyContentProvider";
 
 	private static class DatabaseHelper extends SQLiteOpenHelper {
@@ -29,17 +29,17 @@ public class MaharaProvider extends ContentProvider {
 		@Override
 		public void onCreate(SQLiteDatabase db) {
 			// create table to store user names
-			for ( int i = 0; i < TABLES.length; i++ ) {
+			for ( int i = 0; i < GlobalResources.CONTENT_TABLES.length; i++ ) {
 				db.execSQL("Create table "
-						+ TABLES[i]
+						+ GlobalResources.CONTENT_TABLES[i]
 						+ "( _id INTEGER PRIMARY KEY AUTOINCREMENT, ID TEXT, VALUE TEXT);");
 			}
 		}
 
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-			for ( int i = 0; i < TABLES.length; i++ ) {
-				db.execSQL("DROP TABLE IF EXISTS " + TABLES[i]);
+			for ( int i = 0; i < GlobalResources.CONTENT_TABLES.length; i++ ) {
+				db.execSQL("DROP TABLE IF EXISTS " + GlobalResources.CONTENT_TABLES[i]);
 			}
 			onCreate(db);
 		}

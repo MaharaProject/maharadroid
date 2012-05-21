@@ -13,7 +13,7 @@
 		android:title="@string/pref_sync_url_title"
 		android:summary="@string/pref_sync_url_summary"
 		android:defaultValue="@string/pref_sync_url_default" />	
-		<EditTextPreference
+	<EditTextPreference
 		android:key="@string/pref_auth_username_key"
 		android:title="@string/pref_auth_username_title"
 		android:summary="@string/pref_auth_username_summary"	/>	
@@ -21,6 +21,16 @@
 		android:key="@string/pref_auth_token_key"
 		android:title="@string/pref_auth_token_title"
 		android:summary="@string/pref_auth_token_summary"	/>	
+		
+    <ListPreference
+        android:key="@string/pref_upload_connection_key"
+        android:title="@string/pref_upload_connection_title"
+        android:summary="@string/pref_upload_connection_summary"
+        android:defaultValue=""
+        android:entries="@array/pref_upload_connection_entry"
+        android:entryValues="@array/pref_upload_connection_entryValues"
+        android:dialogTitle="@string/pref_upload_connection_title" />
+	
 	<PreferenceCategory
 		android:title="@string/prefcat_advanced">
 
@@ -42,14 +52,11 @@
 		android:summary="@string/pref_upload_tags_summary"
         android:dialogTitle="@string/pref_upload_tags_title" />	
 
-    <ListPreference
-        android:key="@string/pref_upload_connection_key"
-        android:title="@string/pref_upload_connection_title"
-        android:summary="@string/pref_upload_connection_summary"
-        android:defaultValue=""
-        android:entries="@array/pref_upload_connection_entry"
-        android:entryValues="@array/pref_upload_connection_entryValues"
-        android:dialogTitle="@string/pref_upload_connection_title" />
+	<EditTextPreference
+		android:key="@string/pref_sync_periodic_key"
+		android:title="@string/pref_sync_periodic_title"
+		android:summary="@string/pref_sync_periodic_summary"
+		android:defaultValue=""	/>	
 	
 	</PreferenceCategory>
 			

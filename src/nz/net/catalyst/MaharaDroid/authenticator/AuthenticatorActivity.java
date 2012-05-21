@@ -17,7 +17,7 @@
 package nz.net.catalyst.MaharaDroid.authenticator;
 
 import nz.net.catalyst.MaharaDroid.authenticator.AuthenticatorActivity;
-import nz.net.catalyst.MaharaDroid.provider.MaharaProvider;
+import nz.net.catalyst.MaharaDroid.syncadapter.ThreadedSyncAdapter;
 import nz.net.catalyst.MaharaDroid.GlobalResources;
 import nz.net.catalyst.MaharaDroid.LogConfig;
 import android.accounts.Account;
@@ -89,9 +89,13 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
             final Account account = new Account(username, GlobalResources.ACCOUNT_TYPE);
 
             if (mRequestNewAccount) {
+            	Bundle bundle = new Bundle();
+            	bundle.putBoolean(ThreadedSyncAdapter.EXTRAS_SYNC_IS_PERIODIC, true);
+            	
                 mAccountManager.addAccountExplicitly(account, null, null);
                 // Set contacts sync for this account.
                 ContentResolver.setSyncAutomatically(account, GlobalResources.SYNC_AUTHORITY, true);
+                ContentResolver.addPeriodicSync(account, GlobalResources.SYNC_AUTHORITY, bundle, ThreadedSyncAdapter.DEFAULT_SYNC_FREQUENCY);
                 ContentResolver.setIsSyncable(account, GlobalResources.SYNC_AUTHORITY, 1);
             }
             

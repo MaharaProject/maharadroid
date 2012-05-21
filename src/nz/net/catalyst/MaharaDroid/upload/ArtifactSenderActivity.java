@@ -25,7 +25,6 @@ import java.util.ArrayList;
 
 import nz.net.catalyst.MaharaDroid.LogConfig;
 import nz.net.catalyst.MaharaDroid.R;
-import nz.net.catalyst.MaharaDroid.R.string;
 import nz.net.catalyst.MaharaDroid.ui.ArtifactSettingsActivity;
 
 import android.app.Activity;

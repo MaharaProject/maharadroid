@@ -46,13 +46,6 @@
             </intent-filter>
         </activity>
         
-        <activity android:name=".ui.TransferProgress" android:label="@string/transferprogress">
-            <intent-filter>
-                <action android:name="nz.net.catalyst.MaharaDroid.TRANSFERPROGRESS" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
 		<activity android:name=".upload.ArtifactSenderActivity" 
 				  android:label="@string/app_name"
 		          android:enabled="true" android:exported="true">
@@ -76,8 +69,9 @@
      	<activity android:name=".authenticator.AuthenticatorActivity"
      	    android:theme="@android:style/Theme.Dialog"
             android:excludeFromRecents="true" />
-        	    
+
         <service android:name=".upload.TransferService" android:label="@string/filetransfers"/>
+        
     	<service android:name=".authenticator.AccountAuthenticatorService"
 	    		android:exported="true">
 	    	<intent-filter>
@@ -104,11 +98,12 @@
 	 		      android:syncable="true"
 	  			  android:enabled="true">
 	  	</provider>
-    </application>
-    <!--  API Level 4 aka 1.6 required for multi-send support -->
-    <!--  API Level 5 aka 2.0 required for Account & Sync support -->
-    <uses-sdk android:minSdkVersion="5" /> 
-	<uses-permission android:name="android.permission.INTERNET"/>
+	</application>
+   	<!--  API Level 4 aka 1.6 required for multi-send support -->
+   	<!--  API Level 5 aka 2.0 required for Account & Sync support -->
+   	<!--  API Level 7 aka 2.2 required for (filtered) Account & Sync Intent support -->
+   	<uses-sdk android:minSdkVersion="7" /> 
+   	<uses-permission android:name="android.permission.INTERNET"/>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />

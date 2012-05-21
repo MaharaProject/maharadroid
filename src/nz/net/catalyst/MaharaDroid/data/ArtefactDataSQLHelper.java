@@ -21,6 +21,7 @@
 
 package nz.net.catalyst.MaharaDroid.data;
 
+import nz.net.catalyst.MaharaDroid.Utils;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -79,10 +80,16 @@ public class ArtefactDataSQLHelper extends SQLiteOpenHelper {
 			db.execSQL(sql);
 	}
 	
-	public void uploadAllSavedArtefacts() {
+	public void uploadAllSavedArtefacts(Boolean uploaded) {
     	SQLiteDatabase db = this.getReadableDatabase();
+    	
+    	if ( uploaded == null ) {
+    		uploaded = false;
+    	}
 	    Cursor cursor = db.query(ArtefactDataSQLHelper.TABLE, null, null, null, null,
-	        null, null);
+		        null, null);
+//	    Cursor cursor = db.query(ArtefactDataSQLHelper.TABLE, null, " UPLOADED = ? ", new String[] { uploaded.toString() }, null,
+//	        null, null);
 	    
 	    //startManagingCursor(cursor);
 
@@ -93,8 +100,17 @@ public class ArtefactDataSQLHelper extends SQLiteOpenHelper {
 			String title = cursor.getString(3);
 			String description = cursor.getString(4);
 			String tags = cursor.getString(5);
-			Artefact a = new Artefact(id, time, filename, title, description, tags);
-			a.upload(true, mContext);
+			
+			if ( filename == null ) {
+				continue;
+			}
+			String file_path = Utils.getFilePath(mContext, filename); 
+			if ( file_path != null ) {
+				Artefact a = new Artefact(id, time, file_path, title, description, tags);
+				
+				//	TODO - if success, delete them?
+				a.upload(true, mContext);
+			}
 		}
 	}
     //---deletes a particular item---

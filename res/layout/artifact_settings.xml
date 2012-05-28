@@ -1,16 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:orientation="vertical"
-	    android:layout_width="fill_parent"
-		android:layout_height="fill_parent">
-		<LinearLayout
-		  xmlns:android="http://schemas.android.com/apk/res/android"
-		  android:id="@+id/ArtifactSettingsLayout"
-		  android:layout_width="fill_parent"
-		  android:layout_height="fill_parent"
-		  android:padding="5dp"
-		  android:orientation="vertical">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:id="@+id/top"
+	   	    android:padding="10dp"	  
+	   	    android:orientation="vertical"
+		    >
 		
+			<LinearLayout
+				  xmlns:android="http://schemas.android.com/apk/res/android"
+				  android:id="@+id/JournalLayout"
+				  android:layout_width="fill_parent"
+				  android:layout_height="wrap_content"
+				  android:orientation="horizontal">
+				  
+				<TextView android:text="@string/upload_journal_label"
+					  android:layout_width="60dip"
+					  android:layout_height="wrap_content"
+	  				  android:padding="2dip"
+	  				  android:layout_margin="5dip"
+	  				  style="@android:style/TextAppearance.Small">
+				</TextView>
+			    <Spinner 
+			        android:id="@+id/upload_journal_spinner"
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+
+			    	/>
+			</LinearLayout>
+			    		    
 			<LinearLayout
 				  xmlns:android="http://schemas.android.com/apk/res/android"
 				  android:id="@+id/ArtifactConfirmLayout"
@@ -21,9 +43,9 @@
 					<CheckBox android:text="@string/upload_confirm_label"
 							style="@android:style/TextAppearance.Small"
 							android:id="@+id/chkUpload"
-							  android:layout_width="wrap_content"
+						    android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
-							android:layout_margin="10dip"
+							android:layout_margin="5dip"
 			  							  />
 					
 					<TextView android:text="@string/upload_confirm_text"
@@ -31,8 +53,8 @@
 							  android:layout_width="wrap_content"
 							  android:singleLine="false"
 							  android:layout_height="wrap_content"
-			  				  android:padding="2dip"
-			  				  android:layout_margin="10dip"
+			  				  android:padding="5dip"
+			  				  android:layout_margin="5dip"
 			  				  style="@android:style/TextAppearance.Small">
 					</TextView>
 			</LinearLayout>
@@ -47,15 +69,15 @@
 				  android:id="@+id/ArtifactTitleLayout"
 				  android:layout_width="fill_parent"
 				  android:layout_height="wrap_content"
-				  android:layout_marginTop="10dp"
+				  android:layout_marginTop="5dp"
 				  android:orientation="horizontal">
 
 					<TextView android:text="@string/upload_title_label"
-							  android:layout_width="50dip"
+							  android:layout_width="60dip"
 							  android:singleLine="false"
 							  android:layout_height="wrap_content"
 			  				  android:padding="2dip"
-			  				  android:layout_margin="10dip"
+			  				  android:layout_margin="5dip"
 			  				  style="@android:style/TextAppearance.Small">
 					</TextView>
 				  
@@ -72,15 +94,15 @@
 				  android:id="@+id/ArtifactDescriptionLayout"
 				  android:layout_width="fill_parent"
   				  android:layout_height="wrap_content"
-				  android:layout_marginTop="10dp"
+				  android:layout_marginTop="5dp"
 				  android:orientation="horizontal">
 
 					<TextView android:text="@string/upload_description_label"
-							  android:layout_width="50dip"
+							  android:layout_width="60dip"
 							  android:singleLine="false"
 							  android:layout_height="wrap_content"
 			  				  android:padding="2dip"
-			  				  android:layout_margin="10dip"
+			  				  android:layout_margin="5dip"
 			  				  style="@android:style/TextAppearance.Small">
 					</TextView>
 					<EditText android:text=""
@@ -95,18 +117,18 @@
 				  xmlns:android="http://schemas.android.com/apk/res/android"
 				  android:layout_width="fill_parent"
 				  android:layout_height="wrap_content"
-				  android:layout_marginTop="10dp"
+				  android:layout_marginTop="5dp"
 				  android:orientation="horizontal">
 
 					<TextView android:text="@string/upload_tags_label"
-							  android:layout_width="50dip"
+							  android:layout_width="60dip"
 							  android:singleLine="false"
 							  android:layout_height="wrap_content"
 			  				  android:padding="2dip"
-			  				  android:layout_margin="10dip"
+			  				  android:layout_margin="5dip"
 			  				  style="@android:style/TextAppearance.Small">
 					</TextView>
-
+					
 					<EditText android:text=""
 							  android:id="@+id/txtArtifactTags"
 							  android:singleLine="true"
@@ -115,11 +137,33 @@
 				  	</EditText>
 			</LinearLayout>
 			<LinearLayout
+				  xmlns:android="http://schemas.android.com/apk/res/android"
+				  android:layout_width="fill_parent"
+				  android:layout_height="wrap_content"
+				  android:layout_marginTop="5dp"
+				  android:orientation="horizontal">
+					<TextView android:text=""
+							  android:layout_width="60dip"
+							  android:singleLine="false"
+							  android:layout_height="wrap_content"
+			  				  android:padding="2dip"
+			  				  android:layout_margin="5dip"
+			  				  style="@android:style/TextAppearance.Small">
+					</TextView>
+			
+				    <Spinner 
+					        android:id="@+id/upload_tags_spinner"
+					        android:layout_width="fill_parent"
+					        android:layout_height="wrap_content"
+				    />
+			</LinearLayout>	
+	
+			<LinearLayout
 			  xmlns:android="http://schemas.android.com/apk/res/android"
 			  android:id="@+id/ArtifactSettingsButtonLayout"
 			  android:layout_width="fill_parent"
 			  android:layout_height="wrap_content"
-			  android:layout_marginTop="10dp"
+			  android:layout_margin="5dp"
 			  android:gravity="center_horizontal"
 			  android:orientation="horizontal">
 			  
@@ -158,5 +202,6 @@
 							  android:layout_height="wrap_content"
 							  android:visibility="invisible">
 				  	</EditText>
-	</LinearLayout>
+		</LinearLayout>
+	
 </ScrollView>

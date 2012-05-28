@@ -82,7 +82,7 @@ $activity_arr = get_records_sql_array('select n.id, n.subject, n.message
 					where n.type=a.id and n.read=0 and '
 					. db_format_tsfield('n.ctime', '') . ' >= ? and n.usr= ? ', 
 					array($lastsync + 0, $USER->id));
-if ( count($activity_arr) ) 
+if ( trim($activity_arr) != '' ) 
   $json['activity'] = $activity_arr;
 
 // OK - let's add tags

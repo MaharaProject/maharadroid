@@ -43,6 +43,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.util.Log;
 
 public class Utils {
@@ -283,6 +284,26 @@ public class Utils {
 		myProvider.bulkInsert(uri, cv);
 
 		return items;
+	}
+	public static Intent makeCameraIntent(Context mContext) {
+		
+		//define the file-name to save photo taken by Camera activity
+		String fileName = GlobalResources.TEMP_PHOTO_FILENAME;
+
+		if ( VERBOSE ) Log.v(TAG, "invoking camera (" + fileName + ")");
+
+		//create parameters for Intent with filename
+		ContentValues values = new ContentValues();
+		values.put(MediaStore.Images.Media.TITLE, fileName);
+		values.put(MediaStore.Images.Media.DESCRIPTION,"Image capture by camera for MaharaDroid");
+		//imageUri is the current activity attribute, define and save it for later usage (also in onSaveInstanceState)
+		Uri imageUri = mContext.getContentResolver().insert(
+				MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+		//create new Intent
+		Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		i.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+		i.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+		return i;
 	}
 	
 	public static String getUploadURLPref(Context mContext) {

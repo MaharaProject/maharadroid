@@ -64,6 +64,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnCreateContextMenuListener;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -78,6 +79,8 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 	static final boolean DEBUG = LogConfig.isDebug(TAG);
 	// whether VERBOSE level logging is enabled
 	static final boolean VERBOSE = LogConfig.VERBOSE;
+
+	private static Context mContext;
 	
 	private ArtefactDataSQLHelper artefactData;
 	
@@ -95,6 +98,8 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 	    requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 
 	    setContentView(R.layout.artefacts);
+	    mContext = this;
+	    
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.windowtitle);
 	
         ((TextView) findViewById(R.id.windowtitle_text)).setText(getString(R.string.app_name));
@@ -103,7 +108,7 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
         listview = (ExpandableListView) findViewById(R.id.listView);
 //        listview.setOnChildClickListener(this);
         registerForContextMenu(listview);
-
+        
 	    loadSavedArtefacts();
 	}
 
@@ -146,14 +151,11 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 			String title = cursor.getString(3);
 			String description = cursor.getString(4);
 			String tags = cursor.getString(5);
-			
-			// TODO: check if file exists
-			if ( filename == null ) {
-				artefactData.deleteSavedArtefact(id);
-			}
-			
-			if ( Utils.getFilePath(this, filename) != null ) {
-				Artefact a = new Artefact(id, time, filename, title, description, tags);
+			Long saved_id = cursor.getLong(6);
+			String journal_id = cursor.getString(7);
+					
+			if ( filename == null || Utils.getFilePath(this, filename) != null ) {
+				Artefact a = new Artefact(id, time, filename, title, description, tags, saved_id, journal_id);
 				adapter.addItem(a);
 				items++;
 			} else {
@@ -214,33 +216,47 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 				startActivity(new Intent(Settings.ACTION_SYNC_SETTINGS).putExtra(Settings.EXTRA_AUTHORITIES, new String[] {GlobalResources.SYNC_AUTHORITY}));
 				break;
 			case R.id.option_camera:
-				//define the file-name to save photo taken by Camera activity
-				String fileName = "maharadroid-tmp.jpg";
-				//create parameters for Intent with filename
-				ContentValues values = new ContentValues();
-				values.put(MediaStore.Images.Media.TITLE, fileName);
-				values.put(MediaStore.Images.Media.DESCRIPTION,"Image capture by camera for MaharaDroid");
-				//imageUri is the current activity attribute, define and save it for later usage (also in onSaveInstanceState)
-				imageUri = getContentResolver().insert(
-						MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-				//create new Intent
-				Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-				i.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-				i.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-				startActivityForResult(i, 0); 
+				startActivityForResult(Utils.makeCameraIntent(mContext), GlobalResources.REQ_CAMERA_RETURN); 
+				break;
+			case R.id.option_gallery:
+				Intent i = new Intent(Intent.ACTION_PICK,
+			               android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+				startActivityForResult(i, GlobalResources.REQ_GALLERY_RETURN);
+				break;
+			case R.id.option_compose:
+				startActivity(new Intent(this, ArtifactSettingsActivity.class));
 				break;
 		}
 		return true;
 	}
+
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) { 
 		
         if (resultCode == Activity.RESULT_OK) {
         	Intent i = new Intent(this, ArtifactSettingsActivity.class);
-        	i.putExtra("uri", new String[] { imageUri.toString() });
-        	startActivity(i);        	
+        	Uri uri;
+    		switch (requestCode) {
+			case GlobalResources.REQ_CAMERA_RETURN:
+				uri = (Uri) intent.getParcelableExtra(MediaStore.EXTRA_OUTPUT);
+	        	i.putExtra("uri", new String[] { uri.toString() });
+	        	startActivity(i);
+	        	break;
+			case GlobalResources.REQ_GALLERY_RETURN:
+				uri = intent.getData();
+	        	i.putExtra("uri", new String[] { uri.toString() });
+	        	startActivity(i);
+				break;
+    		}
         }
 	}
 
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		adapter.onCreateContextMenu(menu, v, menuInfo);
+	}
+	public boolean onContextItemSelected(MenuItem item) {
+		adapter.onContextItemSelected(item);
+		return false;
+	}
 
 	public class ExpandableListAdapter extends BaseExpandableListAdapter implements OnClickListener, OnCreateContextMenuListener {
 
@@ -376,7 +392,8 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 			
 			switch (v.getId()) {
 			case R.id.btnUpload:
-				a.upload(false, context);
+				//a.upload(false, context);
+				a.edit(context);
 				break;
 			case R.id.btnView:
 				a.view(context);
@@ -453,13 +470,5 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 			                       MenuInflater inflater = getMenuInflater();
 			                       inflater.inflate(R.menu.context, menu);
 		}
-	}
-
-	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-		adapter.onCreateContextMenu(menu, v, menuInfo);
-	}
-	public boolean onContextItemSelected(MenuItem item) {
-		adapter.onContextItemSelected(item);
-		return false;
 	}
 }

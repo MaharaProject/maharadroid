@@ -36,6 +36,10 @@ Active text field border: #6398C1
 		<item name="android:padding">2dp</item>
 		<item name="android:layout_margin">2dp</item>
 	</style>
+	<style name="MaharaSpinner" parent="@android:style/Widget.Spinner">
+		<item name="android:background">#fff</item>
+		<item name="android:textColor">#000</item>
+	</style>
 	<style name="MaharaWindowTitleText" parent="android:TextAppearance.WindowTitle">
 		<item name="android:textSize">16dip</item>
 		<!-- 

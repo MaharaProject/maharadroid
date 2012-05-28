@@ -45,6 +45,21 @@ public class MaharaProvider extends ContentProvider {
 		}
 	}
 
+	public MaharaProvider() {
+		super();
+	}
+	public MaharaProvider(Context context) {
+		super();
+		this.dbHelper = new DatabaseHelper(context);
+		
+//		SQLiteDatabase db = this.getReadableDatabase();
+//		try {
+//			db.execSQL("ALTER TABLE " + TABLE + " ADD COLUMN " + SAVED_ID + " integer;");
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+	}
 	@Override
 	public int delete(Uri uri, String s, String[] as) {
 		sqlDB = dbHelper.getWritableDatabase();
@@ -85,7 +100,7 @@ public class MaharaProvider extends ContentProvider {
 		qb.setTables(uri.getLastPathSegment());
 		Cursor c = qb.query(db, projection, selection, null, null, null,
 				sortOrder);
-		c.setNotificationUri(getContext().getContentResolver(), uri);
+		//c.setNotificationUri(getContext().getContentResolver(), uri);
 		return c;
 	}
 

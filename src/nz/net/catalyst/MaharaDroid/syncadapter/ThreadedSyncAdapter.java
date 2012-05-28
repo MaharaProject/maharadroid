@@ -73,12 +73,6 @@ public class ThreadedSyncAdapter extends AbstractThreadedSyncAdapter{
 			return;
 		}
 		
-		// Check if we have appropriate data access
-		if ( ! Utils.canUpload(mContext) ) {
-			Log.e(TAG, "Sync was CANCELLED because user does not wish to use this connection type.");
-			return;
-		}
-		
 		//sync 
     	// application preferences
     	SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
@@ -90,7 +84,7 @@ public class ThreadedSyncAdapter extends AbstractThreadedSyncAdapter{
 				"");
 		String token = mPrefs.getString(mContext.getResources().getString(R.string.pref_auth_token_key).toString(),
 				"");
-		Long lastsync = (long) 0; //mPrefs.getLong("lastsync", 0);
+		Long lastsync = mPrefs.getLong("lastsync", 0);
 		
 		Log.v(TAG, "Synchronizing Mahara account '" + username + "', " + "'" + token + "' and lastsync '" + lastsync + "'");
 
@@ -101,13 +95,16 @@ public class ThreadedSyncAdapter extends AbstractThreadedSyncAdapter{
 			syncResult.stats.numAuthExceptions++;
         } else if ( result.has("sync") ) {
         	syncResult.stats.numUpdates = Utils.processSyncResults(result, myProvider, mContext);
+            // Now push any saved posts as 2nd part of sync
+    		// Check if we have appropriate data access
+    		if ( Utils.canUpload(mContext) ) {
+    	        ArtefactDataSQLHelper artefactData = new ArtefactDataSQLHelper(mContext);
+    	        artefactData.uploadAllSavedArtefacts(false);
+    	        artefactData.close();
+    		}
         } else {
 			syncResult.stats.numParseExceptions++;
         }
         
-        // Now push any saved posts as 2nd part of sync
-        ArtefactDataSQLHelper artefactData = new ArtefactDataSQLHelper(mContext);
-        artefactData.uploadAllSavedArtefacts(false);
-        artefactData.close();
 	}
 }

@@ -9,6 +9,8 @@
     <string name="options_menu_prefs">Preferences</string>
     <string name="options_menu_account">Account &amp; Sync</string>
     <string name="options_menu_camera">Camera</string>
+    <string name="options_menu_gallery">Gallery</string>
+    <string name="options_menu_compose">Write Journal</string>
     <string name="options_menu_deleteall">Delete All</string>
     <string name="options_menu_uploadall">Upload All</string>
     <string name="options_menu_viewsaved">Saved</string>
@@ -72,6 +74,8 @@
     <string name="pref_menu_scan">Scan</string>
     
     <string name="btnok">OK</string>
+    <string name="btnnewjournalpost_write">New Journal Entry</string>
+    <string name="btnnewjournalpost_camera">Take a Picture</string>
     <string name="btnupload">Upload</string>
     <string name="btnsave">Save</string>
     <string name="btndelete">Delete</string>
@@ -95,6 +99,9 @@
     <string name="uploadnoconnection">Sorry you don\'t have a working data connection to upload at this time.</string>
     <string name="filetransfers">File Transfers</string>
     
+    <string name="upload_journal_label">Journal:</string>
+    <string name="upload_journal_prompt">Select Journal to post to</string>
+    <string name="upload_tags_prompt">Add tag</string>
     <string name="upload_confirm_label">Yes:</string>
     <string name="upload_confirm_text">The file I am attempting to upload is my own or I have express 
 								permission to reproduce and/or distribute this item. My use of this file 

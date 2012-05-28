@@ -74,7 +74,7 @@ public class TransferService extends Service {
 			        						 Utils.getUploadURLPref(mContext), 
 			        						 Utils.getUploadAuthTokenPref(mContext),
 			        						 Utils.getUploadUsernamePref(mContext),
-			        						 null,
+			        						 a.getJournalId(),
 			        						 Utils.getUploadFolderPref(mContext),
 			        						 Utils.getUploadTagsPref(a.getTags(), mContext),
 			        						 a.getFilename(),
@@ -90,12 +90,21 @@ public class TransferService extends Service {
 						} catch (JSONException e) {
 							err_str = "Unknown Failure";
 						}
+	        			a.save(mContext);
 						publishProgress("fail",  id, err_str);
 			        	//m_uploads.clear();
 			        } else if ( result.has("success") ) {
 			        	Utils.updateTokenFromResult(result, mContext);
-			        	a.delete(mContext);
-			        	
+			        	if ( result.has("id") ) {
+//							try {
+//			        			a.setId(result.getLong("id"));
+//			        			a.save(mContext);
+//							} catch (JSONException e) {
+//								// TODO Auto-generated catch block
+//								e.printStackTrace();
+//							}
+		        			a.delete(mContext);
+			        	}
 						publishProgress(new String[]{"finish", id, a.getTitle()});
 			        }
 				}

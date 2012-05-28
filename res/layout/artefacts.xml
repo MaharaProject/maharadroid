@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    >
+    android:gravity="right" >
+
 	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
@@ -55,7 +56,7 @@
 		  />
 	</RelativeLayout>
 	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:id="@+id/bottom_heading"
+	    android:id="@+id/body_heading"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    style="@style/headerBackground"
@@ -84,10 +85,10 @@
 		/>
 	</RelativeLayout>
 	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:id="@+id/bottom"
+	    android:id="@+id/body"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
-	    android:layout_below="@+id/bottom_heading"
+	    android:layout_below="@+id/body_heading"
    	    android:layout_margin="5dp"	  
 	    >			  
 		<ExpandableListView android:id="@+id/listView"

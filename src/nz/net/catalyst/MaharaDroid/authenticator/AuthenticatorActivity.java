@@ -97,6 +97,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
                 ContentResolver.setSyncAutomatically(account, GlobalResources.SYNC_AUTHORITY, true);
                 ContentResolver.addPeriodicSync(account, GlobalResources.SYNC_AUTHORITY, bundle, ThreadedSyncAdapter.DEFAULT_SYNC_FREQUENCY);
                 ContentResolver.setIsSyncable(account, GlobalResources.SYNC_AUTHORITY, 1);
+                ContentResolver.requestSync(account, GlobalResources.SYNC_AUTHORITY, null);
             }
             
             final Intent intent = new Intent();

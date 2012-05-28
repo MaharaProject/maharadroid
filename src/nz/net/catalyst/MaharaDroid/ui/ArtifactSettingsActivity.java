@@ -21,21 +21,33 @@
 
 package nz.net.catalyst.MaharaDroid.ui;
 
+import java.util.ArrayList;
+
+import nz.net.catalyst.MaharaDroid.GlobalResources;
 import nz.net.catalyst.MaharaDroid.LogConfig;
 import nz.net.catalyst.MaharaDroid.R;
 import nz.net.catalyst.MaharaDroid.Utils;
 import nz.net.catalyst.MaharaDroid.data.Artefact;
 import nz.net.catalyst.MaharaDroid.data.ArtefactDataSQLHelper;
+import nz.net.catalyst.MaharaDroid.provider.MaharaProvider;
+import nz.net.catalyst.MaharaDroid.ui.ArtefactExpandableListAdapterActivity.ExpandableListAdapter;
 import nz.net.catalyst.MaharaDroid.ui.about.AboutActivity;
 import nz.net.catalyst.MaharaDroid.upload.TransferService;
 import android.app.Activity;
+import android.content.ContentProviderClient;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
+import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,10 +55,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -69,27 +85,25 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 	
 	// application preferences
 	private SharedPreferences mPrefs;
-	private ArtefactDataSQLHelper logData;
 	
 	private Bundle m_extras;
 	private String [] uris = null;
 	private Boolean isMulti = false;
+	private String[] journalKeys;
 	
 	private Button btnUpload;
 	private Button btnSave;
+	
+	private Context mContext;
+	private Artefact a;
 	
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+		mContext = this;
         
-        m_extras = getIntent().getExtras();
-        if (m_extras == null) {
-        	if ( DEBUG ) Log.d(TAG, "No extras .. nothing to do!");
-        	finish();
-        }
-        
-	    requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 
 		setContentView(R.layout.artifact_settings);
 
@@ -97,6 +111,29 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
     	
         ((TextView) findViewById(R.id.windowtitle_text)).setText(getString(R.string.artifactsettings));
 		
+        Spinner spinner = (Spinner) findViewById(R.id.upload_journal_spinner);
+        String[][] journalItems = getJournals("");
+        journalKeys = journalItems[0];
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, 
+        							android.R.layout.simple_spinner_item, journalItems[1]); 
+        		
+//        		ArrayAdapter.createFromResource(
+//                this, R.array.upload_journal_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+
+        spinner = (Spinner) findViewById(R.id.upload_tags_spinner);
+        
+		final String[][] tagItems = getTags("");
+        adapter = new ArrayAdapter<String>(this, 
+									android.R.layout.simple_spinner_item, tagItems[1]); 
+//        adapter = ArrayAdapter.createFromResource(
+//                this, R.array.upload_tags_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new TagChooser());
+
 		btnUpload = (Button)findViewById(R.id.btnUpload);
 		btnUpload.setOnClickListener(this);
 		
@@ -119,12 +156,14 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 			btnUpload.setEnabled(false);
 		}
 		
-		logData = new ArtefactDataSQLHelper(this);
-
-        if ( m_extras.containsKey("artefact") ) {
+        m_extras = getIntent().getExtras();
+		if ( m_extras == null ) {
+	    	if ( DEBUG ) Log.d(TAG, "Nothing passed - could write a journal post without attachment.");
+			
+		} else if ( m_extras.containsKey("artefact") ) {
 	    	if ( DEBUG ) Log.d(TAG, "Have a saved artefact to upload");
 
-        	Artefact a = m_extras.getParcelable("artefact");
+        	a = m_extras.getParcelable("artefact");
 
         	uris = new String[] { a.getFilename() };
         	
@@ -133,6 +172,18 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 			((EditText)findViewById(R.id.txtArtifactDescription)).setText(a.getDescription());
 			((EditText)findViewById(R.id.txtArtifactTags)).setText(a.getTags());
 			((EditText)findViewById(R.id.txtArtifactId)).setText(a.getId().toString());
+			
+			if ( a.getJournalId() != null ) {
+				spinner = (Spinner) findViewById(R.id.upload_journal_spinner);
+				for ( int i = 0; i < journalKeys.length && i < spinner.getCount(); i++ ) {
+					if ( a.getJournalId().equals(journalKeys[i]) ) {
+						spinner.setSelection(i);
+						break;
+					}
+				}
+			}
+				
+				
 
 	        if ( m_extras.containsKey("auto") ) {
 				InitiateUpload(false);
@@ -161,18 +212,63 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 
 	    		isMulti = true;
 	 
-	    		LinearLayout l;
-	    		l = (LinearLayout)this.findViewById(R.id.ArtifactTitleLayout);
-	    		l.setVisibility(LinearLayout.GONE);
-	    		l = (LinearLayout)this.findViewById(R.id.ArtifactDescriptionLayout);
-	    		l.setVisibility(LinearLayout.GONE);
+//	    		LinearLayout l;
+//	    		l = (LinearLayout)this.findViewById(R.id.ArtifactTitleLayout);
+//	    		l.setVisibility(LinearLayout.GONE);
+//	    		l = (LinearLayout)this.findViewById(R.id.ArtifactDescriptionLayout);
+//	    		l.setVisibility(LinearLayout.GONE);
 	    		
 	        } else {
-		    	if ( DEBUG ) Log.d(TAG, "No uri's .. nothing to do!");
+		    	if ( DEBUG ) Log.d(TAG, "Passed info .. but no uri's - bogus link?");
 		    	finish();
 	        }
         }
         
+	}
+
+	private String[][] getJournals(String nullitem) {
+		return getValues("blog", nullitem);
+	}
+	
+	private String[][] getTags(String nullitem) {
+		return getValues("tag", nullitem);
+	}
+			
+	private String[][] getValues(String type, String nullitem) {
+		Uri uri = Uri.parse("content://" + GlobalResources.CONTENT_URL + "/" + type);
+		
+		ContentProviderClient myProvider = this.getContentResolver().acquireContentProviderClient(uri);
+		Cursor cursor = null;
+		try {
+			cursor = myProvider.query(uri, new String[] { "ID", "VALUE" }, null, null, null);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			Log.e(TAG, "Failed to aquire content provider for query - is ther an active sync running?");
+			e.printStackTrace();
+		}
+		
+		if ( cursor == null ) {
+			return null;
+		}
+	    if ( VERBOSE ) Log.v(TAG, "getValues: have acquired content provider for " + type + 
+	    							" (" + cursor.getCount() + " items returned for " + uri.toString() + ")");
+		cursor.moveToFirst();
+		
+		String[] k = new String[cursor.getCount() + 1];
+		String[] v = new String[cursor.getCount() + 1];
+	    if ( VERBOSE ) Log.v(TAG, "getValues: size " + k.length + " for " + type);
+		k[0] = null;
+		v[0] = nullitem;
+		
+	    while (! cursor.isAfterLast() ) {
+	    	
+			k[cursor.getPosition() + 1] = cursor.getString(0);
+			v[cursor.getPosition() + 1] = cursor.getString(1);
+		    if ( VERBOSE ) Log.v(TAG, "getValues: adding " + cursor.getString(0) + " at position " + cursor.getPosition() + " to " + type);
+		    cursor.moveToNext();
+		} 		
+		cursor.close();
+		return new String[][] { k, v };
 	}
 
 	public void onResume(Bundle savedInstanceState) {
@@ -199,7 +295,7 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 	}
 
 	private void InitiateUpload(boolean saveOnFail) {
-    	if ( DEBUG ) Log.d(TAG, "initiate upload called.");
+    	if ( VERBOSE ) Log.v(TAG, "InitiateUpload called.");
 		if ( ! checkAcceptanceOfConditions() ) {
 			return;
 		}
@@ -209,80 +305,120 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 				InitiateSave();
 			return;
     	}
-		
-		for ( int i = 0; i < uris.length; i++ ) {
-    		String filename = Utils.getFilePath(this, uris[i]);
-	    	if ( DEBUG ) Log.d(TAG, "about to initiate upload of '" + filename + "'");
+	    if ( VERBOSE ) Log.v(TAG, "InitiateUpload can upload");
 
-			if (filename == null)
-				continue;
+		String id = ((EditText)findViewById(R.id.txtArtifactId)).getText().toString();
+		String title = ((EditText)findViewById(R.id.txtArtifactTitle)).getText().toString();
+		String description = ((EditText)findViewById(R.id.txtArtifactDescription)).getText().toString();			
+		String tags = ((EditText) findViewById(R.id.txtArtifactTags)).getText().toString();
+		String journal = journalKeys[(int) ((Spinner) findViewById(R.id.upload_journal_spinner)).getSelectedItemId()];
+		String filename = null;
 
-    		String title = "";
-    		String description = "";
-    		String tags = ((EditText)findViewById(R.id.txtArtifactTags)).getText().toString();
+		if ( id != null ) {
+			a.load(mContext, Long.valueOf(id));
+			a.setTitle(title);
+			a.setDescription(description);
+			a.setTags(tags);
+			a.setJournalId(journal);
+			a.setFilename(filename);
+		    if ( VERBOSE ) Log.v(TAG, "InitiateUpload loading artefact [" + id + "]");
 
-			if ( isMulti ) {
-				// Set a default title but no description
-				title = filename.substring(filename.lastIndexOf("/") + 1);
-			} else {
-				title = ((EditText)findViewById(R.id.txtArtifactTitle)).getText().toString();
-				description = ((EditText)findViewById(R.id.txtArtifactDescription)).getText().toString();			
-			}
+		} else {
+			a = new Artefact(null, null, title, description, tags, null, journal);
+		    if ( VERBOSE ) Log.v(TAG, "InitiateUpload creating new artefact object");
 
-			// uploader_intent will contain all of the necessary information about this
-			// upload in the Extras Bundle.
-			
-			//TODO make TransferService take a parcelable Artefact as input
-			Intent uploader_intent = new Intent(this, TransferService.class);
+		}
 
-			//uploader_intent.putExtra("filename", filename);
-			//uploader_intent.putExtra("title", title);
-			//uploader_intent.putExtra("description", description);
-			//uploader_intent.putExtra("tags", tags);
-			Artefact a = new Artefact(new Long(0), new Long(0), filename, title, description, tags);
+		Intent uploader_intent;
+
+		// Write a journal - no file(s) attached.
+		if ( uris == null || uris.length == 0 ) {
+			uploader_intent = new Intent(this, TransferService.class);
 			uploader_intent.putExtra("artefact", a);
-			
-			// Start the uploader service and pass in the intent containing
-			// the upload information.
+		    if ( VERBOSE ) Log.v(TAG, "InitiateUpload no file - about to start service");
+
 			startService(uploader_intent);
-			//Toast.makeText(this, R.string.uploadstarting, Toast.LENGTH_SHORT).show();
+			
+		} else {
+	
+			for ( int i = 0; i < uris.length; i++ ) {
+	    		filename = Utils.getFilePath(this, uris[i]);
+		    	if ( VERBOSE ) Log.v(TAG, "InitiateUpload have file, name is '" + filename + "'");
+	
+				if (filename == null)
+					continue;
+	
+				String new_title = title;
+				if ( isMulti ) {
+					// add a 1 of X suffix
+//					new_title = new_title + " [" + (i + 1) + " of " + uris.length + "]";
+			    	if ( VERBOSE ) Log.v(TAG, "InitiateUpload have multi-file post, title is '" + new_title + "'");
+				}
+	
+				a.setFilename(filename);
+				uploader_intent = new Intent(this, TransferService.class);
+				uploader_intent.putExtra("artefact", a);
+			    if ( VERBOSE ) Log.v(TAG, "InitiateUpload with file [" + i + "] - about to start service");
+
+				startService(uploader_intent);
+			}
 		}
 	}
 
 	private void InitiateSave() {
+    	if ( VERBOSE ) Log.v(TAG, "InitiateSave called.");
+
 		if ( ! checkAcceptanceOfConditions() ) {
 			return;
 		}
 		
-		for ( int i = 0; i < uris.length; i++ ) {
-    		String filename = Utils.getFilePath(this, uris[i]);
-			if (filename == null)
-				continue;
+		String id = ((EditText)findViewById(R.id.txtArtifactId)).getText().toString();
+		String title = ((EditText)findViewById(R.id.txtArtifactTitle)).getText().toString();
+		String description = ((EditText)findViewById(R.id.txtArtifactDescription)).getText().toString();
+		String tags = ((EditText)findViewById(R.id.txtArtifactTags)).getText().toString();
+		String journal = journalKeys[(int) ((Spinner) findViewById(R.id.upload_journal_spinner)).getSelectedItemId()];
+		String filename = null;
 
-    		String title = "";
-    		String description = "";
-    		String tags = ((EditText)findViewById(R.id.txtArtifactTags)).getText().toString();
-    		String id = ((EditText)findViewById(R.id.txtArtifactId)).getText().toString();
+		if ( id != null ) {
+	    	if ( VERBOSE ) Log.v(TAG, "InitiateSave id is not null - loading ... [" + id + "]");
 
-			if ( isMulti ) {
-				// Set a default title but no description
-				title = filename.substring(filename.lastIndexOf("/") + 1);
-			} else {
-				title = ((EditText)findViewById(R.id.txtArtifactTitle)).getText().toString();
-				description = ((EditText)findViewById(R.id.txtArtifactDescription)).getText().toString();			
-			}
+			a.load(mContext, Long.valueOf(id));
+			a.setTitle(title);
+			a.setDescription(description);
+			a.setTags(tags);
+			a.setJournalId(journal);
+			a.setFilename(filename);
+		} else {
+	    	if ( VERBOSE ) Log.v(TAG, "InitiateSave id is null, creating new artefact object");
+			a = new Artefact(Long.valueOf(id), null, title, description, tags, null, journal);
+		}
 
-			Toast.makeText(this, R.string.uploadsaved, Toast.LENGTH_SHORT).show();
-			
-			// Log the event
-			if ( id.length() > 0 ) {
-				updateLog(id, uris[i], title, description, tags, false);
-			} else {
-				addLog(uris[i], title, description, tags, false);
+		if ( uris == null || uris.length == 0 ) {
+	    	if ( VERBOSE ) Log.v(TAG, "InitiateSave no uris - saving object");
+			a.save(mContext);
+		} else {
+
+			for ( int i = 0; i < uris.length; i++ ) {
+	    		filename = Utils.getFilePath(this, uris[i]);
+				if (filename == null)
+					continue;
+	
+				if ( isMulti ) {
+					// Set a default title but no description
+//					title = filename.substring(filename.lastIndexOf("/") + 1);
+				} 
+	
+				// TODO What we actually do is create many singles .. maybe this is OK.
+				// What we do need to do is show the filenames on the UI so there is some 
+				// understanding of what the reference is to.
+				a.setFilename(uris[i]); // note we save raw uri not the filename we upload.
+				a.save(mContext);
+
+				Toast.makeText(this, R.string.uploadsaved, Toast.LENGTH_SHORT).show();
+				
 			}
 		}
 	}
-	
 	private void acceptConditions(Boolean accepted) {
 		btnUpload.setEnabled(accepted);
 		btnSave.setEnabled(accepted);
@@ -307,52 +443,83 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
         }
         return false; 
 	}
-	private void addLog(String filename, String title, String description, String tags, Boolean uploaded) {
 
-		SQLiteDatabase db = logData.getWritableDatabase();
-	    ContentValues values = new ContentValues();
-	    values.put(ArtefactDataSQLHelper.TIME, System.currentTimeMillis());
-	    values.put(ArtefactDataSQLHelper.FILENAME, filename);
-	    values.put(ArtefactDataSQLHelper.TITLE, title);
-	    values.put(ArtefactDataSQLHelper.DESCRIPTION, description);
-	    values.put(ArtefactDataSQLHelper.TAGS, tags);
-	    values.put(ArtefactDataSQLHelper.UPLOADED, uploaded);
-	    db.insert(ArtefactDataSQLHelper.TABLE, null, values);
-		logData.close();
-	}
-	private void updateLog(String id, String filename, String title, String description, String tags, Boolean uploaded) {
-
-		SQLiteDatabase db = logData.getWritableDatabase();
-	    ContentValues values = new ContentValues();
-	    values.put(ArtefactDataSQLHelper.TIME, System.currentTimeMillis());
-	    values.put(ArtefactDataSQLHelper.FILENAME, filename);
-	    values.put(ArtefactDataSQLHelper.TITLE, title);
-	    values.put(ArtefactDataSQLHelper.DESCRIPTION, description);
-	    values.put(ArtefactDataSQLHelper.TAGS, tags);
-	    values.put(ArtefactDataSQLHelper.UPLOADED, uploaded);
-	    db.update(ArtefactDataSQLHelper.TABLE, values, BaseColumns._ID + "= ?", new String[] { id });
-		logData.close();
-	}
 	public boolean onCreateOptionsMenu(Menu menu) {
 		boolean result = super.onCreateOptionsMenu(menu);
 
 		  MenuInflater inflater = getMenuInflater();
-		  inflater.inflate(R.menu.options, menu);
+		  inflater.inflate(R.menu.settings_options, menu);
 		  return result;
 	}
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		switch (item.getItemId()) {
-			case R.id.about:
-				startActivity(new Intent(this, AboutActivity.class));
-				break;
-			case R.id.option_pref:
-				Intent intent = new Intent(this, EditPreferences.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				startActivity(intent);
-				break;
+		case R.id.option_camera:
+			startActivityForResult(Utils.makeCameraIntent(mContext), GlobalResources.REQ_CAMERA_RETURN);
+			break;
+		case R.id.option_gallery:
+			Intent i = new Intent(Intent.ACTION_PICK,
+		               android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+			startActivityForResult(i, GlobalResources.REQ_GALLERY_RETURN);
+			break;
 		}
 		return true;
+	}
+	public void onActivityResult(int requestCode, int resultCode, Intent intent) { 
+		
+        if (resultCode == Activity.RESULT_OK) {
+        	Uri uri;
+    		switch (requestCode) {
+			case GlobalResources.REQ_CAMERA_RETURN:
+				uri = (Uri) intent.getParcelableExtra(MediaStore.EXTRA_OUTPUT);
+	        	a.setFilename(uri.toString());
+	        	a.save(mContext);
+	        	uris = new String[] { uri.toString() };
+	        	break;
+			case GlobalResources.REQ_GALLERY_RETURN:
+				uri = intent.getData();
+	        	a.setFilename(uri.toString());
+	        	a.save(mContext);
+	        	uris = new String[] { uri.toString() };
+				break;
+    		}
+        }
+	}
+	public class TagChooser implements OnItemSelectedListener {
+
+	    public void onItemSelected(AdapterView<?> parent,
+	        View view, int pos, long id) {
+
+	    	String new_tag = parent.getItemAtPosition(pos).toString();
+	    	if ( new_tag.length() == 0 ) {
+	    		return; // support an empty first element, also don't support empty tags
+	    	}
+	    	
+	    	EditText tgs = (EditText) findViewById(R.id.txtArtifactTags);
+	    	
+	    	// If empty - just make it so.
+	    	if ( tgs.getText().length() == 0 ) {
+	    		tgs.setText(new_tag);
+	    		return;
+	    	}
+
+    		// OK so we're appending a tag to existing string .. let's do it
+	    	String[] current_tags = tgs.getText().toString().split(",");
+	    	String[] new_tags = new String[current_tags.length + 1];
+	    			
+	    	for (int i = 0; i < current_tags.length; i++ ) {
+	    		if ( current_tags[i].equals(new_tag) ) {
+	    			return;
+	    		}
+	    		new_tags[i] = current_tags[i];
+	    	}
+	    	new_tags[current_tags.length] = new_tag; 
+	      	tgs.setText(TextUtils.join(",", new_tags));
+		}
+
+	    public void onNothingSelected(AdapterView parent) {
+	      // Do nothing.
+	    }
 	}
 }

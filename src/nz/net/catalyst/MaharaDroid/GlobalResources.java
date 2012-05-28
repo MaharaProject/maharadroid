@@ -32,13 +32,6 @@ package nz.net.catalyst.MaharaDroid;
 
 public class GlobalResources {
     
-    public static final String INTENT_UPLOAD_STARTED = "nz.net.catalyst.MaharaDroid.UPLOAD_STARTED";
-    public static final String INTENT_UPLOAD_FINISHED = "nz.net.catalyst.MaharaDroid.UPLOAD_FINISHED";
-    public static final String INTENT_UPLOAD_FAILED = "nz.net.catalyst.MaharaDroid.UPLOAD_FAILED";
-    public static final String INTENT_BIND_TRANSFER_SERVICE = "nz.net.catalyst.MaharaDroid.BIND_TRANSFER_SERVICE";
-    public static final String INTENT_BIND_DOWNLOADER = "nz.net.catalyst.MaharaDroid.BIND_DOWNLOADER";
-    public static final String INTENT_UPLOAD_PROGRESS_UPDATE = "nz.net.catalyst.MaharaDroid.UPLOAD_PROGRESS_UPDATE";
-    
     public static final String TRANSFER_TYPE_UPLOAD = "Upload";
 
 	public static final String CONFIG_SCAN_INTENT = "com.google.zxing.client.android.SCAN";
@@ -50,12 +43,16 @@ public class GlobalResources {
 	
 	public static final String ACCOUNT_TYPE = "nz.net.catalyst.MaharaDroid.account";
 	public static final String AUTHTOKEN_TYPE = "nz.net.catalyst.MaharaDroid.account";
-	
 	public static final String CONTENT_URL = "nz.net.catalyst.MaharaDroid";
+	public static final String SYNC_AUTHORITY = "nz.net.catalyst.MaharaDroid";
+
 	public static final String[] CONTENT_TABLES = new String[] { "tag", "blog", "folder" };
 	public static final String[] CONTENT_FIELDS = new String[] { "ID", "VALUE" };
 	
-	public static final String SYNC_AUTHORITY = "nz.net.catalyst.MaharaDroid";
+	public static final String TEMP_PHOTO_FILENAME = "maharadroid-tmp.jpg";
+	
+	public static final int REQ_CAMERA_RETURN = 0;
+	public static final int REQ_GALLERY_RETURN = 1;
 	
     public static final int REGISTRATION_TIMEOUT = 30 * 1000; // ms
 	

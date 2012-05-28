@@ -23,6 +23,7 @@ package nz.net.catalyst.MaharaDroid.data;
 
 import nz.net.catalyst.MaharaDroid.ui.ArtifactSettingsActivity;
 import nz.net.catalyst.MaharaDroid.upload.TransferService;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -30,14 +31,15 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-
 public class Artefact extends Object implements Parcelable {
-	private long id;
+	private Long id;
 	private long time;
 	private String filename;
 	private String title;
 	private String description;
 	private String tags;
+	private Long saved_id;
+	private String journal_id;
 
 	public Long getId() {
 		return id;
@@ -57,6 +59,9 @@ public class Artefact extends Object implements Parcelable {
 	public String getTags() {
 		return tags;
 	}
+	public String getJournalId() {
+		return journal_id;
+	}
 	public void setId(Long i) {
 		id = i;
 	}
@@ -74,6 +79,9 @@ public class Artefact extends Object implements Parcelable {
 	}
 	public void setTags(String t) {
 		tags = t;
+	}
+	public void setJournalId(String j) {
+		journal_id = j;
 	}
 	public String getGroup() {
 		// In the meantime just set the article ID, i.e force no grouping
@@ -95,6 +103,7 @@ public class Artefact extends Object implements Parcelable {
 		dest.writeString(description);
 		dest.writeString(tags);
 		dest.writeLong(time);
+		dest.writeString(journal_id);
 	}
 		
 	/**
@@ -121,17 +130,42 @@ public class Artefact extends Object implements Parcelable {
 		description = in.readString();
 		tags = in.readString();
 		time = in.readLong();
+		journal_id = in.readString();
 	}
 
-	public Artefact(Long i, Long tm, String f, String t, String d, String tgs) {
+	public Artefact(String f, String t, String d, String tgs, String j) {
+		filename = f;
+		title = t;
+		description = d;
+		tags = tgs;
+		journal_id = j;
+		time = System.currentTimeMillis();
+	}
+	public Artefact(Long i, Long tm, String f, String t, String d, String tgs, Long sid, String j) {
 		id = i;
 		filename = f;
 		title = t;
 		description = d;
 		tags = tgs;
 		time = tm;
+		saved_id = sid;
+		journal_id = j;
+	}
+	public Artefact(Long i, String f, String t, String d, String tgs, Long sid, String j) {
+		id = i;  // may be null for a new item.
+		filename = f;
+		title = t;
+		description = d;
+		tags = tgs;
+		saved_id = sid;
+		journal_id = j;
+		time = System.currentTimeMillis();
 	}
 	
+	public Artefact(Context mContext, Long id) {
+		// TODO Auto-generated constructor stub
+		load(mContext, id);
+	}
 	public void upload(Boolean auto, Context mContext) {
 		Intent i = new Intent(mContext, TransferService.class);
 		i.putExtra("artefact", (Parcelable) this);
@@ -147,6 +181,28 @@ public class Artefact extends Object implements Parcelable {
 	public void view(Context mContext) {
 		Intent i = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(this.getFilename()));
 		mContext.startActivity(i);
+	}
+	
+	public void edit(Context mContext) {
+		Intent i = new Intent(mContext, ArtifactSettingsActivity.class);
+		i.putExtra("artefact", this );
+		mContext.startActivity(i);
+	}
+	public void save(Context mContext) {
+		// TODO Auto-generated method stub
+		ArtefactDataSQLHelper artefactData = new ArtefactDataSQLHelper(mContext);
+		if ( id != null ) { 	// update
+			artefactData.update(id, filename, title, description, tags, saved_id, journal_id);
+		} else { // add
+			artefactData.add(filename, title, description, tags, journal_id);
+		}
+		artefactData.close();
+	}
+	public void load(Context mContext, Long id) {
+		// TODO Auto-generated method stub
+		ArtefactDataSQLHelper artefactData = new ArtefactDataSQLHelper(mContext);
+        artefactData.loadSavedArtefacts(id);
+        artefactData.close();
 	}
 }
 

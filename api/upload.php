@@ -27,12 +27,17 @@
 
 define('INTERNAL', 1);
 define('PUBLIC', 1);
+define('SECTION_PLUGINTYPE', 'artefact');
+define('SECTION_PLUGINNAME', 'blog');
+
+$json = array();
 
 require(dirname(dirname(dirname(__FILE__))) . '/init.php');
 safe_require('artefact', 'file');
+safe_require('artefact', 'blog');
 
 if (!get_config('allowmobileuploads')) {
-    JSONResponse('fail', 'Mobile uploads disabled');
+    jsonreply( array('fail' => 'Mobile uploads disabled') );
 }
 
 $token = '';
@@ -43,7 +48,7 @@ try {
 catch (ParameterException $e) { }
 
 if ($token == '') {
-    JSONResponse('fail', 'Auth token cannot be blank');
+    jsonreply( array('fail' => 'Auth token cannot be blank') );
 }
 
 $username = '';
@@ -53,7 +58,7 @@ try {
 catch (ParameterException $e) { }
 
 if ($username == '') {
-    JSONResponse('fail', 'Username cannot be blank');
+    jsonreply( array('fail' => 'Username cannot be blank') );
 }
 
 $data = new StdClass;
@@ -63,7 +68,7 @@ try {
     $USER->find_by_mobileuploadtoken($token, $username);
 }
 catch (AuthUnknownUserException $e) {
-    JSONResponse('fail', 'Invalid user token');
+    jsonreply( array('fail' => 'Invalid user token') );
 }
 
 $data->owner = $USER->get('id'); // id of owner
@@ -106,40 +111,102 @@ $title = '';
 try {
     $title = param_variable('title');
 }
-catch (ParameterException $e) {
-    // Default of the name given with the post
-    $title = $_FILES['userfile']['name'];
-}
-$title = $title ? basename($title) : get_string('file', 'artefact.file');
-$data->title = ArtefactTypeFileBase::get_new_file_title($title, $data->parent, $data->owner);
+catch (ParameterException $e) { }
 
 // Set description
+$description = '';
 try {
-    $data->description = param_variable('description');
+    $description = param_variable('description');
 }
 catch (ParameterException $e) { }
 
 // Set tags
+$tags = '';
 try {
-    $data->tags = explode(" ", param_variable('tags'));
+    $tags = explode(" ", param_variable('tags'));
+}
+catch (ParameterException $e) { }
+
+$artefact_id = '';
+if ( $_FILES ) {
+
+    if ( ! $title ) { 
+        basename($_FILES['userfile']['name']);
+    }
+
+    try {
+        $data->title = ArtefactTypeFileBase::get_new_file_title($title, $data->parent, $data->owner);
+        $data->description = $description;
+        $data->tags = $tags;
+        $artefact_id = ArtefactTypeFile::save_uploaded_file('userfile', $data);
+        if ( $artefact_id ) {
+            $json['id'] = $artefact_id;
+        }
+    }
+    catch (QuotaExceededException $e) {
+        jsonreply( array('fail' => 'Quota exceeded' ) );
+    }
+    catch (UploadException $e) {
+        jsonreply( array('fail' => 'Failed to save file') );
+    }
+}
+
+
+// Check for Journal ID to add a post to
+$blog = ''; $blogpost = ''; $draft = 0; $allowcomments = 1;
+try {
+    $blog = param_integer('blog');
 }
 catch (ParameterException $e) { }
 
 try {
-    $newid = ArtefactTypeFile::save_uploaded_file('userfile', $data);
+    $blogpost = param_integer('blogpost');
 }
-catch (QuotaExceededException $e) {
-    JSONResponse('fail', 'Quota exceeded');
+catch (ParameterException $e) { }
+
+try {
+    $draft = param_variable('draft');
 }
-catch (UploadException $e) {
-    JSONResponse('fail', 'Failed to save file');
+catch (ParameterException $e) { }
+
+try {
+    $allowcomments = param_variable('allowcomments');
 }
 
-// Here we need to create a new hash - update our own store of it and return it too the handset
-JSONResponse ( "success", $USER->refresh_mobileuploadtoken($token) );
+catch (ParameterException $e) { }
+// Check to see if we're creating a journal entry
+if ( $blog && $title && $description ) {
+    if (!get_record('artefact', 'id', $blog, 'owner', $USER->get('id'))) {
+        // Blog security is also checked closer to when blogs are added, this 
+        // check ensures that malicious users do not even see the screen for 
+        // adding a post to a blog that is not theirs
+        throw new AccessDeniedException(get_string('youarenottheownerofthisblog', 'artefact.blog'));
+    }
+    $postobj = new ArtefactTypeBlogPost($blogpost, null);
+    $postobj->set('title', $title);
+    $postobj->set('description', $description);
+    $postobj->set('tags', $tags);
+    $postobj->set('published', !$draft);
+    $postobj->set('allowcomments', (int) $allowcomments);
+    $postobj->set('parent', $blog);
+    $postobj->set('owner', $USER->id);
+    $postobj->commit();
 
-function JSONResponse ( $key, $value ) {
+    // If we created an artefact - attach it.
+    if ( $artefact_id ) {
+        $postobj->attach($artefact_id);
+    }
+}
+
+// Here we need to create a new hash - update our own store of it and return it to the handset
+jsonreply( array('success' => $USER->refresh_mobileuploadtoken($token) ) );
+
+function jsonreply( $arr ) {
+  global $json;
+  if ( $json )
+    $arr['sync'] = $json;
   header('Content-Type: application/json');
-  echo json_encode(array($key => $value));
+  echo json_encode($arr);
   exit;
 }
+

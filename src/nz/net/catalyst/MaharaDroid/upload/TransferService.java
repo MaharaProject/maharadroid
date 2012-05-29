@@ -95,7 +95,7 @@ public class TransferService extends Service {
 			        	//m_uploads.clear();
 			        } else if ( result.has("success") ) {
 			        	Utils.updateTokenFromResult(result, mContext);
-			        	if ( result.has("id") ) {
+//			        	if ( result.has("id") ) {
 //							try {
 //			        			a.setId(result.getLong("id"));
 //			        			a.save(mContext);
@@ -104,7 +104,7 @@ public class TransferService extends Service {
 //								e.printStackTrace();
 //							}
 		        			a.delete(mContext);
-			        	}
+//			        	}
 						publishProgress(new String[]{"finish", id, a.getTitle()});
 			        }
 				}

@@ -32,7 +32,7 @@ import android.os.Parcelable;
 import android.util.Log;
 
 public class Artefact extends Object implements Parcelable {
-	private Long id;
+	private long id = 0;
 	private long time;
 	private String filename;
 	private String title;
@@ -171,6 +171,7 @@ public class Artefact extends Object implements Parcelable {
 		i.putExtra("artefact", (Parcelable) this);
 		if ( auto ) 
 			i.putExtra("auto", "yes please");
+		// TODO - needs to be a start service for result or we need to check post upload and delete on success.
 		mContext.startService(i);
 	}
 	public void delete(Context mContext) {
@@ -191,7 +192,7 @@ public class Artefact extends Object implements Parcelable {
 	public void save(Context mContext) {
 		// TODO Auto-generated method stub
 		ArtefactDataSQLHelper artefactData = new ArtefactDataSQLHelper(mContext);
-		if ( id != null ) { 	// update
+		if ( id != 0 ) { 	// update
 			artefactData.update(id, filename, title, description, tags, saved_id, journal_id);
 		} else { // add
 			artefactData.add(filename, title, description, tags, journal_id);

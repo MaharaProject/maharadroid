@@ -23,7 +23,9 @@ package nz.net.catalyst.MaharaDroid.data;
 
 import org.json.JSONException;
 
+import nz.net.catalyst.MaharaDroid.LogConfig;
 import nz.net.catalyst.MaharaDroid.Utils;
+import nz.net.catalyst.MaharaDroid.syncadapter.ThreadedSyncAdapter;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -35,6 +37,12 @@ import android.util.Log;
 
 /** Helper to the database, manages versions and creation */
 public class ArtefactDataSQLHelper extends SQLiteOpenHelper {
+	static final String TAG = LogConfig.getLogTag(ThreadedSyncAdapter.class);
+	// whether DEBUG level logging is enabled (whether globally, or explicitly for this log tag)
+	static final boolean DEBUG = LogConfig.isDebug(TAG);
+	// whether VERBOSE level logging is enabled
+	static final boolean VERBOSE = LogConfig.VERBOSE;
+	
 	private static final String DATABASE_NAME = "maharadroid_upload_log.db";
 	private static final int DATABASE_VERSION = 1;
 	private static Context mContext;
@@ -107,12 +115,13 @@ public class ArtefactDataSQLHelper extends SQLiteOpenHelper {
     	if ( uploaded == null ) {
     		uploaded = false;
     	}
-	    //Cursor cursor = db.query(ArtefactDataSQLHelper.TABLE, null, null, null, null,
-		//        null, null);
-	    Cursor cursor = db.query(ArtefactDataSQLHelper.TABLE, null, SAVED_ID + " = NULL ", null,
-	        null, null, null);
+	    Cursor cursor = db.query(ArtefactDataSQLHelper.TABLE, null, null, null, null,
+		        null, null);
+//	    Cursor cursor = db.query(ArtefactDataSQLHelper.TABLE, null, SAVED_ID + " != 0 ", null,
+//	        null, null, null);
 	    
 	    //startManagingCursor(cursor);
+		if ( VERBOSE ) Log.v(TAG, "uploadAllSavedArtefacts: returned " + cursor.getCount() + " records.");
 
 	    while (cursor.moveToNext()) {
 	        Long id = cursor.getLong(0);
@@ -123,7 +132,9 @@ public class ArtefactDataSQLHelper extends SQLiteOpenHelper {
 			String tags = cursor.getString(5);
 			Long saved_id = cursor.getLong(6);
 			String journal_id = cursor.getString(7);
-			
+
+			if ( VERBOSE ) Log.v(TAG, "uploadAllSavedArtefacts: saved_id = " + saved_id);
+
 			if ( filename == null ) {
 				continue;
 			}

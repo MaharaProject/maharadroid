@@ -214,7 +214,7 @@ public class Utils {
 		try {
         	JSONObject syncObj = result.getJSONObject("sync");
     		//Log.i(TAG, syncObj.toString());
-        	if ( syncObj.has("activity") ) {
+        	if ( syncObj.has("activity") && syncObj.optJSONArray("activity") != null ) {
         		JSONArray notArr = syncObj.getJSONArray("activity");
     			for (int i=0; i<notArr.length(); i++) {
         	        Utils.showNotification(Integer.parseInt(notArr.getJSONObject(i).getString("id")), 
@@ -223,15 +223,15 @@ public class Utils {
         			numUpdates++;
     			}
         	} 
-        	if ( syncObj.has("tags") ) {
+        	if ( syncObj.has("tags") && syncObj.optJSONArray("tags") != null ) {
         		long newItems = updateListPreferenceFromJSON(myProvider, syncObj.getJSONArray("tags"), "tag");
     			numUpdates += newItems;
         	}
-        	if ( syncObj.has("blogs") ) {
+        	if ( syncObj.has("blogs") && syncObj.optJSONArray("blogs") != null ) {
         		long newItems = updateListPreferenceFromJSON(myProvider, syncObj.getJSONArray("blogs"), "blog");
     			numUpdates += newItems;
         	}
-        	if ( syncObj.has("folders") ) {
+        	if ( syncObj.has("folders") && syncObj.optJSONArray("folders") != null ) {
         		long newItems = updateListPreferenceFromJSON(myProvider, syncObj.getJSONArray("folders"), "folder");
     			numUpdates += newItems;
         	}

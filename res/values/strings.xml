@@ -22,12 +22,12 @@
     <string name="pref_upload_url_key">upload.uri</string>
     <string name="pref_upload_url_title">Upload URI</string>
     <string name="pref_upload_url_summary">Enter the URL to post files to Mahara</string>
-    <string name="pref_upload_url_default">http://master.dev.mahara.org/api/mobile/upload.php</string>
+    <string name="pref_upload_url_default">http://solent-mahara.catalystdemo.co.uk/api/mobile/upload.php</string>
 
     <string name="pref_sync_url_key">sync.uri</string>
     <string name="pref_sync_url_title">Sync URI</string>
     <string name="pref_sync_url_summary">Enter the sync URL to Mahara</string>
-    <string name="pref_sync_url_default">http://master.dev.mahara.org/api/mobile/sync.php</string>
+    <string name="pref_sync_url_default">http://solent-mahara.catalystdemo.co.uk/api/mobile/sync.php</string>
         
     <string name="pref_auth_username_key">auth.username</string>
     <string name="pref_auth_username_title">Username</string>

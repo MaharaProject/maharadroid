@@ -314,7 +314,7 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 		String journal = journalKeys[(int) ((Spinner) findViewById(R.id.upload_journal_spinner)).getSelectedItemId()];
 		String filename = null;
 
-		if ( id != null ) {
+		if ( id != null && id.length() > 0 ) {
 			a.load(mContext, Long.valueOf(id));
 			a.setTitle(title);
 			a.setDescription(description);
@@ -324,7 +324,7 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 		    if ( VERBOSE ) Log.v(TAG, "InitiateUpload loading artefact [" + id + "]");
 
 		} else {
-			a = new Artefact(null, null, title, description, tags, null, journal);
+			a = new Artefact((long) 0, null, title, description, tags, null, journal);
 		    if ( VERBOSE ) Log.v(TAG, "InitiateUpload creating new artefact object");
 
 		}
@@ -342,11 +342,10 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 		} else {
 	
 			for ( int i = 0; i < uris.length; i++ ) {
-	    		filename = Utils.getFilePath(this, uris[i]);
+				
+				filename = ( uris[i] == null ) ? null : Utils.getFilePath(this, uris[i]);
+				a.setFilename(filename);
 		    	if ( VERBOSE ) Log.v(TAG, "InitiateUpload have file, name is '" + filename + "'");
-	
-				if (filename == null)
-					continue;
 	
 				String new_title = title;
 				if ( isMulti ) {
@@ -355,7 +354,6 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 			    	if ( VERBOSE ) Log.v(TAG, "InitiateUpload have multi-file post, title is '" + new_title + "'");
 				}
 	
-				a.setFilename(filename);
 				uploader_intent = new Intent(this, TransferService.class);
 				uploader_intent.putExtra("artefact", a);
 			    if ( VERBOSE ) Log.v(TAG, "InitiateUpload with file [" + i + "] - about to start service");
@@ -379,7 +377,7 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 		String journal = journalKeys[(int) ((Spinner) findViewById(R.id.upload_journal_spinner)).getSelectedItemId()];
 		String filename = null;
 
-		if ( id != null ) {
+		if ( id != null && id.length() > 0 ) {
 	    	if ( VERBOSE ) Log.v(TAG, "InitiateSave id is not null - loading ... [" + id + "]");
 
 			a.load(mContext, Long.valueOf(id));
@@ -390,7 +388,7 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 			a.setFilename(filename);
 		} else {
 	    	if ( VERBOSE ) Log.v(TAG, "InitiateSave id is null, creating new artefact object");
-			a = new Artefact(Long.valueOf(id), null, title, description, tags, null, journal);
+			a = new Artefact((long) 0, null, title, description, tags, null, journal);
 		}
 
 		if ( uris == null || uris.length == 0 ) {

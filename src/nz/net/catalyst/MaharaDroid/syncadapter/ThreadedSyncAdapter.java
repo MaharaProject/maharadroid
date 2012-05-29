@@ -5,9 +5,11 @@ import java.util.Date;
 
 import org.json.JSONObject;
 
+import nz.net.catalyst.MaharaDroid.LogConfig;
 import nz.net.catalyst.MaharaDroid.R;
 import nz.net.catalyst.MaharaDroid.Utils;
 import nz.net.catalyst.MaharaDroid.data.ArtefactDataSQLHelper;
+import nz.net.catalyst.MaharaDroid.ui.ArtifactSettingsActivity;
 import nz.net.catalyst.MaharaDroid.upload.http.RestClient;
 import android.accounts.Account;
 import android.content.AbstractThreadedSyncAdapter;
@@ -28,9 +30,13 @@ import android.util.Log;
  */
 
 public class ThreadedSyncAdapter extends AbstractThreadedSyncAdapter{
+	static final String TAG = LogConfig.getLogTag(ThreadedSyncAdapter.class);
+	// whether DEBUG level logging is enabled (whether globally, or explicitly for this log tag)
+	static final boolean DEBUG = LogConfig.isDebug(TAG);
+	// whether VERBOSE level logging is enabled
+	static final boolean VERBOSE = LogConfig.VERBOSE;
 	
 	private Context mContext;
-	private static final String TAG = "ThreadedSyncAdapter";
 	
 	public static final String EXTRAS_SYNC_IS_PERIODIC = "MaharaDroid.periodic";
     static final String SYNC_AUTOMATICALLY_PREF = "sync_automatically";
@@ -49,7 +55,7 @@ public class ThreadedSyncAdapter extends AbstractThreadedSyncAdapter{
 	@Override
 	public void onPerformSync(Account account, Bundle extras, String authority,
 			ContentProviderClient myProvider, SyncResult syncResult) {
-		Log.e(TAG, "Sync request issued");
+		if ( VERBOSE ) Log.v(TAG, "onPerformSync: Sync request issued");
 		
 		// One way or another, delay follow-up syncs for another 10 minutes.
 		syncResult.delayUntil = 600;
@@ -69,7 +75,7 @@ public class ThreadedSyncAdapter extends AbstractThreadedSyncAdapter{
 		Date now = new Date();
 		if (sLastCompletedSync > 0 && now.getTime() - sLastCompletedSync < 5000) {
 		// If the last sync completed 10 seconds ago, ignore this request anyway.
-			Log.e(TAG, "Sync was CANCELLED because a sync completed within the past 5 seconds.");
+			if ( DEBUG ) Log.d(TAG, "Sync was CANCELLED because a sync completed within the past 5 seconds.");
 			return;
 		}
 		
@@ -86,7 +92,7 @@ public class ThreadedSyncAdapter extends AbstractThreadedSyncAdapter{
 				"");
 		Long lastsync = mPrefs.getLong("lastsync", 0);
 		
-		Log.v(TAG, "Synchronizing Mahara account '" + username + "', " + "'" + token + "' and lastsync '" + lastsync + "'");
+		if ( VERBOSE ) Log.v(TAG, "Synchronizing Mahara account '" + username + "', " + "'" + token + "' and lastsync '" + lastsync + "'");
 
 		// Get latest details from sync 
 		JSONObject result = RestClient.AuthSync(authSyncURI, token, username, lastsync, mContext);
@@ -98,6 +104,8 @@ public class ThreadedSyncAdapter extends AbstractThreadedSyncAdapter{
             // Now push any saved posts as 2nd part of sync
     		// Check if we have appropriate data access
     		if ( Utils.canUpload(mContext) ) {
+    			if ( VERBOSE ) Log.v(TAG, "onPerformSync: canUpload so uploadAllSavedArtefacts");
+
     	        ArtefactDataSQLHelper artefactData = new ArtefactDataSQLHelper(mContext);
     	        artefactData.uploadAllSavedArtefacts(false);
     	        artefactData.close();

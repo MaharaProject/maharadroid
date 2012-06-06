@@ -3,26 +3,10 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:gravity="right" >
-
-	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:id="@+id/top"
-		android:layout_gravity="left"
-   	    android:padding="10dp"	  
-	    >
-	   	<ImageView
-			android:id="@+id/banner"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:src="@drawable/banner"
-		/>
-	</RelativeLayout>
 	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    android:id="@+id/gradient"
-   		android:layout_below="@+id/top"
    		android:background="@drawable/gradient"
 	    >
 	</RelativeLayout>
@@ -102,8 +86,9 @@
 			android:visibility="gone"
 			android:headerDividersEnabled="true"
 			android:footerDividersEnabled="true"
-			android:groupIndicator="@drawable/expander_group"
+			
 			/>
+		<!--  android:groupIndicator="@drawable/expander_group" -->
 		<TextView android:id="@+id/no_saved_artefacts"
 			      android:text="@string/artefacts_no_saved_artefacts"
 				  android:layout_margin="0dp"

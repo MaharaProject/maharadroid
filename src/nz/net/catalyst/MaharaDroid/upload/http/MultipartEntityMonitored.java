@@ -145,7 +145,6 @@ public class MultipartEntityMonitored extends MultipartEntity {
 
 	@Override
 	public void writeTo(OutputStream outstream) throws IOException {
-		if ( DEBUG ) Log.d(TAG, "Uploading data");
 		if (m_outputstream == null) {
 			m_outputstream = new OutputStreamMonitored(outstream, getContentLength());
 		}

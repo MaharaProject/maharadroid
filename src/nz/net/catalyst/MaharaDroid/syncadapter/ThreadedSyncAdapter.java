@@ -2,9 +2,11 @@ package nz.net.catalyst.MaharaDroid.syncadapter;
 
 
 import java.util.Date;
+import java.util.List;
 
 import org.json.JSONObject;
 
+import nz.net.catalyst.MaharaDroid.GlobalResources;
 import nz.net.catalyst.MaharaDroid.LogConfig;
 import nz.net.catalyst.MaharaDroid.R;
 import nz.net.catalyst.MaharaDroid.Utils;
@@ -16,6 +18,7 @@ import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.PeriodicSync;
 import android.content.SharedPreferences;
 import android.content.SyncResult;
 import android.os.Bundle;
@@ -38,7 +41,6 @@ public class ThreadedSyncAdapter extends AbstractThreadedSyncAdapter{
 	
 	private Context mContext;
 	
-	public static final String EXTRAS_SYNC_IS_PERIODIC = "MaharaDroid.periodic";
     static final String SYNC_AUTOMATICALLY_PREF = "sync_automatically";
     static final String SYNC_FREQUENCY_PREF = "sync_frequency";
     
@@ -62,7 +64,7 @@ public class ThreadedSyncAdapter extends AbstractThreadedSyncAdapter{
 
 		boolean manual = extras.getBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, false);
 		boolean ignoreSettings = extras.getBoolean(ContentResolver.SYNC_EXTRAS_IGNORE_SETTINGS, false);
-		boolean isPeriodic = extras.getBoolean(EXTRAS_SYNC_IS_PERIODIC, false);
+		boolean isPeriodic = extras.getBoolean(GlobalResources.EXTRAS_SYNC_IS_PERIODIC, false);
 
 		if (manual || ignoreSettings) {
 			Log.i(TAG, "Starting a MANUAL sync");

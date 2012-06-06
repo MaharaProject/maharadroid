@@ -39,12 +39,14 @@ public class GlobalResources {
 
 	public static int ERROR_DELAY_MS = 1000;
 
-	public static final int UPLOADER_ID = 243;
+	public static final int UPLOADER_ID = 100;
+	public static final int UPLOADING_ID = UPLOADER_ID + 100;
 	
 	public static final String ACCOUNT_TYPE = "nz.net.catalyst.MaharaDroid.account";
 	public static final String AUTHTOKEN_TYPE = "nz.net.catalyst.MaharaDroid.account";
 	public static final String CONTENT_URL = "nz.net.catalyst.MaharaDroid";
 	public static final String SYNC_AUTHORITY = "nz.net.catalyst.MaharaDroid";
+	public static final String EXTRAS_SYNC_IS_PERIODIC = "nz.net.catalyst.MaharaDroid.periodic";
 
 	public static final String[] CONTENT_TABLES = new String[] { "tag", "blog", "folder" };
 	public static final String[] CONTENT_FIELDS = new String[] { "ID", "VALUE" };
@@ -53,6 +55,7 @@ public class GlobalResources {
 	
 	public static final int REQ_CAMERA_RETURN = 0;
 	public static final int REQ_GALLERY_RETURN = 1;
+	public static final int REQ_RECORD_AUDIO_RETURN = 2;
 	
     public static final int REGISTRATION_TIMEOUT = 30 * 1000; // ms
 	

@@ -40,6 +40,8 @@ public class Artefact extends Object implements Parcelable {
 	private String tags;
 	private Long saved_id;
 	private String journal_id;
+	private boolean is_draft = false;
+	private boolean allow_comments = false;
 
 	public Long getId() {
 		return id;
@@ -62,6 +64,12 @@ public class Artefact extends Object implements Parcelable {
 	public String getJournalId() {
 		return journal_id;
 	}
+	public boolean getIsDraft() {
+		return is_draft;
+	}
+	public boolean getAllowComments() {
+		return allow_comments;
+	}
 	public void setId(Long i) {
 		id = i;
 	}
@@ -83,9 +91,30 @@ public class Artefact extends Object implements Parcelable {
 	public void setJournalId(String j) {
 		journal_id = j;
 	}
+	public void setIsDraft(Boolean d) {
+		is_draft = d;
+	}
+	public void setAllowComments(Boolean a) {
+		allow_comments = a;
+	}
 	public String getGroup() {
 		// In the meantime just set the article ID, i.e force no grouping
 		return this.title;
+	}
+	public boolean isJournal() {
+		return ( journal_id != null && Long.valueOf(journal_id) > 0 );
+	}
+	public boolean hasAttachment() {
+		return ( filename != null );
+	}
+	public boolean canUpload() {
+		// journal must have title and description otherwise a title and filename will do 
+		if ( ( title != null && title.trim().length() > 0 ) 
+				&& ( ( isJournal() && ( description != null && description.trim().length() > 0 ) ) 
+						|| filename != null ) ) {
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -104,6 +133,10 @@ public class Artefact extends Object implements Parcelable {
 		dest.writeString(tags);
 		dest.writeLong(time);
 		dest.writeString(journal_id);
+		dest.writeBooleanArray(new boolean[] { is_draft, allow_comments });
+    	Log.d("Artefact", "writeToParcel: is_draft: " + is_draft);
+    	Log.d("Artefact", "writeToParcel: allow comments: " + allow_comments);
+
 	}
 		
 	/**
@@ -131,17 +164,26 @@ public class Artefact extends Object implements Parcelable {
 		tags = in.readString();
 		time = in.readLong();
 		journal_id = in.readString();
+		boolean[] b = new boolean[2];
+		in.readBooleanArray(b); 
+		is_draft = b[0];
+		allow_comments = b[1];
+		
+    	Log.d("Artefact", "instantiate from parcel: is_draft: " + is_draft);
+    	Log.d("Artefact", "instantiate from parcel: allow comments: " + allow_comments);
 	}
 
-	public Artefact(String f, String t, String d, String tgs, String j) {
+	public Artefact(String f, String t, String d, String tgs, String j, boolean dr, boolean a) {
 		filename = f;
 		title = t;
 		description = d;
 		tags = tgs;
 		journal_id = j;
+		is_draft = dr;
+		allow_comments = a;
 		time = System.currentTimeMillis();
 	}
-	public Artefact(Long i, Long tm, String f, String t, String d, String tgs, Long sid, String j) {
+	public Artefact(Long i, Long tm, String f, String t, String d, String tgs, Long sid, String j, boolean dr, boolean a) {
 		id = i;
 		filename = f;
 		title = t;
@@ -150,8 +192,10 @@ public class Artefact extends Object implements Parcelable {
 		time = tm;
 		saved_id = sid;
 		journal_id = j;
+		is_draft = dr;
+		allow_comments = a;
 	}
-	public Artefact(Long i, String f, String t, String d, String tgs, Long sid, String j) {
+	public Artefact(Long i, String f, String t, String d, String tgs, Long sid, String j, boolean dr, boolean a) {
 		id = i;  // may be null for a new item.
 		filename = f;
 		title = t;
@@ -159,6 +203,8 @@ public class Artefact extends Object implements Parcelable {
 		tags = tgs;
 		saved_id = sid;
 		journal_id = j;
+		is_draft = dr;
+		allow_comments = a;
 		time = System.currentTimeMillis();
 	}
 	
@@ -169,9 +215,6 @@ public class Artefact extends Object implements Parcelable {
 	public void upload(Boolean auto, Context mContext) {
 		Intent i = new Intent(mContext, TransferService.class);
 		i.putExtra("artefact", (Parcelable) this);
-		if ( auto ) 
-			i.putExtra("auto", "yes please");
-		// TODO - needs to be a start service for result or we need to check post upload and delete on success.
 		mContext.startService(i);
 	}
 	public void delete(Context mContext) {
@@ -193,9 +236,12 @@ public class Artefact extends Object implements Parcelable {
 		// TODO Auto-generated method stub
 		ArtefactDataSQLHelper artefactData = new ArtefactDataSQLHelper(mContext);
 		if ( id != 0 ) { 	// update
-			artefactData.update(id, filename, title, description, tags, saved_id, journal_id);
+	    	Log.d("Artefact", "save: is_draft: " + is_draft);
+	    	Log.d("Artefact", "save: allow comments: " + allow_comments);
+			artefactData.update(id, filename, title, description, tags, saved_id, journal_id, is_draft, allow_comments);
+
 		} else { // add
-			artefactData.add(filename, title, description, tags, journal_id);
+			artefactData.add(filename, title, description, tags, journal_id, is_draft, allow_comments);
 		}
 		artefactData.close();
 	}

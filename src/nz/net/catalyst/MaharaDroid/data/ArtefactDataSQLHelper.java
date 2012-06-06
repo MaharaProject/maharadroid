@@ -21,15 +21,11 @@
 
 package nz.net.catalyst.MaharaDroid.data;
 
-import org.json.JSONException;
-
 import nz.net.catalyst.MaharaDroid.LogConfig;
 import nz.net.catalyst.MaharaDroid.Utils;
-import nz.net.catalyst.MaharaDroid.syncadapter.ThreadedSyncAdapter;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
@@ -37,7 +33,7 @@ import android.util.Log;
 
 /** Helper to the database, manages versions and creation */
 public class ArtefactDataSQLHelper extends SQLiteOpenHelper {
-	static final String TAG = LogConfig.getLogTag(ThreadedSyncAdapter.class);
+	static final String TAG = LogConfig.getLogTag(ArtefactDataSQLHelper.class);
 	// whether DEBUG level logging is enabled (whether globally, or explicitly for this log tag)
 	static final boolean DEBUG = LogConfig.isDebug(TAG);
 	// whether VERBOSE level logging is enabled
@@ -59,23 +55,19 @@ public class ArtefactDataSQLHelper extends SQLiteOpenHelper {
 	public static final String TAGS = "tags";
 	public static final String SAVED_ID = "id";
 	public static final String JOURNAL_ID = "journal_id";
+	public static final String IS_DRAFT = "is_draft";
+	public static final String ALLOW_COMMENTS = "allow_comments";
 
 	public ArtefactDataSQLHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		mContext = context;
 //    	SQLiteDatabase db = this.getReadableDatabase();
-//
-//		db.execSQL("DROP TABLE " + TABLE + "; ");
-//
-//		String sql = "create table " + TABLE + "( " + BaseColumns._ID
-//				+ " integer primary key autoincrement, " + TIME + " integer, "
-//				+ FILENAME + " text, " 
-//				+ TITLE + " text not null, " 
-//				+ DESCRIPTION + " text, " 
-//				+ TAGS + " text, "  
-//				+ SAVED_ID + " integer, "  
-//				+ JOURNAL_ID + " text "  
-//				+ ");";
+
+		//db.execSQL("DROP TABLE " + TABLE + "; ");
+//    	this.onCreate(db);
+
+//		String sql = "alter table " + TABLE + " ADD COLUMN " + IS_DRAFT + " boolean; ";   
+//		String sql = "alter table " + TABLE + " ADD COLUMN " + ALLOW_COMMENTS + " boolean; ";   
 //		Log.d("LogData", "onCreate: " + sql);
 //		db.execSQL(sql);
 	}
@@ -90,8 +82,10 @@ public class ArtefactDataSQLHelper extends SQLiteOpenHelper {
 				+ TAGS + " text, "  
 				+ SAVED_ID + " integer, "  
 				+ JOURNAL_ID + " text "  
+				+ IS_DRAFT + " boolean "  
+				+ ALLOW_COMMENTS + " boolean "  
 				+ ");";
-		Log.d("LogData", "onCreate: " + sql);
+		if ( DEBUG ) Log.d("LogData", "onCreate: " + sql);
 		db.execSQL(sql);
 	}
 	
@@ -117,34 +111,11 @@ public class ArtefactDataSQLHelper extends SQLiteOpenHelper {
     	}
 	    Cursor cursor = db.query(ArtefactDataSQLHelper.TABLE, null, null, null, null,
 		        null, null);
-//	    Cursor cursor = db.query(ArtefactDataSQLHelper.TABLE, null, SAVED_ID + " != 0 ", null,
-//	        null, null, null);
-	    
-	    //startManagingCursor(cursor);
 		if ( VERBOSE ) Log.v(TAG, "uploadAllSavedArtefacts: returned " + cursor.getCount() + " records.");
 
 	    while (cursor.moveToNext()) {
-	        Long id = cursor.getLong(0);
-	        Long time = cursor.getLong(1);	
-			String filename = cursor.getString(2);
-			String title = cursor.getString(3);
-			String description = cursor.getString(4);
-			String tags = cursor.getString(5);
-			Long saved_id = cursor.getLong(6);
-			String journal_id = cursor.getString(7);
-
-			if ( VERBOSE ) Log.v(TAG, "uploadAllSavedArtefacts: saved_id = " + saved_id);
-
-			if ( filename == null ) {
-				continue;
-			}
-			String file_path = Utils.getFilePath(mContext, filename); 
-			if ( file_path != null ) {
-				Artefact a = new Artefact(id, time, file_path, title, description, tags, saved_id, journal_id);
-				
-				//	TODO - if success, delete them?
-				a.upload(true, mContext);
-			}
+	    	Artefact a = createArtefactFromCursor(cursor);
+			a.upload(true, mContext);
 		}
 	}
 	public Artefact loadSavedArtefacts(Long id) {
@@ -152,41 +123,77 @@ public class ArtefactDataSQLHelper extends SQLiteOpenHelper {
     	
 	    Cursor cursor = db.query(ArtefactDataSQLHelper.TABLE, null, BaseColumns._ID + " = ?", new String[] { id.toString() },
 	        null, null, null);
-	    
-	    //startManagingCursor(cursor);
 
     	if ( cursor == null ) 
     		return null;
     	
 	    cursor.moveToFirst();
-		String file_path = Utils.getFilePath(mContext, cursor.getString(3)); 
-		if ( file_path == null )
-			return null;
-			
-		Artefact a = new Artefact(	cursor.getLong(0), 
-									cursor.getLong(1), 
-									cursor.getString(2), 
-									file_path, 
-									cursor.getString(4), 
-									cursor.getString(5),
-									cursor.getLong(6),
-									cursor.getString(7));
 		
-		return a;
+	    return createArtefactFromCursor(cursor);
 	}
+
+	public Artefact[] loadSavedArtefacts() {
+    	SQLiteDatabase db = this.getReadableDatabase();
+    	
+	    Cursor cursor = db.query(ArtefactDataSQLHelper.TABLE, null, null, null, null, null, null);
+	    
+	    //startManagingCursor(cursor);
+    	if ( cursor == null ) 
+    		return new Artefact[] {};// TODO why different from above?
+
+	    //startManagingCursor(cursor);
+	    Artefact[] a_array = new Artefact[cursor.getCount()];
+	    
+	    int items = 0;
+
+	    while (cursor.moveToNext()) {
+	    	Artefact a = createArtefactFromCursor(cursor);
+
+	    	// Only include artefacts with either no attached file or valid files (may have been deleted in the background so we check)
+			if ( a.getFilename() == null || 
+					( a.getFilename() != null && Utils.getFilePath(mContext, a.getFilename()) != null ) ) {
+				a_array[items++] = a;
+			} else {
+				Log.i(TAG, "Artefact '" + a.getTitle() + 
+							"' file [" + a.getFilename() + 
+							"] no longer exists, deleting from saved artefacts");
+				this.deleteSavedArtefact(a.getId());
+			}
+		}
+	    return a_array;
+	}
+    private Artefact createArtefactFromCursor(Cursor cursor) {
+    	if ( VERBOSE ) Log.v(TAG, "createArtefactFromCursor draft: " + cursor.getInt(8));
+    	if ( VERBOSE ) Log.v(TAG, "createArtefactFromCursor allow comments: " + cursor.getInt(9));
+		return new Artefact(	cursor.getLong(0), 
+								cursor.getLong(1), 
+								cursor.getString(2), 
+								cursor.getString(3), 
+								cursor.getString(4), 
+								cursor.getString(5),
+								cursor.getLong(6),
+								cursor.getString(7),
+								cursor.getInt(8)>0,
+								cursor.getInt(9)>0);
+    }
+	
     //---deletes a particular item---
-    public boolean deleteSavedArtefact(Long id) {
+    public int deleteSavedArtefact(Long id) {
     	SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(ArtefactDataSQLHelper.TABLE, BaseColumns._ID + " = ?", new String[] { id.toString() }) > 0;
+	    int numRecords = db.delete(ArtefactDataSQLHelper.TABLE, BaseColumns._ID + " = ?", new String[] { id.toString() });
+	    if ( VERBOSE ) Log.v(TAG, "deleted '" + numRecords + "' records.");
+	    return numRecords;
     }
     //---deletes all items---
-    public boolean deleteAllSavedArtefacts() {
+    public int deleteAllSavedArtefacts() {
 		SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(ArtefactDataSQLHelper.TABLE, null, null) > 0;
-        
+
+	    int numRecords = db.delete(ArtefactDataSQLHelper.TABLE, null, null);
+	    if ( VERBOSE ) Log.v(TAG, "deleted '" + numRecords + "' records.");
+	    return numRecords;
     }
 
-	public long add(String filename, String title, String description, String tags, String journal_id) {
+	public long add(String filename, String title, String description, String tags, String journal_id, boolean is_draft, boolean allow_comments) {
 
 		SQLiteDatabase db = this.getWritableDatabase();
 	    ContentValues values = new ContentValues();
@@ -196,9 +203,19 @@ public class ArtefactDataSQLHelper extends SQLiteOpenHelper {
 	    values.put(ArtefactDataSQLHelper.DESCRIPTION, description);
 	    values.put(ArtefactDataSQLHelper.TAGS, tags);
 	    values.put(ArtefactDataSQLHelper.JOURNAL_ID, journal_id);
-	    return db.insert(ArtefactDataSQLHelper.TABLE, null, values);
+	    values.put(ArtefactDataSQLHelper.IS_DRAFT, is_draft);
+	    values.put(ArtefactDataSQLHelper.ALLOW_COMMENTS, allow_comments);
+	    
+    	if ( VERBOSE ) Log.v(TAG, "add draft: " + is_draft);
+    	if ( VERBOSE ) Log.v(TAG, "add allow comments: " + is_draft);
+
+	    long numRecords = db.insert(ArtefactDataSQLHelper.TABLE, null, values);
+	    
+	    if ( VERBOSE ) Log.v(TAG, "inserted '" + numRecords + "' records.");
+	    return numRecords;
+
 	}
-	public int update(Long id, String filename, String title, String description, String tags, Long saved_id, String journal_id) {
+	public int update(Long id, String filename, String title, String description, String tags, Long saved_id, String journal_id, boolean is_draft, boolean allow_comments) {
 
 		SQLiteDatabase db = this.getWritableDatabase();
 	    ContentValues values = new ContentValues();
@@ -215,7 +232,14 @@ public class ArtefactDataSQLHelper extends SQLiteOpenHelper {
 	    	values.put(ArtefactDataSQLHelper.SAVED_ID, saved_id);
 	    if ( journal_id != null )
 	    	values.put(ArtefactDataSQLHelper.JOURNAL_ID, journal_id);
-	    return db.update(ArtefactDataSQLHelper.TABLE, values, BaseColumns._ID + "= ? ", new String[] { id.toString() });
-	}
+    	values.put(ArtefactDataSQLHelper.IS_DRAFT, is_draft);
+    	values.put(ArtefactDataSQLHelper.ALLOW_COMMENTS, allow_comments);
+    	if ( VERBOSE ) Log.v(TAG, "update draft: " + is_draft);
+    	if ( VERBOSE ) Log.v(TAG, "update allow comments: " + allow_comments);
 
+	    int numRecords = db.update(ArtefactDataSQLHelper.TABLE, values, BaseColumns._ID + "= ? ", new String[] { id.toString() });
+	    
+	    if ( VERBOSE ) Log.v(TAG, "updated '" + numRecords + "' records.");
+	    return numRecords;
+	}
 }

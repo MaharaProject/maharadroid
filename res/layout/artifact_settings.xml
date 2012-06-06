@@ -13,7 +13,7 @@
 		
 			<LinearLayout
 				  xmlns:android="http://schemas.android.com/apk/res/android"
-				  android:id="@+id/JournalLayout"
+				  android:id="@+id/ArtefactJournalLayout"
 				  android:layout_width="fill_parent"
 				  android:layout_height="wrap_content"
 				  android:orientation="horizontal">
@@ -32,41 +32,40 @@
 
 			    	/>
 			</LinearLayout>
-			    		    
 			<LinearLayout
 				  xmlns:android="http://schemas.android.com/apk/res/android"
-				  android:id="@+id/ArtifactConfirmLayout"
+				  android:id="@+id/ArtefactConfirmLayout"
 				  android:layout_width="fill_parent"
 				  android:layout_height="wrap_content"
 				  android:orientation="horizontal">
 				  
-					<CheckBox android:text="@string/upload_confirm_label"
+					<CheckBox 
 							style="@android:style/TextAppearance.Small"
 							android:id="@+id/chkUpload"
-						    android:layout_width="wrap_content"
+						    android:layout_width="60dip"
 							android:layout_height="wrap_content"
 							android:layout_margin="5dip"
 			  							  />
 					
 					<TextView android:text="@string/upload_confirm_text"
-							  android:id="@+id/txtArtifactConfirm"
+							  android:id="@+id/txtArtefactConfirm"
 							  android:layout_width="wrap_content"
 							  android:singleLine="false"
 							  android:layout_height="wrap_content"
-			  				  android:padding="5dip"
 			  				  android:layout_margin="5dip"
+			  				  android:paddingBottom="5dip"
 			  				  style="@android:style/TextAppearance.Small">
 					</TextView>
 			</LinearLayout>
 			<!-- 
-					<ImageView android:id="@+id/UploadArtifact"
+					<ImageView android:id="@+id/UploadArtefact"
 							   android:layout_width="wrap_content"
 							   android:layout_height="wrap_content">
 				   	</ImageView>
  			-->
 			<LinearLayout
 				  xmlns:android="http://schemas.android.com/apk/res/android"
-				  android:id="@+id/ArtifactTitleLayout"
+				  android:id="@+id/ArtefactTitleLayout"
 				  android:layout_width="fill_parent"
 				  android:layout_height="wrap_content"
 				  android:layout_marginTop="5dp"
@@ -82,7 +81,7 @@
 					</TextView>
 				  
 					<EditText android:text=""
-							  android:id="@+id/txtArtifactTitle"
+							  android:id="@+id/txtArtefactTitle"
 							  android:singleLine="true"
 							  android:layout_width="fill_parent"
 							  android:layout_height="wrap_content">
@@ -91,7 +90,7 @@
 			</LinearLayout>
 			<LinearLayout
 				  xmlns:android="http://schemas.android.com/apk/res/android"
-				  android:id="@+id/ArtifactDescriptionLayout"
+				  android:id="@+id/ArtefactDescriptionLayout"
 				  android:layout_width="fill_parent"
   				  android:layout_height="wrap_content"
 				  android:layout_marginTop="5dp"
@@ -106,7 +105,7 @@
 			  				  style="@android:style/TextAppearance.Small">
 					</TextView>
 					<EditText android:text=""
-							  android:id="@+id/txtArtifactDescription"
+							  android:id="@+id/txtArtefactDescription"
 							  android:singleLine="false"
 							  android:layout_width="fill_parent"
 							  android:layout_height="wrap_content"
@@ -130,7 +129,7 @@
 					</TextView>
 					
 					<EditText android:text=""
-							  android:id="@+id/txtArtifactTags"
+							  android:id="@+id/txtArtefactTags"
 							  android:singleLine="true"
 							  android:layout_width="fill_parent"
 							  android:layout_height="wrap_content">
@@ -157,10 +156,68 @@
 					        android:layout_height="wrap_content"
 				    />
 			</LinearLayout>	
-	
+			<LinearLayout
+				  xmlns:android="http://schemas.android.com/apk/res/android"
+				  android:id="@+id/ArtefactJournalExtrasLayout"
+				  android:layout_width="fill_parent"
+				  android:layout_height="wrap_content"
+				  android:orientation="vertical"
+				  android:visibility="gone">
+   				<LinearLayout
+					  xmlns:android="http://schemas.android.com/apk/res/android"
+					  android:id="@+id/ArtefactIsDraftLayout"
+					  android:layout_width="fill_parent"
+					  android:layout_height="wrap_content"
+					  android:orientation="horizontal">
+					  
+   				    <!-- android:text="@string/upload_is_draft_label"-->
+						<CheckBox 
+								style="@android:style/TextAppearance.Small"
+								android:id="@+id/txtArtefactIsDraft"
+								android:layout_height="wrap_content"
+								android:layout_margin="5dip"
+								android:checked="false"
+							    android:layout_width="60dip"
+				  							  />
+						
+						<TextView android:text="@string/upload_is_draft_text"
+								  android:layout_width="wrap_content"
+								  android:singleLine="false"
+								  android:layout_height="wrap_content"
+				  				  android:padding="5dip"
+				  				  android:layout_margin="5dip"
+				  				  style="@android:style/TextAppearance.Small">
+						</TextView>
+				</LinearLayout>
+				<LinearLayout
+					  xmlns:android="http://schemas.android.com/apk/res/android"
+					  android:id="@+id/ArtefactAllowCommentsLayout"
+					  android:layout_width="fill_parent"
+					  android:layout_height="wrap_content"
+					  android:orientation="horizontal">
+					  <!-- android:text="@string/upload_allow_comments_label" -->
+						<CheckBox 
+								style="@android:style/TextAppearance.Small"
+								android:id="@+id/txtArtefactAllowComments"
+								android:layout_height="wrap_content"
+								android:layout_margin="5dip"
+								android:checked="true"
+						   		android:layout_width="60dip"
+				  							  />
+						<TextView android:text="@string/upload_allow_comments_text"
+								android:layout_width="wrap_content"
+								android:singleLine="false"
+								android:layout_height="wrap_content"
+				  				android:padding="5dip"
+				  				android:layout_margin="5dip"
+				  				style="@android:style/TextAppearance.Small">
+						</TextView>
+				</LinearLayout>
+			</LinearLayout>									    		    
+				
 			<LinearLayout
 			  xmlns:android="http://schemas.android.com/apk/res/android"
-			  android:id="@+id/ArtifactSettingsButtonLayout"
+			  android:id="@+id/ArtefactSettingsButtonLayout"
 			  android:layout_width="fill_parent"
 			  android:layout_height="wrap_content"
 			  android:layout_margin="5dp"
@@ -181,7 +238,7 @@
 						android:layout_weight="1"
 						android:layout_width="fill_parent"
 						android:layout_height="wrap_content"
-						android:enabled="false"
+						android:enabled="true"
 						style="@style/MaharaButton"
 						>
 				</Button>
@@ -196,7 +253,7 @@
 				
 			</LinearLayout>
 					<EditText android:text=""
-							  android:id="@+id/txtArtifactId"
+							  android:id="@+id/txtArtefactId"
 							  android:singleLine="true"
 							  android:layout_width="fill_parent"
 							  android:layout_height="wrap_content"

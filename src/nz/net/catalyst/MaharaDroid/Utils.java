@@ -28,6 +28,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import nz.net.catalyst.MaharaDroid.R;
+import nz.net.catalyst.MaharaDroid.syncadapter.ThreadedSyncAdapter;
+import android.accounts.Account;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -41,6 +43,7 @@ import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
@@ -130,14 +133,13 @@ public class Utils {
 				return null;
 		}
 		
-		if ( DEBUG ) Log.d(TAG, "file path = '" + file_path + "'");
-
 		// Online image not in gallery
 		// TODO check http://jimmi1977.blogspot.co.nz/2012/01/android-api-quirks-getting-image-from.html
 		//      for workaround
 		if ( file_path == "null" ){
 			return null;
 		}
+		if ( DEBUG ) Log.d(TAG, "file path valid [" + file_path + "]");
 		return file_path;
     }
     
@@ -164,7 +166,7 @@ public class Utils {
         		
         		// Here we want to check a check-sum for 'last-modified' and if newer content exists 
         		// then process out new user-data
-        		Log.e(TAG, "Token found, re-keying auth-token");
+        		Log.i(TAG, "Token found, re-keying auth-token");
         		
         		        		
         	} catch (JSONException e) {
@@ -197,7 +199,7 @@ public class Utils {
         
         // Set the info for the views that show in the notification panel.
         notification.setLatestEventInfo(mContext, title, description, contentIntent);
-        notification.flags = Notification.FLAG_AUTO_CANCEL;
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
         // Send the notification.
         mNM.notify(id, notification);
@@ -306,30 +308,63 @@ public class Utils {
 		return i;
 	}
 	
-	public static String getUploadURLPref(Context mContext) {
+	public static void setPeriodicSync(Account account, Context mContext) {
 		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 
-		return mPrefs.getString(mContext.getResources().getString(R.string.pref_upload_url_key), "");
+		Long periodic_sync = Long.valueOf(mPrefs.getString(mContext.getResources().getString(R.string.pref_sync_periodic_key), "0"));
+		if ( periodic_sync == null || periodic_sync <= 0 ) {
+			return;
+		}
+
+    	Bundle bundle = new Bundle();
+    	bundle.putBoolean(GlobalResources.EXTRAS_SYNC_IS_PERIODIC, true);
+        	
+        ContentResolver.addPeriodicSync(account, GlobalResources.SYNC_AUTHORITY, bundle, periodic_sync * 60);
 	}
-	public static String getUploadFolderPref(Context mContext) {
-		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+	
 
-		return mPrefs.getString(mContext.getResources().getString(R.string.pref_upload_folder_key), "");
+	public static String[][] getJournals(String nullitem, Context mContext) {
+		return getValues("blog", nullitem, mContext);
 	}
-	public static String getUploadAuthTokenPref(Context mContext) {
-		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-
-		return mPrefs.getString(mContext.getResources().getString(R.string.pref_auth_token_key), "");
+	
+	public static String[][] getTags(String nullitem, Context mContext) {
+		return getValues("tag", nullitem, mContext);
 	}
-	public static String getUploadUsernamePref(Context mContext) {
-		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-
-		return mPrefs.getString(mContext.getResources().getString(R.string.pref_auth_username_key), "");
-	}
-	public static String getUploadTagsPref(String pref_tags, Context mContext) {
-		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-
-		String tags = ( pref_tags != null ) ? pref_tags.trim() : "" ;	
-		return (mPrefs.getString(mContext.getResources().getString(R.string.pref_upload_tags_key), "") + " " + tags).trim();  
+			
+	private static String[][] getValues(String type, String nullitem, Context mContext) {
+		Uri uri = Uri.parse("content://" + GlobalResources.CONTENT_URL + "/" + type);
+		
+		ContentProviderClient myProvider = mContext.getContentResolver().acquireContentProviderClient(uri);
+		Cursor cursor = null;
+		try {
+			cursor = myProvider.query(uri, new String[] { "ID", "VALUE" }, null, null, null);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			Log.e(TAG, "Failed to aquire content provider for query - is ther an active sync running?");
+			e.printStackTrace();
+		}
+		
+		if ( cursor == null ) {
+			return null;
+		}
+	    if ( VERBOSE ) Log.v(TAG, "getValues: have acquired content provider for " + type + 
+	    							" (" + cursor.getCount() + " items returned for " + uri.toString() + ")");
+		cursor.moveToFirst();
+		
+		String[] k = new String[cursor.getCount() + 1];
+		String[] v = new String[cursor.getCount() + 1];
+	    if ( VERBOSE ) Log.v(TAG, "getValues: size " + k.length + " for " + type);
+		k[0] = null;
+		v[0] = nullitem;
+		
+	    while (! cursor.isAfterLast() ) {
+	    	
+			k[cursor.getPosition() + 1] = cursor.getString(0);
+			v[cursor.getPosition() + 1] = cursor.getString(1);
+		    if ( VERBOSE ) Log.v(TAG, "getValues: adding " + cursor.getString(0) + " at position " + cursor.getPosition() + " to " + type);
+		    cursor.moveToNext();
+		} 		
+		cursor.close();
+		return new String[][] { k, v };
 	}
 }

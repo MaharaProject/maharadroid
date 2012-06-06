@@ -38,6 +38,7 @@ import java.util.TreeMap;
 import java.util.Vector;
 
 import nz.net.catalyst.MaharaDroid.LogConfig;
+import nz.net.catalyst.MaharaDroid.Utils;
 import nz.net.catalyst.MaharaDroid.upload.http.MultipartEntityMonitored;
 
 import org.apache.http.HttpEntity;
@@ -109,7 +110,7 @@ public class RestClient {
 	}
 
     // TODO: change this to be a hash of post variables
-	public static JSONObject UploadArtifact(String url, String token, String username, String blog, 
+	public static JSONObject UploadArtifact(String url, String token, String username, String blog, boolean draft, boolean allowcomments,
 												String foldername, String tags, String filename, String title, 
 												String description, Context context){
 		Vector<String> pNames = new Vector<String>();
@@ -146,6 +147,14 @@ public class RestClient {
 		if (blog != null ) {
 			pNames.add("blog");
 			pVals.add(blog);
+		}
+		if ( draft ) {
+			pNames.add("draft");
+			pVals.add("true");
+		} 
+		if ( allowcomments ) {
+			pNames.add("allowcomments");
+			pVals.add("true");
 		}
 
 		String [] paramNames, paramVals;
@@ -267,7 +276,7 @@ public class RestClient {
 	    			title = paramVals[i];
 	    		}
 	    		else if (paramNames[i].equals("filename")) {
-		    		file = new File(paramVals[i]);
+		    		file = new File(Utils.getFilePath(context, paramVals[i]));
 		    		continue;
 		    	}
 	    		sig_params.put(paramNames[i], paramVals[i]);

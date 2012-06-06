@@ -25,6 +25,7 @@ import java.util.LinkedList;
 
 import nz.net.catalyst.MaharaDroid.GlobalResources;
 import nz.net.catalyst.MaharaDroid.LogConfig;
+import nz.net.catalyst.MaharaDroid.R;
 import nz.net.catalyst.MaharaDroid.Utils;
 import nz.net.catalyst.MaharaDroid.data.Artefact;
 import nz.net.catalyst.MaharaDroid.upload.http.RestClient;
@@ -32,13 +33,18 @@ import nz.net.catalyst.MaharaDroid.upload.http.RestClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class TransferService extends Service { 
@@ -50,7 +56,10 @@ public class TransferService extends Service {
 	
 	private final IBinder m_binder = new TransferServiceBinder();
 	private UploadArtifactTask m_upload_task = null;
-
+	private Context mContext;
+	
+	private int activeUploads = 0;
+	
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -61,22 +70,24 @@ public class TransferService extends Service {
 		
 		@Override
 		protected Object doInBackground(Void... params) {
-			Context mContext = getApplicationContext();
 			Bundle upload_info = null;
+			mContext = getApplicationContext();
+
 			while (m_uploads.size() > 0) {
 				upload_info = m_uploads.get(0);
 				if (upload_info != null) {
 					Artefact a = upload_info.getParcelable("artefact");
 					String id = String.valueOf((int) (System.currentTimeMillis() / 1000L));
 					//if ( VERBOSE ) Log.v(TAG, "id = " + id);	
-					//publishProgress(new String[]{"start", id, a.getTitle()});
+					publishProgress(new String[]{"start", id, a.getTitle()});
 			        JSONObject result = RestClient.UploadArtifact(
-			        						 Utils.getUploadURLPref(mContext), 
-			        						 Utils.getUploadAuthTokenPref(mContext),
-			        						 Utils.getUploadUsernamePref(mContext),
+			        						 getUploadURLPref(), 
+			        						 getUploadAuthTokenPref(),
+			        						 getUploadUsernamePref(),
 			        						 a.getJournalId(),
-			        						 Utils.getUploadFolderPref(mContext),
-			        						 Utils.getUploadTagsPref(a.getTags(), mContext),
+			        						 a.getIsDraft(), a.getAllowComments(),
+			        						 getUploadFolderPref(),
+			        						 getUploadTagsPref(a.getTags()),
 			        						 a.getFilename(),
 							    			 a.getTitle(),
 							    			 a.getDescription(),
@@ -115,6 +126,8 @@ public class TransferService extends Service {
 		
 		@Override
 		protected void onProgressUpdate(String... progress) {
+			mContext = getApplicationContext();
+			
 			// onProgressUpdate is called each time a new upload starts. This allows
 			// us to update the notification text to let the user know which picture
 			// is being uploaded.
@@ -125,17 +138,58 @@ public class TransferService extends Service {
 
 				if ( id == null ) id = 0;
 				if (status.equals("start")) {
-					Utils.showNotification(id, progress[2] + " uploading ... ", null, null, getApplicationContext());
+					activeUploads++;
+					showUploadNotification(GlobalResources.UPLOADING_ID, activeUploads + " uploading ... ", null);
 				}
 				if (status.equals("finish")) {
-					Utils.showNotification(GlobalResources.UPLOADER_ID+id, progress[2] + " uploaded successfully", null, null, getApplicationContext());
+					activeUploads--;
+					if ( activeUploads <= 0 ) {
+						cancelNotification(GlobalResources.UPLOADING_ID);
+					} else {
+						showUploadNotification(GlobalResources.UPLOADING_ID, activeUploads + " uploading ... ", null);
+					}
+					Utils.showNotification(GlobalResources.UPLOADER_ID, progress[2] + " uploaded successfully", null, null, mContext);
 				}
 				else if (status == "fail") {
-					Utils.showNotification(GlobalResources.UPLOADER_ID+id, progress[2] + " failed to upload", null, null, getApplicationContext());
-					stopSelf();
+					activeUploads--;
+					if ( activeUploads <= 0 ) {
+						cancelNotification(GlobalResources.UPLOADING_ID);
+					} else {
+						showUploadNotification(GlobalResources.UPLOADING_ID, activeUploads + " uploading ... ", null);
+					}
+					Utils.showNotification(GlobalResources.UPLOADER_ID+id, progress[2] + " failed to upload", null, null, mContext);
+//					stopSelf();
 				}
 			}
 		}
+	    private void showUploadNotification(int id, CharSequence title, CharSequence description) {
+			mContext = getApplicationContext();
+			NotificationManager mNM = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+			
+	        // Set the icon, scrolling text and timestamp
+	        Notification notification = new Notification(android.R.drawable.stat_sys_upload, title,
+	                System.currentTimeMillis());
+
+	        PendingIntent contentIntent = null;
+	        // The PendingIntent to launch our activity if the user selects this notification
+        	contentIntent = PendingIntent.getActivity(mContext, 0, new Intent(), 0);
+	        if ( description == null ) {
+	        	description = title;
+	        }
+	        
+	        // Set the info for the views that show in the notification panel.
+	        notification.setLatestEventInfo(mContext, title, description, contentIntent);
+	        notification.flags |= Notification.FLAG_ONGOING_EVENT;
+	        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+
+	        // Send the notification.
+	        mNM.notify(id, notification);
+	    }
+		private void cancelNotification(int id) {
+	    	NotificationManager mNM = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+
+	    	mNM.cancel(id);
+	    }
 		
 		@Override
 		protected void onPreExecute() {
@@ -208,5 +262,33 @@ public class TransferService extends Service {
 			return m_upload_task.getUploads();
 		}
 	}
+	private String getUploadURLPref() {
+		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 
+		return mPrefs.getString(mContext.getResources().getString(R.string.pref_upload_url_key), "");
+	}
+	private String getUploadFolderPref() {
+		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+
+        if ( mPrefs.getBoolean(mContext.getResources().getString(R.string.pref_upload_folder_default_key), false) ) {
+        	return mPrefs.getString(mContext.getResources().getString(R.string.pref_upload_folder_key), "");
+        }
+		return "";
+	}
+	private String getUploadAuthTokenPref() {
+		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+
+		return mPrefs.getString(mContext.getResources().getString(R.string.pref_auth_token_key), "");
+	}
+	private String getUploadUsernamePref() {
+		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+
+		return mPrefs.getString(mContext.getResources().getString(R.string.pref_auth_username_key), "");
+	}
+	private String getUploadTagsPref(String pref_tags) {
+		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+
+		String tags = ( pref_tags != null ) ? pref_tags.trim() : "" ;	
+		return (mPrefs.getString(mContext.getResources().getString(R.string.pref_upload_tags_key), "") + " " + tags).trim();  
+	}
 }

@@ -34,19 +34,40 @@
 	<PreferenceCategory
 		android:title="@string/prefcat_advanced">
 
+   	<CheckBoxPreference
+		android:key="@string/pref_upload_journal_default_key"
+		android:enabled="true"
+		android:defaultValue="false"
+		android:summary="@string/pref_upload_journal_default_summary"
+		android:title="@string/pref_upload_journal_default_title" />
 	<ListPreference
+		android:dependency="@string/pref_upload_journal_default_key"
 		android:key="@string/pref_upload_journal_key"
 		android:title="@string/pref_upload_journal_title"
 		android:summary="@string/pref_upload_journal_summary"
         android:dialogTitle="@string/pref_upload_journal_title" />
-
+   	
+   	<CheckBoxPreference
+		android:key="@string/pref_upload_folder_default_key"
+		android:enabled="true"
+		android:defaultValue="false"
+		android:summary="@string/pref_upload_folder_default_summary"
+		android:title="@string/pref_upload_folder_default_title" />
 	<ListPreference
+		android:dependency="@string/pref_upload_folder_default_key"
 		android:key="@string/pref_upload_folder_key"
 		android:title="@string/pref_upload_folder_title"
 		android:summary="@string/pref_upload_folder_summary"
         android:dialogTitle="@string/pref_upload_folder_title" />
 			
+   	<CheckBoxPreference
+		android:key="@string/pref_upload_tags_default_key"
+		android:enabled="true"
+		android:defaultValue="false"
+		android:summary="@string/pref_upload_tags_default_summary"
+		android:title="@string/pref_upload_tags_default_title" />
 	<ListPreference
+		android:dependency="@string/pref_upload_tags_default_key"
 		android:key="@string/pref_upload_tags_key"
 		android:title="@string/pref_upload_tags_title"
 		android:summary="@string/pref_upload_tags_summary"
@@ -56,7 +77,8 @@
 		android:key="@string/pref_sync_periodic_key"
 		android:title="@string/pref_sync_periodic_title"
 		android:summary="@string/pref_sync_periodic_summary"
-		android:defaultValue=""	/>	
+		android:defaultValue="0"
+		/>	
 	
 	</PreferenceCategory>
 			

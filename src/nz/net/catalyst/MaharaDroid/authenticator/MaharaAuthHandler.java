@@ -68,7 +68,7 @@ public class MaharaAuthHandler {
         	username = mPrefs.getString(mContext.getResources().getString(R.string.pref_auth_username_key), "");
         }
     	Long lastsync = mPrefs.getLong("lastsync", 0);
-
+    	
         Utils.showNotification(NOTIFICATION, mContext.getResources().getText(R.string.login_authenticating), 
         						null, null, mContext);
     	
@@ -102,7 +102,6 @@ public class MaharaAuthHandler {
         }
         handler.post(new Runnable() {
             public void run() {
-                ((AuthenticatorActivity) context).onAuthenticationResult(username, authToken);
             }
         });
     }

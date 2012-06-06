@@ -21,10 +21,6 @@
 
 package nz.net.catalyst.MaharaDroid.ui;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -34,20 +30,12 @@ import nz.net.catalyst.MaharaDroid.R;
 import nz.net.catalyst.MaharaDroid.Utils;
 import nz.net.catalyst.MaharaDroid.data.Artefact;
 import nz.net.catalyst.MaharaDroid.data.ArtefactDataSQLHelper;
-import nz.net.catalyst.MaharaDroid.ui.EditPreferences.ConfigXMLHandler;
 import nz.net.catalyst.MaharaDroid.ui.about.AboutActivity;
 import android.app.Activity;
-import android.app.ExpandableListActivity;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
@@ -67,10 +55,9 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
-import android.widget.ExpandableListView.OnChildClickListener;
 
 public class ArtefactExpandableListAdapterActivity extends Activity implements OnCreateContextMenuListener {
 	static final String TAG = LogConfig.getLogTag(ArtefactExpandableListAdapterActivity.class);
@@ -90,8 +77,6 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 	
 	private ExpandableListView listview;
 	
-	private Uri imageUri = null;
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
@@ -109,11 +94,21 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 //        listview.setOnChildClickListener(this);
         registerForContextMenu(listview);
         
-	    loadSavedArtefacts();
+//    	if ( DEBUG ) Log.d(TAG, "onCreate() calls loadSavedArtefacts");
+
+//	    loadSavedArtefacts();
 	}
 
 	public void onResume() {
 	    super.onResume();   
+//    	if ( DEBUG ) Log.d(TAG, "onResume() calls loadSavedArtefacts");
+//
+//	    loadSavedArtefacts();		
+	}    
+	public void onStart() {
+	    super.onStart();   
+    	if ( DEBUG ) Log.d(TAG, "onStart() calls loadSavedArtefacts");
+
 	    loadSavedArtefacts();		
 	}    
   
@@ -131,42 +126,22 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 	}
 
 	private Integer loadSavedArtefacts() {
-		Integer items = 0; 
         adapter  = new ExpandableListAdapter(this, new ArrayList<String>(), 
     			new ArrayList<ArrayList<Artefact>>());
 
+		//TODO remove this db access stuff with wrapper class or move to Arefact
     	if ( artefactData == null )
     		artefactData = new ArtefactDataSQLHelper(this);
 
-	    SQLiteDatabase db = artefactData.getReadableDatabase();
-	    Cursor cursor = db.query(ArtefactDataSQLHelper.TABLE, null, null, null, null,
-	        null, null);
-	    
-	    //startManagingCursor(cursor);
+	    Artefact[] a_array = artefactData.loadSavedArtefacts();
+    	if ( DEBUG ) Log.d(TAG, "returned " + a_array.length + " items");
 
-	    while (cursor.moveToNext()) {
-	        Long id = cursor.getLong(0);
-	        Long time = cursor.getLong(1);	
-			String filename = cursor.getString(2);
-			String title = cursor.getString(3);
-			String description = cursor.getString(4);
-			String tags = cursor.getString(5);
-			Long saved_id = cursor.getLong(6);
-			String journal_id = cursor.getString(7);
-					
-			if ( filename == null || Utils.getFilePath(this, filename) != null ) {
-				Artefact a = new Artefact(id, time, filename, title, description, tags, saved_id, journal_id);
-				adapter.addItem(a);
-				items++;
-			} else {
-				Log.w(TAG, "Artefact '" + title + 
-							"' file [" + filename + 
-							"] no longer exists, deleting from saved artefacts");
-				artefactData.deleteSavedArtefact(id);
-			}
+	    for ( int i = 0; i < a_array.length && a_array[i] != null; i++ ) {
+	    	if ( DEBUG ) Log.d(TAG, "adding item " + a_array[i].getFilename() + " [" + i + "]");
+			adapter.addItem(a_array[i]);
 		}
 
-	    if ( items > 0 ) {
+	    if ( a_array.length > 0 ) {
 	        listview.setVisibility(View.VISIBLE);
 	    	((TextView) findViewById(R.id.no_saved_artefacts)).setVisibility(View.GONE);
 	    } else {
@@ -179,9 +154,10 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 		// notifiyDataSetChanged triggers the re-draw
 		adapter.notifyDataSetChanged();
 
+		//TODO remove this db access stuff with wrapper class or move to Artefact
 	    artefactData.close();
 		
-		return items;
+		return a_array.length;
 	}
 	public boolean onCreateOptionsMenu(Menu menu) {
 		boolean result = super.onCreateOptionsMenu(menu);
@@ -266,7 +242,7 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 	        return true;
 	    }
 
-	    private Context context;
+	    private Context eContext;
 
 	    private ArrayList<String> groups;
 
@@ -274,7 +250,7 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 
 	    public ExpandableListAdapter(Context context, ArrayList<String> groups,
 	            ArrayList<ArrayList<Artefact>> children) {
-	        this.context = context;
+	        this.eContext = context;
 	        this.groups = groups;
 	        this.children = children;
 	    }
@@ -307,29 +283,47 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 	            View convertView, ViewGroup parent) {
 	    	Artefact art = (Artefact) getChild(groupPosition, childPosition);
 	        if (convertView == null) {
-	            LayoutInflater infalInflater = (LayoutInflater) context
+	            LayoutInflater infalInflater = (LayoutInflater) eContext
 	                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	            convertView = infalInflater.inflate(R.layout.artefact_row_child, null);
 	        }
-	        TextView tv;
 	        Date date = new Date (art.getTime());
-	        tv = (TextView) convertView.findViewById(R.id.txtArtifactTime);
-	        tv.setText(date.toString());
 
-	        tv = (TextView) convertView.findViewById(R.id.txtArtifactFilename);
-	        tv.setText(art.getFilename());
-
-	        tv = (TextView) convertView.findViewById(R.id.txtArtifactTitle);
-	        tv.setText(art.getTitle());
-
-	        tv = (TextView) convertView.findViewById(R.id.txtArtifactDescription);
-	        tv.setText(art.getDescription());
-
-	        tv = (TextView) convertView.findViewById(R.id.txtArtifactTags);
-	        tv.setText(art.getTags());
+	        // TODO General YUCK .. need to clean up and create a Journal / MaharaProvide class / utility methods
+	        // && Long.valueOf(art.getJournalId()) <= 0
+        	if ( art.isJournal() ) {
+		        String[][] journals = Utils.getJournals("", mContext); // TODO consider refreshing onResume
+		        if ( journals != null ) { 
+			        String[] journalKeys = journals[0];
+			        String[] journalValues = journals[1]; 
+		        
+			        for ( int i = 0 ; i < journalKeys.length && journalValues[i] != null ; i++ ) {
+			        	if ( art.getJournalId().equals(journalKeys[i]) ) {
+			    	        ((TextView) convertView.findViewById(R.id.txtArtefactJournal)).setText(journalValues[i]);
+			    	        break;
+			        	}
+			        }
+			        ((CheckBox) convertView.findViewById(R.id.txtArtefactIsDraft)).setChecked(art.getIsDraft());
+			        ((CheckBox) convertView.findViewById(R.id.txtArtefactAllowComments)).setChecked(art.getAllowComments());
+			    	if ( DEBUG ) Log.d(TAG, "getChildView draft: " + art.getIsDraft());
+			    	if ( DEBUG ) Log.d(TAG, "getChildView allow comments: " + art.getAllowComments());
+		        }
+        	} else {
+        		// TDODO hide layout
+	    		LinearLayout l;
+	    		l = (LinearLayout)convertView.findViewById(R.id.ArtefactJournalLayout);
+	    		if ( l != null ) l.setVisibility(LinearLayout.GONE);
+	    		l = (LinearLayout)convertView.findViewById(R.id.ArtefactJournalExtrasLayout);
+	    		if ( l != null ) l.setVisibility(LinearLayout.GONE);
+        	}
+	        ((TextView) convertView.findViewById(R.id.txtArtefactTime)).setText(date.toString());
+	        ((TextView) convertView.findViewById(R.id.txtArtefactFilename)).setText(art.getFilename());
+	        ((TextView) convertView.findViewById(R.id.txtArtefactDescription)).setText(art.getDescription());
+	        ((TextView) convertView.findViewById(R.id.txtArtefactTags)).setText(art.getTags());
 	        
 	        ((Button) convertView.findViewById(R.id.btnUpload)).setOnClickListener(this);
 	        ((Button) convertView.findViewById(R.id.btnUpload)).setTag(art);
+	        ((Button) convertView.findViewById(R.id.btnView)).setEnabled( art.getFilename() != null );
 	        ((Button) convertView.findViewById(R.id.btnView)).setOnClickListener(this);
 	        ((Button) convertView.findViewById(R.id.btnView)).setTag(art);
 	        ((Button) convertView.findViewById(R.id.btnDelete)).setOnClickListener(this);
@@ -363,12 +357,24 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 	            ViewGroup parent) {
 	        String group = (String) getGroup(groupPosition);
 	        if (convertView == null) {
-	            LayoutInflater infalInflater = (LayoutInflater) context
+	            LayoutInflater infalInflater = (LayoutInflater) eContext
 	                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	            convertView = infalInflater.inflate(R.layout.artefact_row, null);
 	        }
 	        TextView tv = (TextView) convertView.findViewById(R.id.title);
 	        tv.setText(group);
+	        
+	        // TODO .. lets make this more efficient ;) 
+	        // Default to image - change if journal
+	        for ( int i = 0 ; i < children.get(groupPosition).size(); i++ ) {
+	        	Artefact a = children.get(groupPosition).get(i);
+	        	if ( a.isJournal() ) {
+	        		ImageView iv = (ImageView) convertView.findViewById(R.id.artefact_icon);
+	    	        iv.setImageResource(R.drawable.ic_menu_compose);
+	    	        break;
+	        	}
+	        }
+	        
 	        return convertView;
 	    }
 
@@ -392,21 +398,19 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 			
 			switch (v.getId()) {
 			case R.id.btnUpload:
-				//a.upload(false, context);
-				a.edit(context);
+				a.edit(eContext);
 				break;
 			case R.id.btnView:
-				a.view(context);
+				a.view(eContext);
 				break;
 			case R.id.btnDelete:
-				artefactData.deleteSavedArtefact(a.getId());
+				a.delete(eContext);
 				loadSavedArtefacts();
 				break;
 			}
 		}
 
 		public boolean onContextItemSelected(MenuItem item) {
-			// TODO Auto-generated method stub
 			Boolean delete = false, upload = false, view = false;
 			
 			switch (item.getItemId()) {
@@ -426,44 +430,38 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 			int type = ExpandableListView.getPackedPositionType(info.packedPosition);
 			if (type == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
 				int childPosition = ExpandableListView.getPackedPositionChild(info.packedPosition); 
-				if ( DEBUG ) 
-					Log.d(TAG, "Child " + childPosition + " clicked in group " + groupPosition);
        
 				Artefact a = (Artefact) getChild(groupPosition, childPosition);
                    
 				if ( delete ) {
-					artefactData.deleteSavedArtefact(a.getId());
+					a.delete(eContext);
 					loadSavedArtefacts();
 				} else if ( upload ) {  
-					a.upload(true, context);
+					a.upload(true, eContext);
 				} else if ( view ) {
-					a.view(context);
+					a.view(eContext);
 				}
 				return true;
 			} else if (type == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
-				String title = ((TextView) info.targetView).getText().toString();
+//				String title = ((TextView) info.targetView).getText().toString();
 
-				if ( DEBUG ) 
-					Log.d(TAG, title + ": Group " + groupPosition + " clicked");
-   
 				for ( int i = 0; i < getChildrenCount(groupPosition); i++ ) {
 					Artefact a = (Artefact) getChild(groupPosition, i);
 					if ( delete ) {
-						artefactData.deleteSavedArtefact(a.getId());
+						a.delete(eContext);
 					} else if ( upload ) {
-						a.upload(true, context);
+						a.upload(true, eContext);
 					} else if ( view ) {
-						a.view(context);
+						a.view(eContext);
 					}
 				}
 				
 				if ( delete )
 					loadSavedArtefacts();
-					return true;
+					return true; //TODO why the different here and below?
 				}
 	   
 				return false;                   
-	            //      deleteLog(null);
 		}
 
 		public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {

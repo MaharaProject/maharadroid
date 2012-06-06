@@ -45,6 +45,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -62,13 +63,17 @@ import nz.net.catalyst.MaharaDroid.GlobalResources;
 import nz.net.catalyst.MaharaDroid.LogConfig;
 import nz.net.catalyst.MaharaDroid.R;
 import nz.net.catalyst.MaharaDroid.authenticator.AuthenticatorActivity;
+import nz.net.catalyst.MaharaDroid.syncadapter.ThreadedSyncAdapter;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.PeriodicSync;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -216,6 +221,45 @@ public class EditPreferences extends PreferenceActivity implements OnSharedPrefe
 			authDetailsChanged = true;
 		} else if ( key == getString(R.string.pref_sync_url_key)) {
 			authDetailsChanged = true;
+		} else if ( key == getString(R.string.pref_sync_periodic_key)) {
+			
+			AccountManager mAccountManager = AccountManager.get(this);
+			Account account;
+			
+//	    	if ( periodic_sync != null && periodic_sync > 0 ) {
+//	    		
+    		// TODO replicated from AuthenticatorActivity
+    		Account[] mAccounts = mAccountManager.getAccountsByType(GlobalResources.ACCOUNT_TYPE);
+            
+            if ( mAccounts.length > 0 ) {
+            	// Just pick the first one .. support multiple accounts can come later.
+            	account = mAccounts[0];
+            } else {
+            	return;
+            }
+
+            Bundle bundle = new Bundle();
+        	bundle.putBoolean(GlobalResources.EXTRAS_SYNC_IS_PERIODIC, true);
+        	
+			Long periodic_sync = Long.valueOf(sharedPreferences.getString(key, "0"));
+			if ( periodic_sync == null ) periodic_sync = (long) 0;
+			boolean exists = false;
+			
+			// Note - should only ever have 1
+			List<PeriodicSync> ps = ContentResolver.getPeriodicSyncs(account, GlobalResources.ACCOUNT_TYPE);
+    		while ( ps != null && ! ps.isEmpty() ) {
+    			if ( periodic_sync == 0 || ps.get(0).period != periodic_sync ) {
+        			ContentResolver.removePeriodicSync(account, GlobalResources.ACCOUNT_TYPE, ps.get(0).extras);
+        			if ( VERBOSE ) Log.v(TAG, "Removing periodic sync '" + ps.get(0).period + "'");
+    			} else if ( periodic_sync != null && periodic_sync > 0 && ps.get(0).period != periodic_sync ) {
+    				exists = true;
+    			}
+    			ps.remove(0);
+    		}
+    		if ( ! exists && periodic_sync > 0 ) {
+    			ContentResolver.addPeriodicSync(account, GlobalResources.ACCOUNT_TYPE, bundle, periodic_sync * 60);
+	    		if ( VERBOSE ) Log.v(TAG, "Adding periodic sync '" + periodic_sync + "'");
+    		}
 		}
 	}
 

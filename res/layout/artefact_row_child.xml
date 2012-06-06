@@ -6,47 +6,49 @@
 	  android:orientation="vertical"
 	  style="@style/itemBackground"
 	  >
-			<LinearLayout
-				  xmlns:android="http://schemas.android.com/apk/res/android"
-				  android:id="@+id/ArtifactTitleLayout"
-				  android:layout_width="fill_parent"
-				  android:layout_height="wrap_content"
-				  android:orientation="horizontal"
-				  android:visibility="gone">
 
-					<TextView android:text="@string/upload_title_label"
-							  android:layout_width="50dp"
+			<LinearLayout
+			    xmlns:android="http://schemas.android.com/apk/res/android"
+			    android:id="@+id/ArtefactJournalLayout"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:orientation="horizontal" 
+			    >
+
+					<TextView android:text="@string/upload_journal_label"
+							  android:layout_width="60dp"
 							  android:singleLine="false"
 							  android:layout_height="wrap_content"
 			  				  android:textStyle="bold"
-			  				  style="@android:style/TextAppearance.Small">
-					</TextView>
+			  				  style="@android:style/TextAppearance.Small"
+			  				  android:layout_gravity="left" 
+			  				  android:layout_weight="2"/>
 				  
 					<TextView 
-							  android:id="@+id/txtArtifactTitle"
+							  android:id="@+id/txtArtefactJournal"
 							  android:singleLine="true"
 							  android:layout_width="fill_parent"
 							  android:layout_height="wrap_content"
-  			  				  style="@android:style/TextAppearance.Small">
-				  	</TextView>
-					
+  			  				  style="@android:style/TextAppearance.Small"
+  			  				  android:layout_gravity="left"
+  			  				  android:layout_weight="1"/>
 			</LinearLayout>
 			<LinearLayout
 				  xmlns:android="http://schemas.android.com/apk/res/android"
-				  android:id="@+id/ArtifactDescriptionLayout"
+				  android:id="@+id/ArtefactDescriptionLayout"
 				  android:layout_width="fill_parent"
   				  android:layout_height="wrap_content"
 				  android:layout_marginTop="10dp"
 				  android:orientation="horizontal">
 
 					<TextView android:text="@string/upload_description_label"
-							  android:layout_width="50dp"
+							  android:layout_width="60dp"
 							  android:singleLine="false"
 							  android:layout_height="wrap_content"
 			  				  android:textStyle="bold"
 			  				  style="@android:style/TextAppearance.Small">
 					</TextView>
-					<TextView android:id="@+id/txtArtifactDescription"
+					<TextView android:id="@+id/txtArtefactDescription"
 							  android:singleLine="false"
 							  android:layout_width="fill_parent"
 							  android:layout_height="wrap_content"
@@ -61,19 +63,57 @@
 				  android:orientation="horizontal">
 
 					<TextView android:text="@string/upload_tags_label"
-							  android:layout_width="50dp"
+							  android:layout_width="60dp"
 							  android:singleLine="false"
 							  android:layout_height="wrap_content"
 			  				  android:textStyle="bold"
 			  				  style="@android:style/TextAppearance.Small">
 					</TextView>
 
-					<TextView  android:id="@+id/txtArtifactTags"
+					<TextView  android:id="@+id/txtArtefactTags"
 							  android:singleLine="true"
 							  android:layout_width="fill_parent"
 							  android:layout_height="wrap_content"
   			  				  style="@android:style/TextAppearance.Small">
 				  	</TextView>
+			</LinearLayout>
+						<LinearLayout
+			    xmlns:android="http://schemas.android.com/apk/res/android"
+			    android:id="@+id/ArtefactJournalExtrasLayout"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:orientation="horizontal" 
+			    >
+
+					<TextView android:text=""
+							  android:layout_width="60dp"
+							  android:singleLine="false"
+							  android:layout_height="wrap_content"
+			  				  android:textStyle="bold"
+			  				  style="@android:style/TextAppearance.Small"
+			  				  android:layout_gravity="left" 
+			  				  android:layout_weight="2"/>
+				  
+					<CheckBox 
+							  android:id="@+id/txtArtefactIsDraft"
+							  android:checked="false"
+							  android:layout_width="wrap_content"
+							  android:layout_height="wrap_content"
+  			  				  android:layout_gravity="left"
+  			  				  android:layout_weight="1"
+  			  				  android:enabled="false"
+			  				  style="@android:style/TextAppearance.Small"
+  			  				  android:text="Draft"/>
+					<CheckBox 
+							  android:id="@+id/txtArtefactAllowComments"
+							  android:checked="true"
+							  android:layout_width="wrap_content"
+							  android:layout_height="wrap_content"
+  			  				  android:layout_gravity="left"
+  			  				  android:layout_weight="1"
+  			  				  android:enabled="false"
+			  				  style="@android:style/TextAppearance.Small"
+  			  				  android:text="Allow Comments"/>
 			</LinearLayout>
 			<LinearLayout
 				  xmlns:android="http://schemas.android.com/apk/res/android"
@@ -83,14 +123,14 @@
 				  android:orientation="horizontal">
 
 					<TextView android:text="@string/upload_time_label"
-							  android:layout_width="50dp"
+							  android:layout_width="60dp"
 							  android:singleLine="false"
 							  android:layout_height="wrap_content"
 			  				  android:textStyle="bold"
 			  				  style="@android:style/TextAppearance.Small">
 					</TextView>
 			
-					<TextView  android:id="@+id/txtArtifactTime"
+					<TextView  android:id="@+id/txtArtefactTime"
 							  android:layout_width="fill_parent"
 							  android:layout_height="wrap_content"
   			  				  style="@android:style/TextAppearance.Small">
@@ -98,7 +138,7 @@
 			</LinearLayout>		
 						<LinearLayout
 			  xmlns:android="http://schemas.android.com/apk/res/android"
-			  android:id="@+id/ArtifactSettingsButtonLayout"
+			  android:id="@+id/ArtefactSettingsButtonLayout"
 			  android:layout_width="fill_parent"
 			  android:layout_height="wrap_content"
 			  android:layout_marginTop="10dp"
@@ -132,7 +172,7 @@
 				
 			</LinearLayout>
 			
-					<TextView  android:id="@+id/txtArtifactFilename"
+					<TextView  android:id="@+id/txtArtefactFilename"
 							  android:singleLine="true"
 							  android:layout_width="fill_parent"
 							  android:layout_height="wrap_content"

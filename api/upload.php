@@ -61,6 +61,7 @@ if ($username == '') {
     jsonreply( array('fail' => 'Username cannot be blank') );
 }
 
+// Starting the creation of our artefact (file) object
 $data = new StdClass;
 $USER = new User();
 
@@ -106,37 +107,98 @@ catch (ParameterException $e) {
     $data->parent = null;
 }
 
-// Set title
-$title = '';
+// Check for Journal ID to add a post to
+$blog = ''; $blogpost = ''; $draft = 0; $allowcomments = 1;
+try {
+    $blog = param_integer('blog');
+}
+catch (ParameterException $e) { }
+
+try {
+    $draft = param_variable('draft');
+}
+catch (ParameterException $e) { }
+
+try {
+    $allowcomments = param_variable('allowcomments');
+}
+catch (ParameterException $e) { }
+
+// Check for artefact attributes title, description (or entry), tags, etc
+$title = ''; $description = ''; $tags = ''; 
 try {
     $title = param_variable('title');
 }
 catch (ParameterException $e) { }
 
 // Set description
-$description = '';
 try {
     $description = param_variable('description');
 }
 catch (ParameterException $e) { }
 
 // Set tags
-$tags = '';
 try {
     $tags = explode(" ", param_variable('tags'));
 }
 catch (ParameterException $e) { }
 
-$artefact_id = '';
+// -- Start by creating a blog entry --
+
+$postobj = '';      // our resulting blog post object on creation
+$artefact_id = '';  // our resulting artefact id on creation
+
+if ( $blog ) {
+    if ( ! ( $title && $description ) ) {
+    	jsonreply( array('fail' => 'Journal posts must have a title and entry (description).') );
+    }
+
+    if (!get_record('artefact', 'id', $blog, 'owner', $USER->get('id'))) {
+        // Blog security is also checked closer to when blogs are added, this 
+        // check ensures that malicious users do not even see the screen for 
+        // adding a post to a blog that is not theirs
+        throw new AccessDeniedException(get_string('youarenottheownerofthisblog', 'artefact.blog'));
+    }
+    // Should we create a new post of attach the new file to an existing post
+    $postids = get_records_sql_array("
+        SELECT a.id
+        FROM {artefact} a
+        WHERE a.title = ? AND a.description = ?
+	AND a.owner = ? ",
+        array($title, $description, $USER->get('id')));
+    if ( $postids ) {
+        $blogpost = $postids[0]->id;
+        $postobj = new ArtefactTypeBlogPost($blogpost);
+        $postobj->check_permission();
+        if ($postobj->get('locked')) {
+            throw new AccessDeniedException(get_string('submittedforassessment', 'view'));
+        }
+    } else {
+        $postobj = new ArtefactTypeBlogPost($blogpost, null);
+        $postobj->set('title', $title);
+        $postobj->set('description', $description);
+        $postobj->set('tags', $tags);
+        $postobj->set('published', !$draft);
+        $postobj->set('allowcomments', (int) $allowcomments);
+        $postobj->set('parent', $blog);
+        $postobj->set('owner', $USER->id);
+        $postobj->commit();
+    }
+}
+
+// -- Now check for files to upload --
+
 if ( $_FILES ) {
 
-    if ( ! $title ) { 
-        basename($_FILES['userfile']['name']);
+    if ( $blog || ! $title ) {  // set the filename to be the title of the artefact
+        $title = basename($_FILES['userfile']['name']);
     }
 
     try {
         $data->title = ArtefactTypeFileBase::get_new_file_title($title, $data->parent, $data->owner);
-        $data->description = $description;
+        if ( ! $blog ) { // only set a description if it's an artefact upload
+          $data->description = $description;
+        }
         $data->tags = $tags;
         $artefact_id = ArtefactTypeFile::save_uploaded_file('userfile', $data);
         if ( $artefact_id ) {
@@ -151,51 +213,14 @@ if ( $_FILES ) {
     }
 }
 
-
-// Check for Journal ID to add a post to
-$blog = ''; $blogpost = ''; $draft = 0; $allowcomments = 1;
-try {
-    $blog = param_integer('blog');
-}
-catch (ParameterException $e) { }
-
-try {
-    $blogpost = param_integer('blogpost');
-}
-catch (ParameterException $e) { }
-
-try {
-    $draft = param_variable('draft');
-}
-catch (ParameterException $e) { }
-
-try {
-    $allowcomments = param_variable('allowcomments');
-}
-
-catch (ParameterException $e) { }
 // Check to see if we're creating a journal entry
-if ( $blog && $title && $description ) {
-    if (!get_record('artefact', 'id', $blog, 'owner', $USER->get('id'))) {
-        // Blog security is also checked closer to when blogs are added, this 
-        // check ensures that malicious users do not even see the screen for 
-        // adding a post to a blog that is not theirs
-        throw new AccessDeniedException(get_string('youarenottheownerofthisblog', 'artefact.blog'));
-    }
-    $postobj = new ArtefactTypeBlogPost($blogpost, null);
-    $postobj->set('title', $title);
-    $postobj->set('description', $description);
-    $postobj->set('tags', $tags);
-    $postobj->set('published', !$draft);
-    $postobj->set('allowcomments', (int) $allowcomments);
-    $postobj->set('parent', $blog);
-    $postobj->set('owner', $USER->id);
-    $postobj->commit();
 
-    // If we created an artefact - attach it.
-    if ( $artefact_id ) {
-        $postobj->attach($artefact_id);
-    }
+// -- Finally attach the file to the blog post once uploaded and --
+
+if ( $artefact_id && $postobj ) {
+    // If we created or matched a blog post and created an artefact
+    // attach the artefact to the blog.
+    $postobj->attach($artefact_id);
 }
 
 // Here we need to create a new hash - update our own store of it and return it to the handset

@@ -10,7 +10,7 @@
     <string name="options_menu_account">Account &amp; Sync</string>
     <string name="options_menu_camera">Camera</string>
     <string name="options_menu_gallery">Gallery</string>
-    <string name="options_menu_compose">Write Journal</string>
+    <string name="options_menu_compose">Write</string>
     <string name="options_menu_deleteall">Delete All</string>
     <string name="options_menu_uploadall">Upload All</string>
     <string name="options_menu_viewsaved">Saved</string>
@@ -86,19 +86,17 @@
     <string name="pref_menu_scan">Scan</string>
     
     <string name="btnok">OK</string>
-    <string name="btnnewjournalpost_write">New Journal Entry</string>
-    <string name="btnnewjournalpost_camera">Take a Picture</string>
+    <string name="btnedit">Edit</string>
     <string name="btnupload">Upload</string>
     <string name="btnsave">Save</string>
     <string name="btndelete">Delete</string>
     <string name="btnsendlabel">Send</string>
-    <string name="btnview">View</string>
     <string name="btncancellabel">Cancel</string>
     
 	<string name="lbluploadoptions">Upload Settings</string>
 	
 	<string name="artifact_retrieve_error">Error Retrieving Details</string>
-    <string name="artifactsettings">Settings</string>
+    <string name="artifactsettings">Post Settings</string>
     <string name="transferprogress">Upload progress</string>
     <string name="uploadstarting">Your Upload is Starting</string>
     <string name="uploadfinished">Your Upload is Finished</string>
@@ -127,8 +125,9 @@
     <string name="upload_title_label">Title:</string>
     <string name="upload_description_label">Entry:</string>
     <string name="upload_tags_label">Tag(s):</string>
-    <string name="upload_time_label">Saved:</string>
-								
+    <string name="upload_time_label">Last:</string>
+    <string name="upload_files_label">Files:</string>
+    								
     <string name="load_config_download_error">Sorry there was an error downloading the configuration file.</string>
     <string name="load_config_error">Sorry there was an error parsing the configuration file.</string>
     <string name="load_config_success">Successfully loaded the configuration file.</string>

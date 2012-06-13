@@ -4,47 +4,10 @@
     android:layout_height="fill_parent"
     android:gravity="right" >
 	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:id="@+id/gradient"
-   		android:background="@drawable/gradient"
-	    >
-	</RelativeLayout>
-	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:id="@+id/middle"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:layout_below="@+id/gradient"
-	    android:layout_marginLeft="10dp"
-	    android:layout_marginRight="10dp"
-	    android:layout_marginBottom="10dp"
-	    android:layout_marginTop="0dp"
-	    >
-	
-		<TextView android:id="@+id/banner_text"
-			android:text="@string/artefacts_banner_text"
-			android:layout_width="wrap_content" 
-			android:singleLine="false" 
-			android:layout_height="wrap_content" 
-			android:textStyle="bold" 
-			style="@android:style/TextAppearance.Large"
-			android:layout_below="@+id/banner"
-		/>
-		<TextView android:id="@+id/banner_text2"
-			android:text="@string/artefacts_banner_text2"
-			android:layout_width="fill_parent" 
-			android:singleLine="false" 
-			android:layout_height="wrap_content" 
-			style="@android:style/TextAppearance.Small"
-			android:layout_below="@+id/banner_text"
-		  />
-	</RelativeLayout>
-	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	    android:id="@+id/body_heading"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    style="@style/headerBackground"
-	    android:layout_below="@+id/middle"
 	    >			  
    	   	<ImageView
 			android:id="@+id/saved"
@@ -61,7 +24,6 @@
 			android:singleLine="true" 
 			android:layout_height="wrap_content" 
 		    style="@style/headerText"
-			android:layout_below="@+id/banner_text2"
 	   	    android:layout_marginLeft="10dp"	  
 	   	    android:gravity="left|bottom"  
 	   	    android:layout_toRightOf="@id/saved"

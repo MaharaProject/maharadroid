@@ -165,15 +165,7 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 	        // If single - show the title (with default) and description
 	    	if ( uris.length == 1 ) {
 		    	if ( DEBUG ) Log.d(TAG, "Have a single upload");
-	    		String filepath = Utils.getFilePath(this, uris[0]);
-				if (filepath != null) {	
-					// Default the title to the filename and make it all selected for easy replacement
-					String title = filepath.substring(filepath.lastIndexOf("/") + 1);
-	
-					((EditText)findViewById(R.id.txtArtefactTitle)).setText(title);
-					((EditText)findViewById(R.id.txtArtefactTitle)).selectAll();
-					if ( DEBUG ) Log.d(TAG, "filepath = '" + filepath + "'");
-				}
+		    	setDefaultTitle(uris[0]);
 	        } else if ( uris.length > 1 ) {
 		    	if ( DEBUG ) Log.d(TAG, "Have a multi upload");
 	        } else {
@@ -192,6 +184,22 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 			btnUpload.setEnabled(false);
 		}
 	}
+    private void setDefaultTitle(String f) {
+		EditText et = (EditText)findViewById(R.id.txtArtefactTitle);
+
+		if ( et.getText().toString().length() > 0 ) {
+			return;
+		}
+		
+		if (f != null) {	
+			// Default the title to the filename and make it all selected for easy replacement
+			String title = f.substring(f.lastIndexOf("/") + 1);
+
+			et.setText(title);
+			et.selectAll();
+			if ( DEBUG ) Log.d(TAG, "setDefaultTitle: '" + title + "'");
+		}
+    }
 
 	private void setDefaultTag() {
         if ( mPrefs.getBoolean(getResources().getString(R.string.pref_upload_tags_default_key), false) ) {
@@ -272,7 +280,6 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 		String title = ((EditText)findViewById(R.id.txtArtefactTitle)).getText().toString();
 		String description = ((EditText)findViewById(R.id.txtArtefactDescription)).getText().toString();			
 		String tags = ((EditText) findViewById(R.id.txtArtefactTags)).getText().toString();
-		String filename = null;
 		
 		int jk = (int) ((Spinner) findViewById(R.id.upload_journal_spinner)).getSelectedItemId();
 		String journal = journalKeys[jk];
@@ -316,9 +323,8 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 	
 			for ( int i = 0; i < uris.length; i++ ) {
 				
-				filename = ( uris[i] == null || Utils.getFilePath(this, uris[i]) == null ) ? null : filename;
-				a.setFilename(filename);
-		    	if ( VERBOSE ) Log.v(TAG, "InitiateUpload have file, name is '" + filename + "'");
+				a.setFilename(uris[i]);
+		    	if ( VERBOSE ) Log.v(TAG, "InitiateUpload have file, name is '" + uris[i] + "'");
 	
 				uploader_intent = new Intent(this, TransferService.class);
 				uploader_intent.putExtra("artefact", a);
@@ -426,16 +432,20 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
         	Uri uri;
     		switch (requestCode) {
 			case GlobalResources.REQ_CAMERA_RETURN:
+				if ( ! intent.hasExtra(MediaStore.EXTRA_OUTPUT) )
+					break;
 				uri = (Uri) intent.getParcelableExtra(MediaStore.EXTRA_OUTPUT);
-	        	a.setFilename(uri.toString());
-	        	a.save(mContext);
+//	        	a.setFilename(uri.toString());
+//	        	a.save(mContext);
 	        	uris = new String[] { uri.toString() };
+	        	setDefaultTitle(uris[0]);
 	        	break;
 			case GlobalResources.REQ_GALLERY_RETURN:
 				uri = intent.getData();
-	        	a.setFilename(uri.toString());
-	        	a.save(mContext);
+//	        	a.setFilename(uri.toString());
+//	        	a.save(mContext);
 	        	uris = new String[] { uri.toString() };
+	        	setDefaultTitle(uris[0]);
 				break;
     		}
         }

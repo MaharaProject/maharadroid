@@ -276,7 +276,7 @@ public class RestClient {
 	    			title = paramVals[i];
 	    		}
 	    		else if (paramNames[i].equals("filename")) {
-		    		file = new File(Utils.getFilePath(context, paramVals[i]));
+		    		file = new File(paramVals[i]);
 		    		continue;
 		    	}
 	    		sig_params.put(paramNames[i], paramVals[i]);

@@ -21,7 +21,9 @@
 
 package nz.net.catalyst.MaharaDroid;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,6 +42,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -99,49 +103,6 @@ public class Utils {
 		
         return false;
 	}
-    public static String getFilePath(Context context, String u) {
-    	Uri uri = Uri.parse(u);
-    	
-    	String file_path = null;
-    	
-		if ( DEBUG ) Log.d(TAG, "URI = '" + uri.toString() + "', scheme = '" + uri.getScheme() + "'");
-
-		if ( uri.getScheme() != null && uri.getScheme().equals("content") ) {
-	    	// Get the filename of the media file and use that as the default title.
-	    	ContentResolver cr = context.getContentResolver();
-	    	Cursor cursor = cr.query(uri, new String[]{android.provider.MediaStore.MediaColumns.DATA}, null, null, null);
-			if (cursor != null) {
-				if ( DEBUG ) Log.d(TAG, "cursor query succeeded");
-				cursor.moveToFirst();
-				try { 
-					file_path = cursor.getString(0);
-				} catch ( android.database.CursorIndexOutOfBoundsException e ) { 
-					if ( DEBUG ) Log.d(TAG, "couldn't get file_path from cursor");
-					return null;
-				}
-				cursor.close();
-			} else {
-				if ( DEBUG ) Log.d(TAG, "cursor query failed");
-				return null;
-			}
-		} else {
-			if ( DEBUG ) Log.d(TAG, "Not content scheme - returning native path");
-			// Not a content query 
-			file_path = uri.getPath();
-			File t = new File(file_path);
-			if ( ! t.exists() )
-				return null;
-		}
-		
-		// Online image not in gallery
-		// TODO check http://jimmi1977.blogspot.co.nz/2012/01/android-api-quirks-getting-image-from.html
-		//      for workaround
-		if ( file_path == "null" ){
-			return null;
-		}
-		if ( DEBUG ) Log.d(TAG, "file path valid [" + file_path + "]");
-		return file_path;
-    }
     
     public static String updateTokenFromResult(JSONObject json, Context mContext) {
     	String newToken = null;

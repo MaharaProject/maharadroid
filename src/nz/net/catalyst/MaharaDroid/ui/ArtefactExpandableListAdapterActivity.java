@@ -289,6 +289,7 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 	        }
 	        Date date = new Date (art.getTime());
 
+    		LinearLayout l;
 	        // TODO General YUCK .. need to clean up and create a Journal / MaharaProvide class / utility methods
 	        // && Long.valueOf(art.getJournalId()) <= 0
         	if ( art.isJournal() ) {
@@ -308,24 +309,38 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 			    	if ( DEBUG ) Log.d(TAG, "getChildView draft: " + art.getIsDraft());
 			    	if ( DEBUG ) Log.d(TAG, "getChildView allow comments: " + art.getAllowComments());
 		        }
+        		// TDODO hide layout
+	    		l = (LinearLayout)convertView.findViewById(R.id.ArtefactJournalLayout);
+	    		if ( l != null ) l.setVisibility(LinearLayout.VISIBLE);
+	    		l = (LinearLayout)convertView.findViewById(R.id.ArtefactJournalExtrasLayout);
+	    		if ( l != null ) l.setVisibility(LinearLayout.VISIBLE);
         	} else {
         		// TDODO hide layout
-	    		LinearLayout l;
 	    		l = (LinearLayout)convertView.findViewById(R.id.ArtefactJournalLayout);
 	    		if ( l != null ) l.setVisibility(LinearLayout.GONE);
 	    		l = (LinearLayout)convertView.findViewById(R.id.ArtefactJournalExtrasLayout);
 	    		if ( l != null ) l.setVisibility(LinearLayout.GONE);
         	}
 	        ((TextView) convertView.findViewById(R.id.txtArtefactTime)).setText(date.toString());
-	        ((TextView) convertView.findViewById(R.id.txtArtefactFilename)).setText(art.getFilename());
 	        ((TextView) convertView.findViewById(R.id.txtArtefactDescription)).setText(art.getDescription());
 	        ((TextView) convertView.findViewById(R.id.txtArtefactTags)).setText(art.getTags());
 	        
-	        ((Button) convertView.findViewById(R.id.btnUpload)).setOnClickListener(this);
-	        ((Button) convertView.findViewById(R.id.btnUpload)).setTag(art);
-	        ((Button) convertView.findViewById(R.id.btnView)).setEnabled( art.getFilename() != null );
-	        ((Button) convertView.findViewById(R.id.btnView)).setOnClickListener(this);
-	        ((Button) convertView.findViewById(R.id.btnView)).setTag(art);
+    		l = (LinearLayout)convertView.findViewById(R.id.ArtefactFileLayout);
+	        if ( art.getFilename() != null ) {
+		        ImageView iv = (ImageView) convertView.findViewById(R.id.txtArtefactFileThumb);
+		        ((TextView) convertView.findViewById(R.id.txtArtefactFilename)).setText(art.getFilename());
+		        iv.setImageBitmap(art.getFileThumbData(eContext));
+		        iv.setClickable(true);
+		        iv.setOnClickListener(this);
+		        iv.setTag(art);
+		        iv.invalidate();
+	    		if ( l != null ) l.setVisibility(LinearLayout.VISIBLE);
+	        } else {
+	    		if ( l != null ) l.setVisibility(LinearLayout.GONE);
+	        }
+	        
+	        ((Button) convertView.findViewById(R.id.btnEdit)).setOnClickListener(this);
+	        ((Button) convertView.findViewById(R.id.btnEdit)).setTag(art);
 	        ((Button) convertView.findViewById(R.id.btnDelete)).setOnClickListener(this);
 	        ((Button) convertView.findViewById(R.id.btnDelete)).setTag(art);
 	        return convertView;
@@ -397,10 +412,10 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 			Artefact a = (Artefact) v.getTag();;
 			
 			switch (v.getId()) {
-			case R.id.btnUpload:
+			case R.id.btnEdit:
 				a.edit(eContext);
 				break;
-			case R.id.btnView:
+			case R.id.txtArtefactFileThumb:
 				a.view(eContext);
 				break;
 			case R.id.btnDelete:

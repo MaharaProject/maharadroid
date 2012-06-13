@@ -117,6 +117,29 @@
 			</LinearLayout>
 			<LinearLayout
 				  xmlns:android="http://schemas.android.com/apk/res/android"
+				  android:id="@+id/ArtefactFileLayout"
+				  android:layout_width="fill_parent"
+				  android:layout_height="wrap_content"
+				  android:layout_marginTop="10dp"
+				  android:orientation="horizontal">
+
+					<TextView android:text="@string/upload_files_label"
+							  android:layout_width="60dp"
+							  android:singleLine="false"
+							  android:layout_height="wrap_content"
+			  				  android:textStyle="bold"
+			  				  style="@android:style/TextAppearance.Small">
+					</TextView>
+
+				  	<ImageView android:id="@+id/txtArtefactFileThumb"
+							  android:layout_width="96dip" 
+							  android:layout_height="96dip"
+							  style="@android:style/TextAppearance.Small">
+				  	</ImageView>
+					
+			</LinearLayout>		
+			<LinearLayout
+				  xmlns:android="http://schemas.android.com/apk/res/android"
 				  android:layout_width="fill_parent"
 				  android:layout_height="wrap_content"
 				  android:layout_marginTop="10dp"
@@ -136,7 +159,7 @@
   			  				  style="@android:style/TextAppearance.Small">
 				  	</TextView>
 			</LinearLayout>		
-						<LinearLayout
+			<LinearLayout
 			  xmlns:android="http://schemas.android.com/apk/res/android"
 			  android:id="@+id/ArtefactSettingsButtonLayout"
 			  android:layout_width="fill_parent"
@@ -145,16 +168,8 @@
 			  android:gravity="center_horizontal"
 			  android:orientation="horizontal">
 			  
-				<Button android:text="@string/btnupload"
-						android:id="@+id/btnUpload"
-						android:layout_weight="1"
-						android:layout_width="fill_parent"
-						android:layout_height="wrap_content"
-						style="@style/MaharaButton"
-						>
-				</Button>
-				<Button android:text="@string/btnview"
-						android:id="@+id/btnView"
+				<Button android:text="@string/btnedit"
+						android:id="@+id/btnEdit"
 						android:layout_weight="1"
 						android:layout_width="fill_parent"
 						android:layout_height="wrap_content"

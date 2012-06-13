@@ -21,17 +21,35 @@
 
 package nz.net.catalyst.MaharaDroid.data;
 
+import java.io.File;
+import java.util.List;
+
+import nz.net.catalyst.MaharaDroid.LogConfig;
+import nz.net.catalyst.MaharaDroid.R;
+import nz.net.catalyst.MaharaDroid.ui.ArtefactExpandableListAdapterActivity;
 import nz.net.catalyst.MaharaDroid.ui.ArtifactSettingsActivity;
 import nz.net.catalyst.MaharaDroid.upload.TransferService;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.provider.MediaStore;
 import android.util.Log;
 
 public class Artefact extends Object implements Parcelable {
+	static final String TAG = LogConfig.getLogTag(Artefact.class);
+	// whether DEBUG level logging is enabled (whether globally, or explicitly
+	// for this log tag)
+	static final boolean DEBUG = LogConfig.isDebug(TAG);
+	// whether VERBOSE level logging is enabled
+	static final boolean VERBOSE = LogConfig.VERBOSE;
+	
 	private long id = 0;
 	private long time;
 	private String filename;
@@ -51,6 +69,9 @@ public class Artefact extends Object implements Parcelable {
 	}
 	public String getFilename() {
 		return filename;
+	}
+	public String getBaseFilename() {
+		return ( filename == null ) ? null : filename.substring(filename.lastIndexOf("/") + 1);
 	}
 	public String getTitle() {
 		return title;
@@ -251,5 +272,83 @@ public class Artefact extends Object implements Parcelable {
         artefactData.loadSavedArtefacts(id);
         artefactData.close();
 	}
+    public String getFilePath(Context context) {
+    	if ( filename == null )
+    		return null;
+    	
+    	Uri uri = Uri.parse(filename);
+    	
+    	String file_path = null;
+    	
+		if ( DEBUG ) Log.d(TAG, "URI = '" + uri.toString() + "', scheme = '" + uri.getScheme() + "'");
+
+		if ( uri.getScheme() != null && uri.getScheme().equals("content") ) {
+	    	// Get the filename of the media file and use that as the default title.
+	    	ContentResolver cr = context.getContentResolver();
+	    	Cursor cursor = cr.query(uri, new String[]{android.provider.MediaStore.MediaColumns.DATA}, null, null, null);
+			if (cursor != null) {
+				if ( DEBUG ) Log.d(TAG, "cursor query succeeded");
+				cursor.moveToFirst();
+				try { 
+					file_path = cursor.getString(0);
+				} catch ( android.database.CursorIndexOutOfBoundsException e ) { 
+					if ( DEBUG ) Log.d(TAG, "couldn't get file_path from cursor");
+					return null;
+				}
+				cursor.close();
+			} else {
+				if ( DEBUG ) Log.d(TAG, "cursor query failed");
+				return null;
+			}
+		} else {
+			if ( DEBUG ) Log.d(TAG, "Not content scheme - returning native path");
+			// Not a content query 
+			file_path = uri.getPath();
+			File t = new File(file_path);
+			if ( ! t.exists() )
+				return null;
+		}
+		
+		// Online image not in gallery
+		// TODO check http://jimmi1977.blogspot.co.nz/2012/01/android-api-quirks-getting-image-from.html
+		//      for workaround
+		if ( file_path == "null" ){
+			return null;
+		}
+		if ( DEBUG ) Log.d(TAG, "file path valid [" + file_path + "]");
+		return file_path;
+    }
+    public Bitmap getFileThumbData(Context context) {
+    	Uri uri = Uri.parse(filename);
+    	Bitmap bm = null;
+    	
+		if ( uri.getScheme() != null && uri.getScheme().equals("content") ) {
+	    	// Get the filename of the media file and use that as the default title.
+			ContentResolver cr = context.getContentResolver();
+			Cursor cursor = cr.query(uri, new String[]{android.provider.MediaStore.MediaColumns._ID}, null, null, null);
+			if (cursor != null) {
+				if ( DEBUG ) Log.d(TAG, "cursor query succeeded");
+				cursor.moveToFirst();
+				try { 
+					Long id = cursor.getLong(0);
+					cursor.close();
+					
+					if ( uri.getPath().contains("images") ) {
+						// Default to try image thumbnail ..
+						bm = MediaStore.Images.Thumbnails.getThumbnail(cr, id, MediaStore.Images.Thumbnails.MICRO_KIND, null);
+					} else if ( uri.getPath().contains("video") ) {
+						// else look for a video thumbnail 
+						bm = MediaStore.Video.Thumbnails.getThumbnail(cr, id, MediaStore.Video.Thumbnails.MICRO_KIND, null);
+					} else {
+						bm = BitmapFactory.decodeResource(null, context.getApplicationInfo().icon, null);
+					}
+				} catch ( android.database.CursorIndexOutOfBoundsException e ) { 
+					if ( DEBUG ) Log.d(TAG, "couldn't get file_path from cursor");
+				}
+				cursor.close();
+			}
+		}
+		return bm;	
+    }
 }
 

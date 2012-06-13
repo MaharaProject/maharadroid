@@ -88,7 +88,7 @@ public class TransferService extends Service {
 			        						 a.getIsDraft(), a.getAllowComments(),
 			        						 getUploadFolderPref(),
 			        						 getUploadTagsPref(a.getTags()),
-			        						 a.getFilename(),
+			        						 a.getFilePath(mContext),
 							    			 a.getTitle(),
 							    			 a.getDescription(),
 							    			 mContext);
@@ -106,16 +106,7 @@ public class TransferService extends Service {
 			        	//m_uploads.clear();
 			        } else if ( result.has("success") ) {
 			        	Utils.updateTokenFromResult(result, mContext);
-//			        	if ( result.has("id") ) {
-//							try {
-//			        			a.setId(result.getLong("id"));
-//			        			a.save(mContext);
-//							} catch (JSONException e) {
-//								// TODO Auto-generated catch block
-//								e.printStackTrace();
-//							}
-		        			a.delete(mContext);
-//			        	}
+	        			a.delete(mContext);
 						publishProgress(new String[]{"finish", id, a.getTitle()});
 			        }
 				}

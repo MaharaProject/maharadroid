@@ -151,7 +151,7 @@ public class ArtefactDataSQLHelper extends SQLiteOpenHelper {
 
 	    	// Only include artefacts with either no attached file or valid files (may have been deleted in the background so we check)
 			if ( a.getFilename() == null || 
-					( a.getFilename() != null && Utils.getFilePath(mContext, a.getFilename()) != null ) ) {
+					( a.getFilename() != null && a.getFilePath(mContext) != null ) ) {
 				a_array[items++] = a;
 			} else {
 				Log.i(TAG, "Artefact '" + a.getTitle() + 

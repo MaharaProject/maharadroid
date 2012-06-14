@@ -119,7 +119,7 @@ public class Artefact extends Object implements Parcelable {
 		return this.title;
 	}
 	public boolean isJournal() {
-		return ( journal_id != null && Long.valueOf(journal_id) > 0 );
+		return ( journal_id != null && Long.parseLong(journal_id) > 0 );
 	}
 	public boolean hasAttachment() {
 		return ( filename != null );

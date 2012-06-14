@@ -302,17 +302,18 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 
 		}
 		
-		if ( ! a.canUpload() ) {
-			Toast.makeText(this, R.string.uploadincomplete, Toast.LENGTH_SHORT).show();
-		    if ( DEBUG ) Log.d(TAG, "Incomplete artefact: title [" + a.getTitle() + "], journal: [" + a.getJournalId() + "], desc: [" + a.getDescription() + "], file [" + a.getFilename() + "]");
-			return false;
-		}
 	    if ( VERBOSE ) Log.v(TAG, "InitiateUpload can upload");
 			
 		Intent uploader_intent;
 
 		// Write a journal - no file(s) attached.
 		if ( uris == null || uris.length == 0 ) {
+			if ( ! a.canUpload() ) {
+				Toast.makeText(this, R.string.uploadincomplete, Toast.LENGTH_SHORT).show();
+			    if ( DEBUG ) Log.d(TAG, "Incomplete artefact: title [" + a.getTitle() + "], journal: [" + a.getJournalId() + "], desc: [" + a.getDescription() + "], file [" + a.getFilename() + "]");
+				return false;
+			}
+
 			uploader_intent = new Intent(this, TransferService.class);
 			uploader_intent.putExtra("artefact", a);
 		    if ( VERBOSE ) Log.v(TAG, "InitiateUpload no file - about to start service");
@@ -322,10 +323,16 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 		} else {
 	
 			for ( int i = 0; i < uris.length; i++ ) {
-				
 				a.setFilename(uris[i]);
+
 		    	if ( VERBOSE ) Log.v(TAG, "InitiateUpload have file, name is '" + uris[i] + "'");
-	
+
+				if ( ! a.canUpload() ) {
+					Toast.makeText(this, R.string.uploadincomplete, Toast.LENGTH_SHORT).show();
+				    if ( DEBUG ) Log.d(TAG, "Incomplete artefact: title [" + a.getTitle() + "], journal: [" + a.getJournalId() + "], desc: [" + a.getDescription() + "], file [" + a.getFilename() + "]");
+					break;
+				}
+				
 				uploader_intent = new Intent(this, TransferService.class);
 				uploader_intent.putExtra("artefact", a);
 			    if ( VERBOSE ) Log.v(TAG, "InitiateUpload with file [" + i + "] - about to start service");

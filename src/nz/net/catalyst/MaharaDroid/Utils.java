@@ -21,16 +21,11 @@
 
 package nz.net.catalyst.MaharaDroid;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import nz.net.catalyst.MaharaDroid.R;
-import nz.net.catalyst.MaharaDroid.syncadapter.ThreadedSyncAdapter;
 import android.accounts.Account;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -42,8 +37,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -301,7 +294,7 @@ public class Utils {
 			cursor = myProvider.query(uri, new String[] { "ID", "VALUE" }, null, null, null);
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
-			Log.e(TAG, "Failed to aquire content provider for query - is ther an active sync running?");
+			Log.e(TAG, "Failed to aquire content provider for query - is there an active sync running?");
 			e.printStackTrace();
 		}
 		

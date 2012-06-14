@@ -1,8 +1,6 @@
 package nz.net.catalyst.MaharaDroid.syncadapter;
 
-
 import java.util.Date;
-import java.util.List;
 
 import org.json.JSONObject;
 
@@ -11,14 +9,12 @@ import nz.net.catalyst.MaharaDroid.LogConfig;
 import nz.net.catalyst.MaharaDroid.R;
 import nz.net.catalyst.MaharaDroid.Utils;
 import nz.net.catalyst.MaharaDroid.data.ArtefactDataSQLHelper;
-import nz.net.catalyst.MaharaDroid.ui.ArtifactSettingsActivity;
 import nz.net.catalyst.MaharaDroid.upload.http.RestClient;
 import android.accounts.Account;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.PeriodicSync;
 import android.content.SharedPreferences;
 import android.content.SyncResult;
 import android.os.Bundle;

@@ -44,7 +44,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -63,7 +62,6 @@ import nz.net.catalyst.MaharaDroid.GlobalResources;
 import nz.net.catalyst.MaharaDroid.LogConfig;
 import nz.net.catalyst.MaharaDroid.R;
 import nz.net.catalyst.MaharaDroid.authenticator.AuthenticatorActivity;
-import nz.net.catalyst.MaharaDroid.syncadapter.ThreadedSyncAdapter;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;

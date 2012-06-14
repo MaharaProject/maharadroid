@@ -22,15 +22,11 @@
 package nz.net.catalyst.MaharaDroid.data;
 
 import java.io.File;
-import java.util.List;
 
 import nz.net.catalyst.MaharaDroid.LogConfig;
-import nz.net.catalyst.MaharaDroid.R;
-import nz.net.catalyst.MaharaDroid.ui.ArtefactExpandableListAdapterActivity;
 import nz.net.catalyst.MaharaDroid.ui.ArtifactSettingsActivity;
 import nz.net.catalyst.MaharaDroid.upload.TransferService;
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;

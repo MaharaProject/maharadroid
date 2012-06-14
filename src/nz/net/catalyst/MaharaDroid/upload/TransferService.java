@@ -45,7 +45,6 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 public class TransferService extends Service { 
 	static final String TAG = LogConfig.getLogTag(TransferService.class);

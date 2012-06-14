@@ -102,6 +102,7 @@ public class MaharaAuthHandler {
         }
         handler.post(new Runnable() {
             public void run() {
+            	((AuthenticatorActivity) context).onAuthenticationResult(username, authToken);
             }
         });
     }

@@ -38,7 +38,6 @@ import java.util.TreeMap;
 import java.util.Vector;
 
 import nz.net.catalyst.MaharaDroid.LogConfig;
-import nz.net.catalyst.MaharaDroid.Utils;
 import nz.net.catalyst.MaharaDroid.upload.http.MultipartEntityMonitored;
 
 import org.apache.http.HttpEntity;

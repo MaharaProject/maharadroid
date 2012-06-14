@@ -33,7 +33,6 @@ import org.apache.http.entity.mime.MultipartEntity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 /*
  * The MultipartEntityMonitored class is taken from the MultipartEntityMonitored class

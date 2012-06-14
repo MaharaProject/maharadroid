@@ -22,7 +22,6 @@
 package nz.net.catalyst.MaharaDroid.data;
 
 import nz.net.catalyst.MaharaDroid.LogConfig;
-import nz.net.catalyst.MaharaDroid.Utils;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -40,7 +39,7 @@ public class ArtefactDataSQLHelper extends SQLiteOpenHelper {
 	static final boolean VERBOSE = LogConfig.VERBOSE;
 	
 	private static final String DATABASE_NAME = "maharadroid_upload_log.db";
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 	private static Context mContext;
 
 	// Table name
@@ -61,9 +60,9 @@ public class ArtefactDataSQLHelper extends SQLiteOpenHelper {
 	public ArtefactDataSQLHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		mContext = context;
-//    	SQLiteDatabase db = this.getReadableDatabase();
+    	SQLiteDatabase db = this.getReadableDatabase();
 
-		//db.execSQL("DROP TABLE " + TABLE + "; ");
+//		db.execSQL("DROP TABLE " + TABLE + "; ");
 //    	this.onCreate(db);
 
 //		String sql = "alter table " + TABLE + " ADD COLUMN " + IS_DRAFT + " boolean; ";   
@@ -81,8 +80,8 @@ public class ArtefactDataSQLHelper extends SQLiteOpenHelper {
 				+ DESCRIPTION + " text, " 
 				+ TAGS + " text, "  
 				+ SAVED_ID + " integer, "  
-				+ JOURNAL_ID + " text "  
-				+ IS_DRAFT + " boolean "  
+				+ JOURNAL_ID + " text, "  
+				+ IS_DRAFT + " boolean, "  
 				+ ALLOW_COMMENTS + " boolean "  
 				+ ");";
 		if ( DEBUG ) Log.d("LogData", "onCreate: " + sql);
@@ -95,8 +94,8 @@ public class ArtefactDataSQLHelper extends SQLiteOpenHelper {
 			return;
 
 		String sql = null;
-		// Version 7 is the first version with SQL
-		if (oldVersion < 10) {
+		// Version 1 is the first version with SQL
+		if (oldVersion < 2) {
 			db.execSQL("DROP TABLE " + TABLE + "; ");
 			this.onCreate(db);
 			Log.d("EventsData", "onUpgrade	: " + sql);

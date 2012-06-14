@@ -101,15 +101,15 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 
 	public void onResume() {
 	    super.onResume();   
-//    	if ( DEBUG ) Log.d(TAG, "onResume() calls loadSavedArtefacts");
-//
-//	    loadSavedArtefacts();		
+    	if ( DEBUG ) Log.d(TAG, "onResume() calls loadSavedArtefacts");
+
+	    loadSavedArtefacts();		
 	}    
 	public void onStart() {
 	    super.onStart();   
-    	if ( DEBUG ) Log.d(TAG, "onStart() calls loadSavedArtefacts");
-
-	    loadSavedArtefacts();		
+//    	if ( DEBUG ) Log.d(TAG, "onStart() calls loadSavedArtefacts");
+//
+//	    loadSavedArtefacts();		
 	}    
   
 	@Override

@@ -17,7 +17,6 @@
 package nz.net.catalyst.MaharaDroid.authenticator;
 
 import nz.net.catalyst.MaharaDroid.authenticator.AuthenticatorActivity;
-import nz.net.catalyst.MaharaDroid.syncadapter.ThreadedSyncAdapter;
 import nz.net.catalyst.MaharaDroid.GlobalResources;
 import nz.net.catalyst.MaharaDroid.LogConfig;
 import nz.net.catalyst.MaharaDroid.Utils;
@@ -73,9 +72,9 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         	// Just pick the first one .. support multiple accounts can come later.
         	mUsername = mAccounts[0].name;
         }
-        mRequestNewAccount = mUsername == null;
+        mRequestNewAccount = ( mUsername == null );
 
-        if ( DEBUG ) Log.d(TAG, "AuthenticatorActivity request new: " + mRequestNewAccount);
+        if ( DEBUG ) Log.d(TAG, "AuthenticatorActivity/onCreate request new: " + mRequestNewAccount);
         
     	MaharaAuthHandler.attemptAuth(mUsername, mHandler, AuthenticatorActivity.this);
     	finish();
@@ -86,16 +85,21 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
      */
     public void onAuthenticationResult(String username, String authToken) {
         // If we have an auth token create the account
+    	
+        if ( DEBUG ) Log.d(TAG, "AuthenticatorActivity/onAuthenticationResult request new: " + mRequestNewAccount);
+
         if (authToken != null) {
             final Account account = new Account(username, GlobalResources.ACCOUNT_TYPE);
 
             if (mRequestNewAccount) {
             	
-                mAccountManager.addAccountExplicitly(account, null, null);
+                Boolean newAccountCreated = mAccountManager.addAccountExplicitly(account, null, null);
+                if ( DEBUG ) Log.d(TAG, "onAuthenticationResult new account created: " + newAccountCreated);
+                
                 // Set contacts sync for this account.
                 ContentResolver.setSyncAutomatically(account, GlobalResources.SYNC_AUTHORITY, true);
                 ContentResolver.setIsSyncable(account, GlobalResources.SYNC_AUTHORITY, 1);
-                ContentResolver.requestSync(account, GlobalResources.SYNC_AUTHORITY, null);
+//                ContentResolver.requestSync(account, GlobalResources.SYNC_AUTHORITY, null);
 
             	Utils.setPeriodicSync(account, getApplicationContext());
             }

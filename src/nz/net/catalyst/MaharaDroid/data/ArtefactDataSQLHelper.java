@@ -103,29 +103,39 @@ public class ArtefactDataSQLHelper extends SQLiteOpenHelper {
 	}
 	
 	public void uploadAllSavedArtefacts() {
-    	SQLiteDatabase db = this.getReadableDatabase();
-    	
-	    Cursor cursor = db.query(ArtefactDataSQLHelper.TABLE, null, null, null, null,
-		        null, null);
-		if ( VERBOSE ) Log.v(TAG, "uploadAllSavedArtefacts: returned " + cursor.getCount() + " records.");
+		SQLiteDatabase db = this.getReadableDatabase();
 
-	    while (cursor.moveToNext()) {
-	    	Artefact a = createArtefactFromCursor(cursor);
-			a.upload(true, mContext);
+		Cursor cursor = db.query(ArtefactDataSQLHelper.TABLE, null, null, null, null, null, null);
+		try {
+			
+			if (VERBOSE) Log.v(TAG, "uploadAllSavedArtefacts: returned " + cursor.getCount() + " records.");
+	
+			while (cursor.moveToNext()) {
+				Artefact a = createArtefactFromCursor(cursor);
+				a.upload(true, mContext);
+			}
+			
+		} finally {
+			cursor.close();
 		}
 	}
 	public Artefact loadSavedArtefact(Long id) {
-    	SQLiteDatabase db = this.getReadableDatabase();
-    	
-	    Cursor cursor = db.query(ArtefactDataSQLHelper.TABLE, null, BaseColumns._ID + " = ?", new String[] { id.toString() },
-	        null, null, null);
+		SQLiteDatabase db = this.getReadableDatabase();
 
-    	if ( cursor == null ) 
-    		return null;
-    	
-	    cursor.moveToFirst();
-		
-	    return createArtefactFromCursor(cursor);
+		Cursor cursor = db.query(ArtefactDataSQLHelper.TABLE, null, BaseColumns._ID + " = ?",
+				new String[] { id.toString() }, null, null, null);
+		try {
+			
+			if (cursor == null)
+				return null;
+	
+			cursor.moveToFirst();
+	
+			return createArtefactFromCursor(cursor);
+			
+		} finally {
+			cursor.close();
+		}
 	}
 
 	public Artefact[] loadSavedArtefacts() {

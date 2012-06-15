@@ -105,7 +105,7 @@ public class ThreadedSyncAdapter extends AbstractThreadedSyncAdapter{
     			if ( VERBOSE ) Log.v(TAG, "onPerformSync: canUpload so uploadAllSavedArtefacts");
 
     	        ArtefactDataSQLHelper artefactData = new ArtefactDataSQLHelper(mContext);
-    	        artefactData.uploadAllSavedArtefacts(false);
+    	        artefactData.uploadAllSavedArtefacts();
     	        artefactData.close();
     		}
         } else {

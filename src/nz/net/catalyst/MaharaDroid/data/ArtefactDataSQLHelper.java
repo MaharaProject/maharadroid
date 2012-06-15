@@ -102,12 +102,9 @@ public class ArtefactDataSQLHelper extends SQLiteOpenHelper {
 		}
 	}
 	
-	public void uploadAllSavedArtefacts(Boolean uploaded) {
+	public void uploadAllSavedArtefacts() {
     	SQLiteDatabase db = this.getReadableDatabase();
     	
-    	if ( uploaded == null ) {
-    		uploaded = false;
-    	}
 	    Cursor cursor = db.query(ArtefactDataSQLHelper.TABLE, null, null, null, null,
 		        null, null);
 		if ( VERBOSE ) Log.v(TAG, "uploadAllSavedArtefacts: returned " + cursor.getCount() + " records.");
@@ -117,7 +114,7 @@ public class ArtefactDataSQLHelper extends SQLiteOpenHelper {
 			a.upload(true, mContext);
 		}
 	}
-	public Artefact loadSavedArtefacts(Long id) {
+	public Artefact loadSavedArtefact(Long id) {
     	SQLiteDatabase db = this.getReadableDatabase();
     	
 	    Cursor cursor = db.query(ArtefactDataSQLHelper.TABLE, null, BaseColumns._ID + " = ?", new String[] { id.toString() },
@@ -132,35 +129,42 @@ public class ArtefactDataSQLHelper extends SQLiteOpenHelper {
 	}
 
 	public Artefact[] loadSavedArtefacts() {
-    	SQLiteDatabase db = this.getReadableDatabase();
-    	
-	    Cursor cursor = db.query(ArtefactDataSQLHelper.TABLE, null, null, null, null, null, null);
-	    
-	    //startManagingCursor(cursor);
-    	if ( cursor == null ) 
-    		return new Artefact[] {};// TODO why different from above?
+		SQLiteDatabase db = this.getReadableDatabase();
 
-	    //startManagingCursor(cursor);
-	    Artefact[] a_array = new Artefact[cursor.getCount()];
-	    
-	    int items = 0;
+		Cursor cursor = db.query(ArtefactDataSQLHelper.TABLE, null, null, null, null, null, null);
+		
+		try {
 
-	    while (cursor.moveToNext()) {
-	    	Artefact a = createArtefactFromCursor(cursor);
+			if (cursor == null)
+				return new Artefact[] {};// TODO why different from above?
 
-	    	// Only include artefacts with either no attached file or valid files (may have been deleted in the background so we check)
-			if ( a.getFilename() == null || 
-					( a.getFilename() != null && a.getFilePath(mContext) != null ) ) {
-				a_array[items++] = a;
-			} else {
-				Log.i(TAG, "Artefact '" + a.getTitle() + 
-							"' file [" + a.getFilename() + 
-							"] no longer exists, deleting from saved artefacts");
-				this.deleteSavedArtefact(a.getId());
+			Artefact[] a_array = new Artefact[cursor.getCount()];
+
+			int items = 0;
+
+			while (cursor.moveToNext()) {
+				Artefact a = createArtefactFromCursor(cursor);
+
+				// Only include artefacts with either no attached file or valid
+				// files (may have been deleted in the background so we check)
+				if (a.getFilename() == null
+						|| (a.getFilename() != null && a.getFilePath(mContext) != null)) {
+					a_array[items++] = a;
+				} else {
+					Log.i(TAG, "Artefact '" + a.getTitle() + "' file [" + a.getFilename()
+							+ "] no longer exists, deleting from saved artefacts");
+					this.deleteSavedArtefact(a.getId());
+				}
 			}
+
+			return a_array;
+
+		} finally {
+			cursor.close();
 		}
-	    return a_array;
+		
 	}
+	
     private Artefact createArtefactFromCursor(Cursor cursor) {
     	if ( VERBOSE ) Log.v(TAG, "createArtefactFromCursor draft: " + cursor.getInt(8));
     	if ( VERBOSE ) Log.v(TAG, "createArtefactFromCursor allow comments: " + cursor.getInt(9));

@@ -18,7 +18,6 @@ public class MaharaProvider extends ContentProvider {
 
 	private static final String DATABASE_NAME = "maharadroid_sync.db";
 	private static final int DATABASE_VERSION = 1;
-	private static final String TAG = "MyContentProvider";
 
 	private static class DatabaseHelper extends SQLiteOpenHelper {
 

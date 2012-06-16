@@ -54,7 +54,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-/*
+/**
  * The ArtifactSettings class is based on the PictureSettings class, 
  * it has been modified to only support upload components. The original was
  * written by Russel Stewart (rnstewart@gmail.com) as part of the Flickr Free
@@ -62,7 +62,6 @@ import android.widget.Toast;
  *
  * @author	Alan McNatty (alan.mcnatty@catalyst.net.nz)
  */
-
 public class ArtifactSettingsActivity extends Activity implements OnClickListener {
 	
 	static final String TAG = LogConfig.getLogTag(ArtifactSettingsActivity.class);
@@ -287,7 +286,6 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 		boolean allow_comments = ((CheckBox) findViewById(R.id.txtArtefactAllowComments)).isChecked();
 
 		if ( id != null && id.length() > 0 ) {
-			a.load(mContext, Long.valueOf(id));
 			a.setTitle(title);
 			a.setDescription(description);
 			a.setTags(tags);
@@ -489,7 +487,7 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 	      	tgs.setText(TextUtils.join(",", new_tags));
 		}
 
-	    public void onNothingSelected(AdapterView parent) {
+	    public void onNothingSelected(AdapterView<?> parent) {
 	      // Do nothing.
 	    }
 	}
@@ -503,7 +501,7 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
     		l.setVisibility( pos > 0 ? LinearLayout.VISIBLE : LinearLayout.GONE );
 		}
 
-	    public void onNothingSelected(AdapterView parent) {
+	    public void onNothingSelected(AdapterView<?> parent) {
     		LinearLayout l;
     		l = (LinearLayout) findViewById(R.id.ArtefactJournalExtrasLayout);
     		l.setVisibility( LinearLayout.GONE );

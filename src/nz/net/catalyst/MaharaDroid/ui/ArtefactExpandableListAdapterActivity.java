@@ -175,7 +175,7 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 				loadSavedArtefacts();
 				break;
 			case R.id.option_upload:
-				artefactData.uploadAllSavedArtefacts(true);
+				artefactData.uploadAllSavedArtefacts();
 				loadSavedArtefacts();
 				break;
 			case R.id.about:

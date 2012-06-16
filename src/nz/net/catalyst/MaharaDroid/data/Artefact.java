@@ -225,10 +225,6 @@ public class Artefact extends Object implements Parcelable {
 		time = System.currentTimeMillis();
 	}
 	
-	public Artefact(Context mContext, Long id) {
-		// TODO Auto-generated constructor stub
-		load(mContext, id);
-	}
 	public void upload(Boolean auto, Context mContext) {
 		Intent i = new Intent(mContext, TransferService.class);
 		i.putExtra("artefact", (Parcelable) this);
@@ -250,7 +246,6 @@ public class Artefact extends Object implements Parcelable {
 		mContext.startActivity(i);
 	}
 	public void save(Context mContext) {
-		// TODO Auto-generated method stub
 		ArtefactDataSQLHelper artefactData = new ArtefactDataSQLHelper(mContext);
 		if ( id != 0 ) { 	// update
 	    	Log.d("Artefact", "save: is_draft: " + is_draft);
@@ -263,9 +258,8 @@ public class Artefact extends Object implements Parcelable {
 		artefactData.close();
 	}
 	public void load(Context mContext, Long id) {
-		// TODO Auto-generated method stub
 		ArtefactDataSQLHelper artefactData = new ArtefactDataSQLHelper(mContext);
-        artefactData.loadSavedArtefacts(id);
+        artefactData.loadSavedArtefact(id);
         artefactData.close();
 	}
     public String getFilePath(Context context) {

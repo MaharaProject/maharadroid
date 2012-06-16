@@ -143,50 +143,8 @@ try {
 }
 catch (ParameterException $e) { }
 
-// -- Start by creating a blog entry --
-
-$postobj = '';      // our resulting blog post object on creation
-$artefact_id = '';  // our resulting artefact id on creation
-
-if ( $blog ) {
-    if ( ! ( $title && $description ) ) {
-    	jsonreply( array('fail' => 'Journal posts must have a title and entry (description).') );
-    }
-
-    if (!get_record('artefact', 'id', $blog, 'owner', $USER->get('id'))) {
-        // Blog security is also checked closer to when blogs are added, this 
-        // check ensures that malicious users do not even see the screen for 
-        // adding a post to a blog that is not theirs
-        throw new AccessDeniedException(get_string('youarenottheownerofthisblog', 'artefact.blog'));
-    }
-    // Should we create a new post of attach the new file to an existing post
-    $postids = get_records_sql_array("
-        SELECT a.id
-        FROM {artefact} a
-        WHERE a.title = ? AND a.description = ?
-	AND a.owner = ? ",
-        array($title, $description, $USER->get('id')));
-    if ( $postids ) {
-        $blogpost = $postids[0]->id;
-        $postobj = new ArtefactTypeBlogPost($blogpost);
-        $postobj->check_permission();
-        if ($postobj->get('locked')) {
-            throw new AccessDeniedException(get_string('submittedforassessment', 'view'));
-        }
-    } else {
-        $postobj = new ArtefactTypeBlogPost($blogpost, null);
-        $postobj->set('title', $title);
-        $postobj->set('description', $description);
-        $postobj->set('tags', $tags);
-        $postobj->set('published', !$draft);
-        $postobj->set('allowcomments', (int) $allowcomments);
-        $postobj->set('parent', $blog);
-        $postobj->set('owner', $USER->id);
-        $postobj->commit();
-    }
-}
-
 // -- Now check for files to upload --
+$artefact_id = '';  // our resulting artefact id on creation
 
 if ( $_FILES ) {
 
@@ -210,6 +168,47 @@ if ( $_FILES ) {
     }
     catch (UploadException $e) {
         jsonreply( array('fail' => 'Failed to save file') );
+    }
+}
+
+// -- Next create a blog entry --
+$postobj = '';      // our resulting blog post object on creation
+
+if ( $blog ) {
+    if ( ! ( $title && $description ) ) {
+    	jsonreply( array('fail' => 'Journal posts must have a title and entry (description).') );
+    }
+
+    if (!get_record('artefact', 'id', $blog, 'owner', $USER->get('id'))) {
+        // Blog security is also checked closer to when blogs are added, this 
+        // check ensures that malicious users do not even see the screen for 
+        // adding a post to a blog that is not theirs
+        throw new AccessDeniedException(get_string('youarenottheownerofthisblog', 'artefact.blog'));
+    }
+    // Should we create a new post or attach the new file to an existing post
+    $postids = get_records_sql_array("
+        SELECT a.id
+        FROM {artefact} a
+        WHERE a.title = ? AND a.description = ?
+	AND a.owner = ? ",
+        array($title, $description, $USER->get('id')));
+    if ( $postids ) {
+        $blogpost = $postids[0]->id;
+        $postobj = new ArtefactTypeBlogPost($blogpost);
+        $postobj->check_permission();
+        if ($postobj->get('locked')) {
+            throw new AccessDeniedException(get_string('submittedforassessment', 'view'));
+        }
+    } else {
+        $postobj = new ArtefactTypeBlogPost($blogpost, null);
+        $postobj->set('title', $title);
+        $postobj->set('description', $description);
+        $postobj->set('tags', $tags);
+        $postobj->set('published', !$draft);
+        $postobj->set('allowcomments', (int) $allowcomments);
+        $postobj->set('parent', $blog);
+        $postobj->set('owner', $USER->id);
+        $postobj->commit();
     }
 }
 

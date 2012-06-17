@@ -208,15 +208,17 @@
 						</TextView>
 				</LinearLayout>
 			</LinearLayout>			
-			<LinearLayout
-				  xmlns:android="http://schemas.android.com/apk/res/android"
-				  android:id="@+id/ArtefactFileLayout"
-				  android:layout_width="fill_parent"
-				  android:layout_height="wrap_content"
-				  android:layout_marginTop="10dp"
-				  android:orientation="horizontal">			
-			</LinearLayout>							    		    
-				
+			<Gallery xmlns:android="http://schemas.android.com/apk/res/android" 
+			    android:id="@+id/FileGallery"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+  				android:layout_margin="5dip"
+  				android:gravity="center_horizontal"
+  				android:layout_gravity="fill_horizontal"
+				android:spacing="5dip"
+				android:scrollbars="horizontal"
+			/>						    		    
+							
 			<LinearLayout
 			  xmlns:android="http://schemas.android.com/apk/res/android"
 			  android:id="@+id/ArtefactSettingsButtonLayout"

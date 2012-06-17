@@ -37,19 +37,22 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Gallery;
+import android.widget.Gallery.LayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -92,6 +95,7 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 	//          2) by attaching a single photo to the UI if the artefact object
 	//             doesn't yet exist (multi scenario only) - one will be created
 	private Artefact a;
+	private ImageAdapter ia;
 	
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -164,8 +168,6 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 
 			setDefaultJournal();
 			
-			// TODO - get working .. for multiple files by URL also .. no operational yet :(
-//			showFileThumbnail(a);
 
 	    } else if ( m_extras.containsKey("uri") ) {         
         	if ( DEBUG ) Log.d(TAG, "Have a new upload");
@@ -198,35 +200,18 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 			btnUpload.setEnabled(false);
 		}
 	}
-    private void showFileThumbnail(Artefact art) {
-		// TODO Auto-generated method stub
-		LinearLayout l = (LinearLayout) findViewById(R.id.ArtefactFileLayout);
-		if ( VERBOSE ) Log.v(TAG, "showFileThumbnail called");
+    public void onStart() {
+        super.onStart();
 
-		if ( art.getFilename() != null ) {
-        	LayoutInflater inflator = getLayoutInflater();
-        	
-			// we set attachToRoot to false so that the returned view is the
-			// link frame, not parent's root
-			View linkFrame = inflator.inflate(R.layout.artefact_settings_file_frame, l,	false);
+    }
+    public void onResume() {
+        super.onResume();
+        
+        ia = new ImageAdapter(this, uris);
+        Gallery gallery = (Gallery) findViewById(R.id.FileGallery);
+        gallery.setAdapter(ia);
+    }
 
-			ImageView iv = (ImageView) linkFrame.findViewById(R.id.txtArtefactFileThumb);
-//	        ((TextView) findViewById(R.id.txtArtefactFilename)).setText(art.getFilename());
-	        iv.setImageBitmap(art.getFileThumbData(mContext));
-	        iv.setClickable(true);
-	        iv.setOnClickListener(this);
-	        iv.setTag(art);
-	        iv.invalidate();
-    		if ( l != null ) l.setVisibility(LinearLayout.VISIBLE);
-    		l.invalidate();
-    		((View) l.getParent()).invalidate();
-    		if ( DEBUG ) Log.d(TAG, "Adding file '" + art.getFilename() + "' thumbnail to view");
-        } else {
-    		if ( l != null ) l.setVisibility(LinearLayout.GONE);
-    		if ( VERBOSE ) Log.v(TAG, "no file(name) so no thumbnail(s) to show");
-        }
-		
-	}
 	private void setDefaultTitle(String f) {
 		EditText et = (EditText)findViewById(R.id.txtArtefactTitle);
 
@@ -576,6 +561,45 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
     		TextView tv;
     		tv = (TextView) findViewById(R.id.txtArtefactDescriptionLabel);
 			tv.setText(getResources().getString(R.string.upload_file_description_label));    			
+	    }
+	}
+	public class ImageAdapter extends BaseAdapter {
+	    int mGalleryItemBackground;
+	    private Context mContext;
+
+	    private String[] u = new String[] { };
+
+	    public ImageAdapter(Context c, String[] uris) {
+	        mContext = c;
+	        u = uris;
+	    }
+
+	    public int getCount() {
+	        return u.length;
+	    }
+
+	    public Object getItem(int position) {
+	        return position;
+	    }
+
+	    public long getItemId(int position) {
+	        return position;
+	    }
+
+	    public View getView(int position, View convertView, ViewGroup parent) {
+	        ImageView iv = new ImageView(mContext);
+
+	        iv.setImageBitmap(Utils.getFileThumbData(mContext, u[position]));
+//	        iv.setClickable(true);
+//	        iv.setOnClickListener(this);
+//	        iv.setLayoutParams(new Gallery.LayoutParams(96, 96));
+//	        iv.setPadding(4, 4, 4, 4);
+//	        iv.setScaleType(ImageView.ScaleType.FIT_XY);
+//	        imageView.setBackgroundResource(mGalleryItemBackground);
+//	        parent.invalidate();
+//	        convertView.invalidate();
+
+	        return iv;
 	    }
 	}
 }

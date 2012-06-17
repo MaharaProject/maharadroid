@@ -37,6 +37,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -325,4 +327,36 @@ public class Utils {
 		cursor.close();
 		return new String[][] { k, v };
 	}
+    public static Bitmap getFileThumbData(Context context, String filename) {
+    	Uri uri = Uri.parse(filename);
+    	Bitmap bm = null;
+    	
+		if ( uri.getScheme() != null && uri.getScheme().equals("content") ) {
+	    	// Get the filename of the media file and use that as the default title.
+			ContentResolver cr = context.getContentResolver();
+			Cursor cursor = cr.query(uri, new String[]{android.provider.MediaStore.MediaColumns._ID}, null, null, null);
+			if (cursor != null) {
+				if ( DEBUG ) Log.d(TAG, "cursor query succeeded");
+				cursor.moveToFirst();
+				try { 
+					Long id = cursor.getLong(0);
+					cursor.close();
+					
+					if ( uri.getPath().contains("images") ) {
+						// Default to try image thumbnail ..
+						bm = MediaStore.Images.Thumbnails.getThumbnail(cr, id, MediaStore.Images.Thumbnails.MICRO_KIND, null);
+					} else if ( uri.getPath().contains("video") ) {
+						// else look for a video thumbnail 
+						bm = MediaStore.Video.Thumbnails.getThumbnail(cr, id, MediaStore.Video.Thumbnails.MICRO_KIND, null);
+					} else {
+						bm = BitmapFactory.decodeResource(null, context.getApplicationInfo().icon, null);
+					}
+				} catch ( android.database.CursorIndexOutOfBoundsException e ) { 
+					if ( DEBUG ) Log.d(TAG, "couldn't get file_path from cursor");
+				}
+				cursor.close();
+			}
+		}
+		return bm;	
+    }
 }

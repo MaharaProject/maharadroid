@@ -34,6 +34,7 @@ import nz.net.catalyst.MaharaDroid.ui.about.AboutActivity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -338,13 +339,18 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 	        
     		l = (LinearLayout)convertView.findViewById(R.id.ArtefactFileLayout);
 	        if ( art.getFilename() != null ) {
-		        ImageView iv = (ImageView) convertView.findViewById(R.id.txtArtefactFileThumb);
 		        ((TextView) convertView.findViewById(R.id.txtArtefactFilename)).setText(art.getFilename());
-		        iv.setImageBitmap(art.getFileThumbData(eContext));
+
+		        ImageView iv = (ImageView) convertView.findViewById(R.id.txtArtefactFileThumb);
 		        iv.setClickable(true);
 		        iv.setOnClickListener(this);
 		        iv.setTag(art);
-		        iv.invalidate();
+
+		        Bitmap bm = art.getFileThumbData(eContext);
+	        	if ( bm != null ) {
+			        iv.setImageBitmap(bm);
+			        iv.invalidate();
+	        	}
 	    		if ( l != null ) l.setVisibility(LinearLayout.VISIBLE);
 	        } else {
 	    		if ( l != null ) l.setVisibility(LinearLayout.GONE);

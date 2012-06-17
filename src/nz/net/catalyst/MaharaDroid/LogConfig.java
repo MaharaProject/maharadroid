@@ -46,7 +46,7 @@ public class LogConfig {
 	 *  Rather than checking this directly, classes should use LogConfig.isDebug(TAG) to
 	 *  determine whether to log a DEBUG level.
 	 */
-	private static final boolean DEBUG = false;
+	private static final boolean DEBUG = true;
 	
 	/**
 	 * Whether the application should allow any tags to log at VERBOSE level.
@@ -56,7 +56,7 @@ public class LogConfig {
 	 * The Java compiler is unable to strip out calls to Log.isLoggable()
 	 * (although, maybe the Dalvik compiler, or the JIT can ???)
 	 */
-	public static final boolean VERBOSE = false;
+	public static final boolean VERBOSE = true;
 	
 	
 	private static final int MAX_LOG_TAG_LENGTH = 23;

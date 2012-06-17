@@ -484,7 +484,7 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 				}
 	        	a.setFilename(uri.toString());
 	        	setDefaultTitle(a.getBaseFilename(mContext));
-	        	a.save(mContext);
+	        	//a.save(mContext); // don't auto save - they might want to cancel
 	        	uris = new String[] { uri.toString() };
 	        	break;
 			case GlobalResources.REQ_GALLERY_RETURN:
@@ -493,7 +493,7 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 			    	a = new Artefact(uri.toString());
 				}
 	        	a.setFilename(uri.toString());
-	        	a.save(mContext);
+	        	//a.save(mContext); // don't auto save - they might want to cancel
 	        	setDefaultTitle(a.getBaseFilename(mContext));
 	        	uris = new String[] { uri.toString() };
 				break;

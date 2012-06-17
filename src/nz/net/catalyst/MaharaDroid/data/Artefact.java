@@ -27,6 +27,7 @@ import nz.net.catalyst.MaharaDroid.LogConfig;
 import nz.net.catalyst.MaharaDroid.Utils;
 import nz.net.catalyst.MaharaDroid.ui.ArtifactSettingsActivity;
 import nz.net.catalyst.MaharaDroid.upload.TransferService;
+import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -245,8 +246,21 @@ public class Artefact extends Object implements Parcelable {
         artefactData.close();
 	}
 	public void view(Context mContext) {
-		Intent i = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(this.getFilename()));
-		mContext.startActivity(i);
+		try {
+			Intent i;
+			String mimetype = this.getFileMimeType(mContext);
+			if ( mimetype == null ) {
+				i = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(this.getFilename()));
+			} else {
+				i = new Intent(Intent.ACTION_VIEW).setDataAndType(Uri.parse(this.getFilename()), mimetype);
+				if ( DEBUG ) Log.d(TAG, "Artefact mimetype '" + mimetype + "'");
+			}
+			mContext.startActivity(i);
+		} catch ( ActivityNotFoundException e ) {
+			// If activity not found you need to set SetDataAndType .. ideally we'd get the type 
+			// from the content query
+			Log.e(TAG, "Artefact view error - not activity found for '" + this.getFilename() + "'");
+		}
 	}
 	
 	public void edit(Context mContext) {
@@ -284,7 +298,8 @@ public class Artefact extends Object implements Parcelable {
 		if ( uri.getScheme() != null && uri.getScheme().equals("content") ) {
 	    	// Get the filename of the media file and use that as the default title.
 	    	ContentResolver cr = context.getContentResolver();
-	    	Cursor cursor = cr.query(uri, new String[]{android.provider.MediaStore.MediaColumns.DATA}, null, null, null);
+	    	Cursor cursor = cr.query(uri, new String[]{	android.provider.MediaStore.MediaColumns.DATA, 
+	    												android.provider.MediaStore.MediaColumns.MIME_TYPE}, null, null, null);
 			if (cursor != null) {
 				if ( DEBUG ) Log.d(TAG, "cursor query succeeded");
 				cursor.moveToFirst();
@@ -317,8 +332,47 @@ public class Artefact extends Object implements Parcelable {
 		if ( DEBUG ) Log.d(TAG, "file path valid [" + file_path + "]");
 		return file_path;
     }
+    public String getFileMimeType(Context context) {
+    	if ( filename == null )
+    		return null;
+    	
+    	Uri uri = Uri.parse(filename);
+    	
+    	String mimetype = null;
+    	
+		if ( DEBUG ) Log.d(TAG, "URI = '" + uri.toString() + "', scheme = '" + uri.getScheme() + "'");
+
+		if ( uri.getScheme() != null && uri.getScheme().equals("content") ) {
+	    	// Get the filename of the media file and use that as the default title.
+	    	ContentResolver cr = context.getContentResolver();
+	    	Cursor cursor = cr.query(uri, new String[]{	android.provider.MediaStore.MediaColumns.MIME_TYPE}, null, null, null);
+			if (cursor != null) {
+				if ( DEBUG ) Log.d(TAG, "cursor query succeeded");
+				cursor.moveToFirst();
+				try { 
+					mimetype = cursor.getString(0);
+				} catch ( android.database.CursorIndexOutOfBoundsException e ) { 
+					if ( DEBUG ) Log.d(TAG, "couldn't get file_path from cursor");
+					return null;
+				}
+				cursor.close();
+			} else {
+				if ( DEBUG ) Log.d(TAG, "cursor query failed");
+				return null;
+			}
+		// TODO .. Yuck - extend this? 
+		} else if ( uri.getLastPathSegment().endsWith(".mp4") ) {
+			mimetype = "video/mp4";
+		} else if ( uri.getLastPathSegment().endsWith(".mp3") ) {
+			mimetype = "audio/mp3";
+		} else if ( uri.getLastPathSegment().endsWith(".m4a") ) {
+			mimetype = "audio/mpeg";
+		}
+		
+		return mimetype;
+    }
     public Bitmap getFileThumbData(Context context) {
-    	return Utils.getFileThumbData(context, this.filename);	
+    	return Utils.getFileThumbData(context, this.getFilename());	
     }
 }
 

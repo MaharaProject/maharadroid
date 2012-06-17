@@ -108,12 +108,12 @@
     <string name="uploadingartifact">Uploading ...</string>
     <string name="uploading">Uploading</string>
     <string name="uploadnoconnection">Sorry you don\'t have a working data connection to upload at this time.</string>
-    <string name="uploadincomplete">Enter a title and an entry for journals</string>
+    <string name="uploadincomplete">Sorry you must enter a title and an entry for journal posts</string>
     <string name="filetransfers">File Transfers</string>
     
     <string name="upload_journal_label">Journal:</string>
-    <string name="upload_journal_prompt">Upload as file or choose Journal</string>
-    <string name="upload_journal_default">Upload as file</string>
+    <string name="upload_journal_prompt">Upload file(s) or post to a Journal</string>
+    <string name="upload_journal_default">Upload file(s)</string>
     <string name="upload_is_draft_label"></string>
     <string name="upload_is_draft_text">Check this if your entry is a draft. As a draft no one except you can see it.</string>
     <string name="upload_allow_comments_label"></string>
@@ -129,7 +129,7 @@
     <string name="upload_journal_description_label">Entry:</string>
     <string name="upload_tags_label">Tag(s):</string>
     <string name="upload_time_label">Last:</string>
-    <string name="upload_files_label">Files:</string>
+    <string name="upload_files_label">File:</string>
     								
     <string name="load_config_download_error">Sorry there was an error downloading the configuration file.</string>
     <string name="load_config_error">Sorry there was an error parsing the configuration file.</string>

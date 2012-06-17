@@ -353,15 +353,14 @@ public class Utils {
 					} else if ( uri.getPath().contains("video") ) {
 						// else look for a video thumbnail 
 						bm = MediaStore.Video.Thumbnails.getThumbnail(cr, id, MediaStore.Video.Thumbnails.MICRO_KIND, null);
-					} else {
-						bm = BitmapFactory.decodeResource(null, context.getApplicationInfo().icon, null);
 					}
 				} catch ( android.database.CursorIndexOutOfBoundsException e ) { 
-					if ( DEBUG ) Log.d(TAG, "couldn't get file_path from cursor");
+					if ( DEBUG ) Log.d(TAG, "getFileThumbData couldn't get content from file cursor");
 				}
 				cursor.close();
 			}
 		}
+
 		return bm;	
     }
 }

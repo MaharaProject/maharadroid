@@ -135,6 +135,7 @@
 				  	<ImageView android:id="@+id/txtArtefactFileThumb"
 							  android:layout_width="96dip" 
 							  android:layout_height="96dip"
+							  android:src="@drawable/nopreview"
 							  style="@android:style/TextAppearance.Small">
 				  	</ImageView>
 					

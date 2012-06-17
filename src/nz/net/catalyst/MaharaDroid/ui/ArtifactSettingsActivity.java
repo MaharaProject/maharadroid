@@ -31,6 +31,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -575,7 +576,7 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 	    }
 
 	    public int getCount() {
-	        return u.length;
+	    	return ( u == null ) ? 0 : u.length;
 	    }
 
 	    public Object getItem(int position) {
@@ -588,17 +589,7 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 
 	    public View getView(int position, View convertView, ViewGroup parent) {
 	        ImageView iv = new ImageView(mContext);
-
-	        iv.setImageBitmap(Utils.getFileThumbData(mContext, u[position]));
-//	        iv.setClickable(true);
-//	        iv.setOnClickListener(this);
-//	        iv.setLayoutParams(new Gallery.LayoutParams(96, 96));
-//	        iv.setPadding(4, 4, 4, 4);
-//	        iv.setScaleType(ImageView.ScaleType.FIT_XY);
-//	        imageView.setBackgroundResource(mGalleryItemBackground);
-//	        parent.invalidate();
-//	        convertView.invalidate();
-
+        	iv.setImageBitmap(Utils.getFileThumbData(mContext, u[position]));
 	        return iv;
 	    }
 	}

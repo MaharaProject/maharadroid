@@ -26,6 +26,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import nz.net.catalyst.MaharaDroid.R;
+import nz.net.catalyst.MaharaDroid.ui.ArtefactExpandableListAdapterActivity;
+import nz.net.catalyst.MaharaDroid.ui.about.AboutActivity;
 import android.accounts.Account;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -145,7 +147,7 @@ public class Utils {
         PendingIntent contentIntent = null;
         // The PendingIntent to launch our activity if the user selects this notification
         if ( intent == null ) {
-        	contentIntent = PendingIntent.getActivity(mContext, 0, new Intent(), 0);
+        	contentIntent = PendingIntent.getActivity(mContext, 0, new Intent(mContext, ArtefactExpandableListAdapterActivity.class), 0);
         } else {
         	contentIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
         }
@@ -328,6 +330,9 @@ public class Utils {
 		return new String[][] { k, v };
 	}
     public static Bitmap getFileThumbData(Context context, String filename) {
+    	if ( filename == null )
+    		return null;
+    	
     	Uri uri = Uri.parse(filename);
     	Bitmap bm = null;
     	
@@ -336,7 +341,7 @@ public class Utils {
 			ContentResolver cr = context.getContentResolver();
 			Cursor cursor = cr.query(uri, new String[]{android.provider.MediaStore.MediaColumns._ID}, null, null, null);
 			if (cursor != null) {
-				if ( DEBUG ) Log.d(TAG, "cursor query succeeded");
+				if ( VERBOSE ) Log.v(TAG, "getFileThumbData cursor query succeeded for '" + filename + "'");
 				cursor.moveToFirst();
 				try { 
 					Long id = cursor.getLong(0);

@@ -57,6 +57,7 @@ import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
 
 public class ArtefactExpandableListAdapterActivity extends Activity implements OnCreateContextMenuListener {
@@ -207,6 +208,11 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) { 
+		if ( intent == null ) {
+			Log.e(TAG, "Empty intent received from request code '" + requestCode + "'");
+			Toast.makeText(mContext, getString(R.string.capturefailed), Toast.LENGTH_LONG);
+			return;
+		}
 		
         if (resultCode == Activity.RESULT_OK) {
         	Intent i = new Intent(this, ArtifactSettingsActivity.class);
@@ -314,12 +320,17 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 	    		if ( l != null ) l.setVisibility(LinearLayout.VISIBLE);
 	    		l = (LinearLayout)convertView.findViewById(R.id.ArtefactJournalExtrasLayout);
 	    		if ( l != null ) l.setVisibility(LinearLayout.VISIBLE);
+	    		
+	    		((TextView) convertView.findViewById(R.id.txtArtefactDescriptionLabel)).setText(getResources().getString(R.string.upload_journal_description_label));
+
         	} else {
         		// TDODO hide layout
 	    		l = (LinearLayout)convertView.findViewById(R.id.ArtefactJournalLayout);
 	    		if ( l != null ) l.setVisibility(LinearLayout.GONE);
 	    		l = (LinearLayout)convertView.findViewById(R.id.ArtefactJournalExtrasLayout);
 	    		if ( l != null ) l.setVisibility(LinearLayout.GONE);
+
+	    		((TextView) convertView.findViewById(R.id.txtArtefactDescriptionLabel)).setText(getResources().getString(R.string.upload_file_description_label));
         	}
 	        ((TextView) convertView.findViewById(R.id.txtArtefactTime)).setText(date.toString());
 	        ((TextView) convertView.findViewById(R.id.txtArtefactDescription)).setText(art.getDescription());

@@ -37,6 +37,7 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -49,6 +50,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -80,6 +82,15 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 	private Button btnUpload;
 	
 	private Context mContext;
+	
+	// a) The artefact can be passed from saved
+	// b) The artefact will be created if a single url shared to this UI
+	// c) May be initially be null if more than one url is shared
+	//
+	//    Note: 1) multiple individual artefacts will be created based on details 
+	//             for them all if saved or uploaded
+	//          2) by attaching a single photo to the UI if the artefact object
+	//             doesn't yet exist (multi scenario only) - one will be created
 	private Artefact a;
 	
     public void onCreate(Bundle savedInstanceState) {
@@ -90,14 +101,14 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
         
         requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 
-		setContentView(R.layout.artifact_settings);
+		setContentView(R.layout.artefact_settings);
 
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.windowtitle);
     	
         ((TextView) findViewById(R.id.windowtitle_text)).setText(getString(R.string.artifactsettings));
 		
         Spinner spinner = (Spinner) findViewById(R.id.upload_journal_spinner);
-        String[][] journalItems = Utils.getJournals("", mContext);
+        String[][] journalItems = Utils.getJournals(getString(R.string.upload_journal_default), mContext);
         journalKeys = journalItems[0];
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, 
         							android.R.layout.simple_spinner_item, journalItems[1]); 
@@ -107,7 +118,7 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 
         spinner = (Spinner) findViewById(R.id.upload_tags_spinner);
         
-		final String[][] tagItems = Utils.getTags("", mContext);
+		final String[][] tagItems = Utils.getTags(getString(R.string.upload_tags_prompt), mContext);
         adapter = new ArrayAdapter<String>(this, 
 									android.R.layout.simple_spinner_item, tagItems[1]); 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -152,6 +163,9 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 			((CheckBox)findViewById(R.id.txtArtefactAllowComments)).setChecked(a.getAllowComments());
 
 			setDefaultJournal();
+			
+			// TODO - get working .. for multiple files by URL also .. no operational yet :(
+//			showFileThumbnail(a);
 
 	    } else if ( m_extras.containsKey("uri") ) {         
         	if ( DEBUG ) Log.d(TAG, "Have a new upload");
@@ -164,7 +178,8 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 	        // If single - show the title (with default) and description
 	    	if ( uris.length == 1 ) {
 		    	if ( DEBUG ) Log.d(TAG, "Have a single upload");
-		    	setDefaultTitle(uris[0]);
+		    	a = new Artefact(uris[0]);
+		    	setDefaultTitle(a.getBaseFilename(mContext));
 	        } else if ( uris.length > 1 ) {
 		    	if ( DEBUG ) Log.d(TAG, "Have a multi upload");
 	        } else {
@@ -183,7 +198,36 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 			btnUpload.setEnabled(false);
 		}
 	}
-    private void setDefaultTitle(String f) {
+    private void showFileThumbnail(Artefact art) {
+		// TODO Auto-generated method stub
+		LinearLayout l = (LinearLayout) findViewById(R.id.ArtefactFileLayout);
+		if ( VERBOSE ) Log.v(TAG, "showFileThumbnail called");
+
+		if ( art.getFilename() != null ) {
+        	LayoutInflater inflator = getLayoutInflater();
+        	
+			// we set attachToRoot to false so that the returned view is the
+			// link frame, not parent's root
+			View linkFrame = inflator.inflate(R.layout.artefact_settings_file_frame, l,	false);
+
+			ImageView iv = (ImageView) linkFrame.findViewById(R.id.txtArtefactFileThumb);
+//	        ((TextView) findViewById(R.id.txtArtefactFilename)).setText(art.getFilename());
+	        iv.setImageBitmap(art.getFileThumbData(mContext));
+	        iv.setClickable(true);
+	        iv.setOnClickListener(this);
+	        iv.setTag(art);
+	        iv.invalidate();
+    		if ( l != null ) l.setVisibility(LinearLayout.VISIBLE);
+    		l.invalidate();
+    		((View) l.getParent()).invalidate();
+    		if ( DEBUG ) Log.d(TAG, "Adding file '" + art.getFilename() + "' thumbnail to view");
+        } else {
+    		if ( l != null ) l.setVisibility(LinearLayout.GONE);
+    		if ( VERBOSE ) Log.v(TAG, "no file(name) so no thumbnail(s) to show");
+        }
+		
+	}
+	private void setDefaultTitle(String f) {
 		EditText et = (EditText)findViewById(R.id.txtArtefactTitle);
 
 		if ( et.getText().toString().length() > 0 ) {
@@ -235,6 +279,10 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 			    		LinearLayout l;
 			    		l = (LinearLayout)this.findViewById(R.id.ArtefactJournalExtrasLayout);
 			    		l.setVisibility(LinearLayout.VISIBLE);
+
+			    		TextView tv;
+			    		tv = (TextView)this.findViewById(R.id.txtArtefactDescriptionLabel);
+			    		tv.setText(getResources().getString(R.string.upload_journal_description_label));
 					}
 					break;
 				}
@@ -432,6 +480,11 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 		return true;
 	}
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) { 
+		if ( intent == null ) {
+			Log.e(TAG, "Empty intent received from request code '" + requestCode + "'");
+			Toast.makeText(mContext, getString(R.string.capturefailed), Toast.LENGTH_LONG);
+			return;
+		}
 		
         if (resultCode == Activity.RESULT_OK) {
         	Uri uri;
@@ -440,17 +493,23 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 				if ( ! intent.hasExtra(MediaStore.EXTRA_OUTPUT) )
 					break;
 				uri = (Uri) intent.getParcelableExtra(MediaStore.EXTRA_OUTPUT);
-//	        	a.setFilename(uri.toString());
-//	        	a.save(mContext);
+				if ( a == null ) {
+			    	a = new Artefact(uri.toString());
+				}
+	        	a.setFilename(uri.toString());
+	        	setDefaultTitle(a.getBaseFilename(mContext));
+	        	a.save(mContext);
 	        	uris = new String[] { uri.toString() };
-	        	setDefaultTitle(uris[0]);
 	        	break;
 			case GlobalResources.REQ_GALLERY_RETURN:
 				uri = intent.getData();
-//	        	a.setFilename(uri.toString());
-//	        	a.save(mContext);
+				if ( a == null ) {
+			    	a = new Artefact(uri.toString());
+				}
+	        	a.setFilename(uri.toString());
+	        	a.save(mContext);
+	        	setDefaultTitle(a.getBaseFilename(mContext));
 	        	uris = new String[] { uri.toString() };
-	        	setDefaultTitle(uris[0]);
 				break;
     		}
         }
@@ -461,7 +520,7 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 	        View view, int pos, long id) {
 
 	    	String new_tag = parent.getItemAtPosition(pos).toString();
-	    	if ( new_tag.length() == 0 ) {
+	    	if ( pos <= 0 || new_tag.trim().length() <= 0 ) {
 	    		return; // support an empty first element, also don't support empty tags
 	    	}
 	    	
@@ -499,12 +558,24 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
     		LinearLayout l;
     		l = (LinearLayout) findViewById(R.id.ArtefactJournalExtrasLayout);
     		l.setVisibility( pos > 0 ? LinearLayout.VISIBLE : LinearLayout.GONE );
-		}
+    		
+    		TextView tv;
+    		tv = (TextView) findViewById(R.id.txtArtefactDescriptionLabel);
+    		if ( pos > 0 ) {
+    			tv.setText(getResources().getString(R.string.upload_journal_description_label));
+    		} else {
+    			tv.setText(getResources().getString(R.string.upload_file_description_label));    			
+    		}
+	    }
 
 	    public void onNothingSelected(AdapterView<?> parent) {
     		LinearLayout l;
     		l = (LinearLayout) findViewById(R.id.ArtefactJournalExtrasLayout);
     		l.setVisibility( LinearLayout.GONE );
+
+    		TextView tv;
+    		tv = (TextView) findViewById(R.id.txtArtefactDescriptionLabel);
+			tv.setText(getResources().getString(R.string.upload_file_description_label));    			
 	    }
 	}
 }

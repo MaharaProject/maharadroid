@@ -139,7 +139,7 @@ catch (ParameterException $e) { }
 
 // Set tags
 try {
-    $tags = explode(" ", param_variable('tags'));
+    $tags = explode(",", param_variable('tags'));
 }
 catch (ParameterException $e) { }
 
@@ -148,12 +148,13 @@ $artefact_id = '';  // our resulting artefact id on creation
 
 if ( $_FILES ) {
 
+    $file_title = $title;
     if ( $blog || ! $title ) {  // set the filename to be the title of the artefact
-        $title = basename($_FILES['userfile']['name']);
+        $file_title = basename($_FILES['userfile']['name']);
     }
 
     try {
-        $data->title = ArtefactTypeFileBase::get_new_file_title($title, $data->parent, $data->owner);
+        $data->title = ArtefactTypeFileBase::get_new_file_title($file_title, $data->parent, $data->owner);
         if ( ! $blog ) { // only set a description if it's an artefact upload
           $data->description = $description;
         }

@@ -104,6 +104,7 @@
     <string name="savefailed">Save failed</string>
     <string name="uploadsaved">Upload saved</string>
     <string name="uploadnotavailable">Sorry you can only uploaded files.</string>
+    <string name="capturefailed">Sorry there was a problem capturing that image.</string>
     <string name="uploadingartifact">Uploading ...</string>
     <string name="uploading">Uploading</string>
     <string name="uploadnoconnection">Sorry you don\'t have a working data connection to upload at this time.</string>
@@ -111,19 +112,21 @@
     <string name="filetransfers">File Transfers</string>
     
     <string name="upload_journal_label">Journal:</string>
-    <string name="upload_journal_prompt">Select Journal to post to</string>
+    <string name="upload_journal_prompt">Upload as file or choose Journal</string>
+    <string name="upload_journal_default">Upload as file</string>
     <string name="upload_is_draft_label"></string>
-    <string name="upload_is_draft_text">Check this to if your entry is a draft. As a draft no one except you can see it.</string>
+    <string name="upload_is_draft_text">Check this if your entry is a draft. As a draft no one except you can see it.</string>
     <string name="upload_allow_comments_label"></string>
     <string name="upload_allow_comments_text">Check this to allow comments on your entry.</string>
-    <string name="upload_tags_prompt">Add tag</string>
+    <string name="upload_tags_prompt">Add existing tag</string>
     <string name="upload_confirm_label"></string>
     <string name="upload_confirm_text">Yes, the file I am attempting to upload is my own or I have express 
 								permission to reproduce and/or distribute this item. My use of this file 
 								does not breach any local Copyright legislation. This file also adheres to 
 								the Terms and Conditions outlined on this site.</string>
     <string name="upload_title_label">Title:</string>
-    <string name="upload_description_label">Entry:</string>
+    <string name="upload_file_description_label">Desc:</string>
+    <string name="upload_journal_description_label">Entry:</string>
     <string name="upload_tags_label">Tag(s):</string>
     <string name="upload_time_label">Last:</string>
     <string name="upload_files_label">Files:</string>

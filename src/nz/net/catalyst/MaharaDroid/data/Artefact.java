@@ -66,8 +66,12 @@ public class Artefact extends Object implements Parcelable {
 	public String getFilename() {
 		return filename;
 	}
-	public String getBaseFilename() {
-		return ( filename == null ) ? null : filename.substring(filename.lastIndexOf("/") + 1);
+	public String getBaseFilename(Context context) {
+		// Returns the base of the actual file name - not the content store file 
+		// (which would just be it's content:// ... /ID)
+		String filepath = this.getFilePath(context);
+		
+		return ( filepath == null ) ? null : filepath.substring(filepath.lastIndexOf("/") + 1);
 	}
 	public String getTitle() {
 		return title;
@@ -222,6 +226,10 @@ public class Artefact extends Object implements Parcelable {
 		journal_id = j;
 		is_draft = dr;
 		allow_comments = a;
+		time = System.currentTimeMillis();
+	}
+	public Artefact(String f) {
+		filename = f;
 		time = System.currentTimeMillis();
 	}
 	

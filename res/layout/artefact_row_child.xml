@@ -41,7 +41,8 @@
 				  android:layout_marginTop="10dp"
 				  android:orientation="horizontal">
 
-					<TextView android:text="@string/upload_description_label"
+					<TextView android:id="@+id/txtArtefactDescriptionLabel"
+					    	  android:text="@string/upload_description_label"
 							  android:layout_width="60dp"
 							  android:singleLine="false"
 							  android:layout_height="wrap_content"

@@ -252,9 +252,13 @@ public class Utils {
 		ContentValues values = new ContentValues();
 		values.put(MediaStore.Images.Media.TITLE, fileName);
 		values.put(MediaStore.Images.Media.DESCRIPTION,"Image capture by camera for MaharaDroid");
+		
 		//imageUri is the current activity attribute, define and save it for later usage (also in onSaveInstanceState)
 		Uri imageUri = mContext.getContentResolver().insert(
 				MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+		if ( VERBOSE ) Log.v(TAG, "imageUri is '" + imageUri.toString() + "'");
+
 		//create new Intent
 		Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 		i.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);

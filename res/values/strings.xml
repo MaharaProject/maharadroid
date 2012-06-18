@@ -18,17 +18,10 @@
     <string name="context_menu_upload">Upload</string>
     <string name="context_menu_view">View</string>
     <string name="context_menu_delete">Delete</string>
-    
-    <string name="pref_upload_url_key">upload.uri</string>
-    <string name="pref_upload_url_title">Upload URI</string>
-    <string name="pref_upload_url_summary">Enter the URL to post files to Mahara</string>
-    <string name="pref_upload_url_default">http://solent-mahara.catalystdemo.co.uk/api/mobile/upload.php</string>
 
-    <string name="pref_sync_url_key">sync.uri</string>
-    <string name="pref_sync_url_title">Sync URI</string>
-    <string name="pref_sync_url_summary">Enter the sync URL to Mahara</string>
-    <string name="pref_sync_url_default">http://solent-mahara.catalystdemo.co.uk/api/mobile/sync.php</string>
-        
+    <!--  Authentication Details -->
+    <string name="prefcat_authentication">Mahara Authentication Details</string>
+
     <string name="pref_auth_username_key">auth.username</string>
     <string name="pref_auth_username_title">Username</string>
     <string name="pref_auth_username_summary">Enter your Mahara username</string>     
@@ -36,6 +29,24 @@
     <string name="pref_auth_token_key">auth.token</string>
     <string name="pref_auth_token_title">Token</string>
     <string name="pref_auth_token_summary">Enter your Mahara mobile token</string>     
+
+    <!--  Connection Details -->
+    <string name="prefcat_connection">Mahara Connection Details</string>
+
+    <string name="pref_base_url_key">upload.base_uri</string>
+    <string name="pref_base_url_title">Mahara Base URI</string>
+    <string name="pref_base_url_summary">Enter the Mahara base URL for file posts &amp; syncronisation</string>
+    <string name="pref_base_url_default">http://solent-mahara.catalystdemo.co.uk</string>
+    
+    <string name="pref_upload_url_key">upload.uri</string>
+    <string name="pref_upload_url_title">Upload URI</string>
+    <string name="pref_upload_url_summary">Enter the URL to post files to Mahara</string>
+    <string name="pref_upload_url_default">/api/mobile/upload.php</string>
+
+    <string name="pref_sync_url_key">sync.uri</string>
+    <string name="pref_sync_url_title">Sync URI</string>
+    <string name="pref_sync_url_summary">Enter the sync URL to Mahara</string>
+    <string name="pref_sync_url_default">/api/mobile/sync.php</string>
 
     <string name="pref_upload_connection_key">upload.connection</string>
     <string name="pref_upload_connection_title">Connection Type</string>
@@ -50,9 +61,12 @@
         <item>wifi</item>
         <item>mobile</item>
     </string-array>
-    
-    <string name="prefcat_advanced">Advanced</string>
 
+    <!--  Defaults -->
+    <string name="prefcat_defaults">Application Defaults</string>
+    
+    <string name="prefcat_defaults_post">Default Post Settings</string>
+    
     <string name="pref_upload_journal_default_key">upload.journal.default</string>
     <string name="pref_upload_journal_default_title">Journal post by default</string>
     <string name="pref_upload_journal_default_summary">Check to select a default journal to post to</string>
@@ -76,7 +90,16 @@
     <string name="pref_upload_tags_title">Tags</string>
     <string name="pref_upload_tags_summary">Select the default tag to add to all uploaded files/journals.
         									Note: nothing will be shown until your first sync.</string>
-        
+
+    <string name="prefcat_defaults_notification">Default Notification Settings</string>
+
+    <!--  Notification defaults -->
+    <string name="pref_sync_notification_key">sync.notification</string>
+    <string name="pref_sync_notification_title">Enable Sync Notifications</string>
+    <string name="pref_sync_notification_summary">Raise notifications if new messages are found during syncronisation.</string>
+
+    <string name="prefcat_advanced">Advanced Settings</string>
+    
     <string name="pref_sync_periodic_key">sync.periodic</string>
     <string name="pref_sync_periodic_title">Periodic Sync</string>
     <string name="pref_sync_periodic_summary">Enter the time in minutes to force a perioidc sync (0 or blank for none)</string>
@@ -105,7 +128,7 @@
     <string name="uploadsaved">Upload saved</string>
     <string name="uploadnotavailable">Sorry you can only uploaded files.</string>
     <string name="capturefailed">Sorry there was a problem capturing that image.</string>
-    <string name="uploadingartifact">Uploading ...</string>
+    <string name="uploadingartifact">Uploading #8230;</string>
     <string name="uploading">Uploading</string>
     <string name="uploadnoconnection">Sorry you don\'t have a working data connection to upload at this time.</string>
     <string name="uploadincomplete">Sorry you must enter a title and an entry for journal posts</string>
@@ -136,7 +159,7 @@
     <string name="load_config_success">Successfully loaded the configuration file.</string>
     <string name="scan_not_available">Sorry you need to install ZXing Barcode Scanner for this.</string>
 		
-    <string name="login_authenticating">Authenticating...</string>
+    <string name="login_authenticating">Authenticating #8230;</string>
     <string name="only_one_account">Currently you may only have at most one account at any one time.</string>
 
     <string name="auth_result_no_connection">Server address or port number incorrect</string>

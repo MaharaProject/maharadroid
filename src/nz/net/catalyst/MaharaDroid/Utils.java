@@ -21,6 +21,8 @@
 
 package nz.net.catalyst.MaharaDroid;
 
+import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,6 +31,7 @@ import nz.net.catalyst.MaharaDroid.R;
 import nz.net.catalyst.MaharaDroid.ui.ArtefactExpandableListAdapterActivity;
 import nz.net.catalyst.MaharaDroid.ui.about.AboutActivity;
 import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -37,6 +40,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.PeriodicSync;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -58,9 +62,29 @@ public class Utils {
 	// whether VERBOSE level logging is enabled
 	static final boolean VERBOSE = LogConfig.VERBOSE;
 	
-	public static boolean canUpload(Context mContext) {
+	public static void runSyncNow(Context context) {
+		AccountManager mAccountManager = AccountManager.get(context);
+		Account account;
 		
-		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+		// TODO replicated from AuthenticatorActivity
+		Account[] mAccounts = mAccountManager.getAccountsByType(GlobalResources.ACCOUNT_TYPE);
+        
+        if ( mAccounts.length > 0 ) {
+        	// Just pick the first one .. support multiple accounts can come later.
+        	account = mAccounts[0];
+        } else {
+        	return;
+        }
+
+        Bundle bundle = new Bundle();
+//    	bundle.putBoolean(GlobalResources.EXTRAS_SYNC_IS_PERIODIC, true);
+    	
+		ContentResolver.requestSync(account, GlobalResources.ACCOUNT_TYPE, bundle);
+	}
+	
+	public static boolean canUpload(Context context) {
+		
+		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         boolean allowWiFi = false, allowMobile = false;
         
         // Haven't confirmed upload conditions.
@@ -69,7 +93,7 @@ public class Utils {
         	return false;
         }
 
-        String mSetting = mPrefs.getString(mContext.getResources().getString(R.string.pref_upload_connection_key), "");
+        String mSetting = mPrefs.getString(context.getResources().getString(R.string.pref_upload_connection_key), "");
         
         // Check for no setting - default to phone
         if ( mSetting.length() == 0 ) { 
@@ -80,7 +104,7 @@ public class Utils {
         if ( mSetting.contains("mobile"))
         	allowMobile = true;
         
-		ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+		ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo info = cm.getActiveNetworkInfo();
 
 		if ( info != null ) { 
@@ -100,8 +124,59 @@ public class Utils {
 		
         return false;
 	}
-    
-    public static String updateTokenFromResult(JSONObject json, Context mContext) {
+	public static String getUploadURLPref(Context context) {
+		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+		String upload_url = mPrefs.getString(context.getResources().getString(R.string.pref_upload_url_key), 
+											 context.getResources().getString(R.string.pref_upload_url_default)).trim();
+		
+		// If the part overrides the whole - just go with the part.
+		if ( upload_url.startsWith("http://") ) {
+			if ( DEBUG ) Log.d(TAG, "setting upload url to '" + upload_url + "'");
+			return upload_url;
+		}
+
+		String base_url = mPrefs.getString(context.getResources().getString(R.string.pref_base_url_key), 
+										   context.getResources().getString(R.string.pref_base_url_default)).trim().toLowerCase();
+		if ( ! base_url.startsWith("http") )
+			base_url = "http://" + base_url;
+		
+		if ( ! base_url.endsWith("/") && ! upload_url.startsWith("/") ) 
+			base_url = base_url + "/";
+		// multiple joining '//' are fine
+		upload_url = base_url + upload_url;		
+		
+		if ( DEBUG ) Log.d(TAG, "setting upload url to '" + upload_url + "'");
+		return upload_url;
+	}
+
+	public static String getSyncURLPref(Context context) {
+		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+		String sync_url = mPrefs.getString(context.getResources().getString(R.string.pref_sync_url_key), 
+										   context.getResources().getString(R.string.pref_sync_url_default)).trim();
+		
+		// If the part overrides the whole - just go with the part.
+		if ( sync_url.startsWith("http://") ) {
+			if ( DEBUG ) Log.d(TAG, "setting sync url to '" + sync_url + "'");
+			return sync_url;
+		}
+
+		String base_url = mPrefs.getString(context.getResources().getString(R.string.pref_base_url_key), 
+										   context.getResources().getString(R.string.pref_base_url_default)).trim().toLowerCase();
+		if ( ! base_url.startsWith("http") )
+			base_url = "http://" + base_url;
+		
+		if ( ! base_url.endsWith("/") && ! sync_url.startsWith("/") ) 
+			base_url = base_url + "/";
+		// multiple joining '//' are fine
+		sync_url = base_url + sync_url;		
+		
+		if ( DEBUG ) Log.d(TAG, "setting sync url to '" + sync_url + "'");
+		return sync_url;
+	}
+
+    public static String updateTokenFromResult(JSONObject json, Context context) {
     	String newToken = null;
         if (json == null || json.has("fail")) {
         	String err_str = null;
@@ -116,9 +191,9 @@ public class Utils {
         	try {
         		newToken = json.getString("success");
 
-        		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
     			mPrefs.edit()
-        			.putString(mContext.getResources().getString(R.string.pref_auth_token_key), newToken)
+        			.putString(context.getResources().getString(R.string.pref_auth_token_key), newToken)
         			.commit()
         		;
         		
@@ -137,8 +212,8 @@ public class Utils {
     /**
      * Show a notification while this service is running.
      */
-    public static void showNotification(int id, CharSequence title, CharSequence description, Intent intent, Context mContext) {
-    	NotificationManager mNM = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+    public static void showNotification(int id, CharSequence title, CharSequence description, Intent intent, Context context) {
+    	NotificationManager mNM = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
     	
         // Set the icon, scrolling text and timestamp
         Notification notification = new Notification(R.drawable.icon_notify, title,
@@ -147,28 +222,28 @@ public class Utils {
         PendingIntent contentIntent = null;
         // The PendingIntent to launch our activity if the user selects this notification
         if ( intent == null ) {
-        	contentIntent = PendingIntent.getActivity(mContext, 0, new Intent(mContext, ArtefactExpandableListAdapterActivity.class), 0);
+        	contentIntent = PendingIntent.getActivity(context, 0, new Intent(context, ArtefactExpandableListAdapterActivity.class), 0);
         } else {
-        	contentIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
+        	contentIntent = PendingIntent.getActivity(context, 0, intent, 0);
         }
         if ( description == null ) {
         	description = title;
         }
         
         // Set the info for the views that show in the notification panel.
-        notification.setLatestEventInfo(mContext, title, description, contentIntent);
+        notification.setLatestEventInfo(context, title, description, contentIntent);
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
         // Send the notification.
         mNM.notify(id, notification);
     }
 
-	public static void cancelNotification(int id, Context mContext) {
-    	NotificationManager mNM = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+	public static void cancelNotification(int id, Context context) {
+    	NotificationManager mNM = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
     	mNM.cancel(id);
     }
-	public static long processSyncResults(JSONObject result, ContentProviderClient myProvider, Context mContext) {
+	public static long processSyncResults(JSONObject result, ContentProviderClient myProvider, Context context) {
 		// TODO Auto-generated method stub
 		long numUpdates = 0;
 		try {
@@ -179,7 +254,7 @@ public class Utils {
     			for (int i=0; i<notArr.length(); i++) {
         	        Utils.showNotification(Integer.parseInt(notArr.getJSONObject(i).getString("id")), 
         	        		notArr.getJSONObject(i).getString("subject"), notArr.getJSONObject(i).getString("message"), 
-        	        		null, mContext);
+        	        		null, context);
         			numUpdates++;
     			}
         	} 
@@ -204,7 +279,7 @@ public class Utils {
 		}
 
 		// Save last sync time
-		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
 
 		mPrefs.edit()
 			.putLong("lastsync", System.currentTimeMillis()/1000)
@@ -245,7 +320,7 @@ public class Utils {
 
 		return items;
 	}
-	public static Intent makeCameraIntent(Context mContext) {
+	public static Intent makeCameraIntent(Context context) {
 		
 		//define the file-name to save photo taken by Camera activity
 		String fileName = GlobalResources.TEMP_PHOTO_FILENAME;
@@ -258,7 +333,7 @@ public class Utils {
 		values.put(MediaStore.Images.Media.DESCRIPTION,"Image capture by camera for MaharaDroid");
 		
 		//imageUri is the current activity attribute, define and save it for later usage (also in onSaveInstanceState)
-		Uri imageUri = mContext.getContentResolver().insert(
+		Uri imageUri = context.getContentResolver().insert(
 				MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
 		if ( VERBOSE ) Log.v(TAG, "imageUri is '" + imageUri.toString() + "'");
@@ -270,10 +345,10 @@ public class Utils {
 		return i;
 	}
 	
-	public static void setPeriodicSync(Account account, Context mContext) {
-		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+	public static void setPeriodicSync(Account account, Context context) {
+		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
 
-		Long periodic_sync = Long.valueOf(mPrefs.getString(mContext.getResources().getString(R.string.pref_sync_periodic_key), "0"));
+		Long periodic_sync = Long.valueOf(mPrefs.getString(context.getResources().getString(R.string.pref_sync_periodic_key), "0"));
 		if ( periodic_sync == null || periodic_sync <= 0 ) {
 			return;
 		}
@@ -285,18 +360,18 @@ public class Utils {
 	}
 	
 
-	public static String[][] getJournals(String nullitem, Context mContext) {
-		return getValues("blog", nullitem, mContext);
+	public static String[][] getJournals(String nullitem, Context context) {
+		return getValues("blog", nullitem, context);
 	}
 	
-	public static String[][] getTags(String nullitem, Context mContext) {
-		return getValues("tag", nullitem, mContext);
+	public static String[][] getTags(String nullitem, Context context) {
+		return getValues("tag", nullitem, context);
 	}
 			
-	private static String[][] getValues(String type, String nullitem, Context mContext) {
+	private static String[][] getValues(String type, String nullitem, Context context) {
 		Uri uri = Uri.parse("content://" + GlobalResources.CONTENT_URL + "/" + type);
 		
-		ContentProviderClient myProvider = mContext.getContentResolver().acquireContentProviderClient(uri);
+		ContentProviderClient myProvider = context.getContentResolver().acquireContentProviderClient(uri);
 		Cursor cursor = null;
 		try {
 			cursor = myProvider.query(uri, new String[] { "ID", "VALUE" }, null, null, null);

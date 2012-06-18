@@ -40,6 +40,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 public class TransferService extends IntentService {
 	
@@ -48,8 +49,6 @@ public class TransferService extends IntentService {
 	static final boolean VERBOSE = LogConfig.VERBOSE;
 	
 	private Context mContext;
-	
-	private int activeUploads = 0;
 	
 	public TransferService() {
 		super("Transfer Service");
@@ -77,13 +76,13 @@ public class TransferService extends IntentService {
 		publishProgress("start", id, a.getTitle());
 		
 		JSONObject result = RestClient.UploadArtifact(
-				getUploadURLPref(), 
+				Utils.getUploadURLPref(mContext), 
 				getUploadAuthTokenPref(),
 				getUploadUsernamePref(),
 				a.getJournalId(),
 				a.getIsDraft(), a.getAllowComments(),
 				getUploadFolderPref(),
-				getUploadTagsPref(a.getTags()),
+				a.getTags(),
 				a.getFilePath(mContext),
 				a.getTitle(),
 				a.getDescription(),
@@ -112,26 +111,15 @@ public class TransferService extends IntentService {
 		// is being uploaded.
 		
 		if (status.equals("start")) {
-			activeUploads++;
-			showUploadNotification(GlobalResources.UPLOADING_ID, activeUploads + " uploading ... ", null);
+			showUploadNotification(GlobalResources.UPLOADING_ID, "Uploading '" + title + "'", null);
 		}
-		if (status.equals("finish")) {
-			activeUploads--;
-			if ( activeUploads <= 0 ) {
-				cancelNotification(GlobalResources.UPLOADING_ID);
-			} else {
-				showUploadNotification(GlobalResources.UPLOADING_ID, activeUploads + " uploading ... ", null);
-			}
-			Utils.showNotification(GlobalResources.UPLOADER_ID, title + " uploaded successfully", null, null, getApplicationContext());
+		else if (status.equals("finish")) {
+			cancelNotification(GlobalResources.UPLOADING_ID);
+			Utils.showNotification(GlobalResources.UPLOADER_ID+id, "Successfully uploaded '" + title + "'", null, null, getApplicationContext());
 		}
 		else if (status == "fail") {
-			activeUploads--;
-			if ( activeUploads <= 0 ) {
-				cancelNotification(GlobalResources.UPLOADING_ID);
-			} else {
-				showUploadNotification(GlobalResources.UPLOADING_ID, activeUploads + " uploading ... ", null);
-			}
-			Utils.showNotification(GlobalResources.UPLOADER_ID+id, title + " failed to upload", null, null, getApplicationContext());
+			cancelNotification(GlobalResources.UPLOADING_ID);
+			Utils.showNotification(GlobalResources.UPLOADER_ID+id, "Failed to upload '" + title + "'", null, null, getApplicationContext());
 		}
 	}
 	
@@ -165,11 +153,7 @@ public class TransferService extends IntentService {
 		mNM.cancel(id);
 	}
 
-	private String getUploadURLPref() {
-		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 
-		return mPrefs.getString(mContext.getResources().getString(R.string.pref_upload_url_key), "");
-	}
 	private String getUploadFolderPref() {
 		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 
@@ -188,11 +172,4 @@ public class TransferService extends IntentService {
 
 		return mPrefs.getString(mContext.getResources().getString(R.string.pref_auth_username_key), "");
 	}
-	private String getUploadTagsPref(String pref_tags) {
-		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-
-		String tags = ( pref_tags != null ) ? pref_tags.trim() : "" ;	
-		return (mPrefs.getString(mContext.getResources().getString(R.string.pref_upload_tags_key), "") + " " + tags).trim();
-	}
-
 }

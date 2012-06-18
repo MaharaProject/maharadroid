@@ -3,83 +3,172 @@
 <PreferenceScreen
 	xmlns:android="http://schemas.android.com/apk/res/android">
 
-	<EditTextPreference
-		android:key="@string/pref_upload_url_key"
-		android:title="@string/pref_upload_url_title"
-		android:summary="@string/pref_upload_url_summary"
-		android:defaultValue="@string/pref_upload_url_default" />	
-	<EditTextPreference
-		android:key="@string/pref_sync_url_key"
-		android:title="@string/pref_sync_url_title"
-		android:summary="@string/pref_sync_url_summary"
-		android:defaultValue="@string/pref_sync_url_default" />	
-	<EditTextPreference
-		android:key="@string/pref_auth_username_key"
-		android:title="@string/pref_auth_username_title"
-		android:summary="@string/pref_auth_username_summary"	/>	
-	<EditTextPreference
-		android:key="@string/pref_auth_token_key"
-		android:title="@string/pref_auth_token_title"
-		android:summary="@string/pref_auth_token_summary"	/>	
-		
-    <ListPreference
-        android:key="@string/pref_upload_connection_key"
-        android:title="@string/pref_upload_connection_title"
-        android:summary="@string/pref_upload_connection_summary"
-        android:defaultValue=""
-        android:entries="@array/pref_upload_connection_entry"
-        android:entryValues="@array/pref_upload_connection_entryValues"
-        android:dialogTitle="@string/pref_upload_connection_title" />
-	
+  	<PreferenceCategory
+		android:title="@string/prefcat_authentication">
+   		<EditTextPreference
+			android:key="@string/pref_auth_username_key"
+			android:title="@string/pref_auth_username_title"
+			android:summary="@string/pref_auth_username_summary"	/>	
+		<EditTextPreference
+			android:key="@string/pref_auth_token_key"
+			android:title="@string/pref_auth_token_title"
+			android:summary="@string/pref_auth_token_summary"	/>	
+	</PreferenceCategory>			
+    
+   	<PreferenceCategory
+		android:title="@string/prefcat_connection">
+
+	 	<EditTextPreference
+			android:key="@string/pref_base_url_key"
+			android:title="@string/pref_base_url_title"
+			android:summary="@string/pref_base_url_summary"
+			android:defaultValue="@string/pref_base_url_default" />	
+		<EditTextPreference
+			android:key="@string/pref_upload_url_key"
+			android:title="@string/pref_upload_url_title"
+			android:summary="@string/pref_upload_url_summary"
+			android:defaultValue="@string/pref_upload_url_default" />	
+		<EditTextPreference
+			android:key="@string/pref_sync_url_key"
+			android:title="@string/pref_sync_url_title"
+			android:summary="@string/pref_sync_url_summary"
+			android:defaultValue="@string/pref_sync_url_default" />	
+	    <ListPreference
+	        android:key="@string/pref_upload_connection_key"
+	        android:title="@string/pref_upload_connection_title"
+	        android:summary="@string/pref_upload_connection_summary"
+	        android:defaultValue=""
+	        android:entries="@array/pref_upload_connection_entry"
+	        android:entryValues="@array/pref_upload_connection_entryValues"
+	        android:dialogTitle="@string/pref_upload_connection_title" />
+	</PreferenceCategory>
+   	<PreferenceCategory
+		android:title="@string/prefcat_defaults">
+   		<PreferenceScreen android:title="@string/prefcat_defaults_post" xmlns:android="http://schemas.android.com/apk/res/android">
+		   	<CheckBoxPreference
+				android:key="@string/pref_upload_journal_default_key"
+				android:enabled="true"
+				android:defaultValue="false"
+				android:summary="@string/pref_upload_journal_default_summary"
+				android:title="@string/pref_upload_journal_default_title" />
+			<ListPreference
+				android:dependency="@string/pref_upload_journal_default_key"
+				android:key="@string/pref_upload_journal_key"
+				android:title="@string/pref_upload_journal_title"
+				android:summary="@string/pref_upload_journal_summary"
+		        android:dialogTitle="@string/pref_upload_journal_title" />
+		   	
+		   	<CheckBoxPreference
+				android:key="@string/pref_upload_folder_default_key"
+				android:enabled="true"
+				android:defaultValue="false"
+				android:summary="@string/pref_upload_folder_default_summary"
+				android:title="@string/pref_upload_folder_default_title" />
+			<ListPreference
+				android:dependency="@string/pref_upload_folder_default_key"
+				android:key="@string/pref_upload_folder_key"
+				android:title="@string/pref_upload_folder_title"
+				android:summary="@string/pref_upload_folder_summary"
+		        android:dialogTitle="@string/pref_upload_folder_title" />
+					
+		   	<CheckBoxPreference
+				android:key="@string/pref_upload_tags_default_key"
+				android:enabled="true"
+				android:defaultValue="false"
+				android:summary="@string/pref_upload_tags_default_summary"
+				android:title="@string/pref_upload_tags_default_title" />
+			<ListPreference
+				android:dependency="@string/pref_upload_tags_default_key"
+				android:key="@string/pref_upload_tags_key"
+				android:title="@string/pref_upload_tags_title"
+				android:summary="@string/pref_upload_tags_summary"
+		        android:dialogTitle="@string/pref_upload_tags_title" />
+		</PreferenceScreen>	
+		<PreferenceScreen android:title="@string/prefcat_defaults_notification" xmlns:android="http://schemas.android.com/apk/res/android">
+		    <!-- 
+   		   	<CheckBoxPreference
+				android:key="@string/pref_sync_notification_feedback_key"
+				android:enabled="true"
+				android:defaultValue="true"
+				android:summary="@string/pref_sync_notification_feedback_summary"
+				android:title="@string/pref_sync_notification_feedback_title" />
+   		   	<CheckBoxPreference
+				android:key="@string/pref_sync_notification_newpost_key"
+				android:enabled="true"
+				android:defaultValue="true"
+				android:summary="@string/pref_sync_notification_newpost_summary"
+				android:title="@string/pref_sync_notification_newpost_title" />		   	
+   		   	<CheckBoxPreference
+				android:key="@string/pref_sync_notification_maharamessage_key"
+				android:enabled="true"
+				android:defaultValue="true"
+				android:summary="@string/pref_sync_notification_maharamessage_summary"
+				android:title="@string/pref_sync_notification_maharamessage_title" />
+   		   	<CheckBoxPreference
+				android:key="@string/pref_sync_notification_usermessage_key"
+				android:enabled="true"
+				android:defaultValue="true"
+				android:summary="@string/pref_sync_notification_usermessage_summary"
+				android:title="@string/pref_sync_notification_usermessage_title" />
+   		   	<CheckBoxPreference
+				android:key="@string/pref_sync_notification_groupmessage_key"
+				android:enabled="true"
+				android:defaultValue="true"
+				android:summary="@string/pref_sync_notification_groupmessage_summary"
+				android:title="@string/pref_sync_notification_groupmessage_title" />
+		   	<CheckBoxPreference
+				android:key="@string/pref_sync_notification_watchlist_key"
+				android:enabled="true"
+				android:defaultValue="true"
+				android:summary="@string/pref_sync_notification_watchlist_summary"
+				android:title="@string/pref_sync_notification_watchlist_title" />
+   		   	<CheckBoxPreference
+				android:key="@string/pref_sync_notification_viewaccess_key"
+				android:enabled="true"
+				android:defaultValue="true"
+				android:summary="@string/pref_sync_notification_viewaccess_summary"
+				android:title="@string/pref_sync_notification_viewaccess_title" />
+   		   	<CheckBoxPreference
+				android:key="@string/pref_sync_notification_contactus_key"
+				android:enabled="true"
+				android:defaultValue="true"
+				android:summary="@string/pref_sync_notification_contactus_summary"
+				android:title="@string/pref_sync_notification_contactus_title" />
+   		   	<CheckBoxPreference
+				android:key="@string/pref_sync_notification_objectionable_key"
+				android:enabled="true"
+				android:defaultValue="true"
+				android:summary="@string/pref_sync_notification_objectionable_summary"
+				android:title="@string/pref_sync_notification_objectionable_title" />
+   		   	<CheckBoxPreference
+				android:key="@string/pref_sync_notification_virusrepeat_key"
+				android:enabled="true"
+				android:defaultValue="true"
+				android:summary="@string/pref_sync_notification_virusrepeat_summary"
+				android:title="@string/pref_sync_notification_virusrepeat_title" />
+   		   	<CheckBoxPreference
+				android:key="@string/pref_sync_notification_virusrelease_key"
+				android:enabled="true"
+				android:defaultValue="true"
+				android:summary="@string/pref_sync_notification_virusrelease_summary"
+				android:title="@string/pref_sync_notification_virusrelease_title" />
+   		   	<CheckBoxPreference
+				android:key="@string/pref_sync_notification_institutionmessage_key"
+				android:enabled="true"
+				android:defaultValue="true"
+				android:summary="@string/pref_sync_notification_institutionmessage_summary"
+				android:title="@string/pref_sync_notification_institutionmessage_title" />
+				 -->
+		</PreferenceScreen>	
+	</PreferenceCategory>
 	<PreferenceCategory
 		android:title="@string/prefcat_advanced">
-
-   	<CheckBoxPreference
-		android:key="@string/pref_upload_journal_default_key"
-		android:enabled="true"
-		android:defaultValue="false"
-		android:summary="@string/pref_upload_journal_default_summary"
-		android:title="@string/pref_upload_journal_default_title" />
-	<ListPreference
-		android:dependency="@string/pref_upload_journal_default_key"
-		android:key="@string/pref_upload_journal_key"
-		android:title="@string/pref_upload_journal_title"
-		android:summary="@string/pref_upload_journal_summary"
-        android:dialogTitle="@string/pref_upload_journal_title" />
-   	
-   	<CheckBoxPreference
-		android:key="@string/pref_upload_folder_default_key"
-		android:enabled="true"
-		android:defaultValue="false"
-		android:summary="@string/pref_upload_folder_default_summary"
-		android:title="@string/pref_upload_folder_default_title" />
-	<ListPreference
-		android:dependency="@string/pref_upload_folder_default_key"
-		android:key="@string/pref_upload_folder_key"
-		android:title="@string/pref_upload_folder_title"
-		android:summary="@string/pref_upload_folder_summary"
-        android:dialogTitle="@string/pref_upload_folder_title" />
-			
-   	<CheckBoxPreference
-		android:key="@string/pref_upload_tags_default_key"
-		android:enabled="true"
-		android:defaultValue="false"
-		android:summary="@string/pref_upload_tags_default_summary"
-		android:title="@string/pref_upload_tags_default_title" />
-	<ListPreference
-		android:dependency="@string/pref_upload_tags_default_key"
-		android:key="@string/pref_upload_tags_key"
-		android:title="@string/pref_upload_tags_title"
-		android:summary="@string/pref_upload_tags_summary"
-        android:dialogTitle="@string/pref_upload_tags_title" />	
-
-	<EditTextPreference
-		android:key="@string/pref_sync_periodic_key"
-		android:title="@string/pref_sync_periodic_title"
-		android:summary="@string/pref_sync_periodic_summary"
-		android:defaultValue="0"
+		<EditTextPreference
+			android:key="@string/pref_sync_periodic_key"
+			android:title="@string/pref_sync_periodic_title"
+			android:summary="@string/pref_sync_periodic_summary"
+			android:defaultValue="0"
+			android:numeric="integer"
 		/>	
-	
-	</PreferenceCategory>
-			
+	</PreferenceCategory>	
 </PreferenceScreen>

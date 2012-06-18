@@ -219,6 +219,8 @@ public class EditPreferences extends PreferenceActivity implements OnSharedPrefe
 			authDetailsChanged = true;
 		} else if ( key == getString(R.string.pref_sync_url_key)) {
 			authDetailsChanged = true;
+		} else if ( key == getString(R.string.pref_base_url_key)) {
+			authDetailsChanged = true;
 		} else if ( key == getString(R.string.pref_sync_periodic_key)) {
 			
 			AccountManager mAccountManager = AccountManager.get(this);
@@ -369,7 +371,7 @@ public class EditPreferences extends PreferenceActivity implements OnSharedPrefe
 
 		public void endElement(String uri, String name, String qName) {
 
-			if (name.trim().equals(curKey) && ( curKey.startsWith("upload.") ) ) {
+			if (name.trim().equals(curKey) && ( curKey.startsWith("upload.") || curKey.startsWith("sync.") ) ) {
 				if (curValue.length() > 0) {
 					if ( DEBUG ) Log.d(TAG, curKey + ": " + curValue);
 					mPrefs.edit()

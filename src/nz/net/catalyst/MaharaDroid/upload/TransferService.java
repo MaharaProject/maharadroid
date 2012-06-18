@@ -157,8 +157,17 @@ public class TransferService extends IntentService {
 	private String getUploadFolderPref() {
 		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 
+		String[][] folderItems = Utils.getFolders(null, mContext);
+		
 		if ( mPrefs.getBoolean(mContext.getResources().getString(R.string.pref_upload_folder_default_key), false) ) {
-			return mPrefs.getString(mContext.getResources().getString(R.string.pref_upload_folder_key), "");
+			
+			String folder_key = mPrefs.getString(mContext.getResources().getString(R.string.pref_upload_folder_key), "");
+			
+			for (int i=0; i<folderItems[0].length; i++) {
+				if ( folder_key.equals(folderItems[0][i]) ) {
+					return folderItems[1][i];
+				}
+			}
 		}
 		return "";
 	}

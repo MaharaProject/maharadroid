@@ -99,6 +99,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
                 // Set contacts sync for this account.
                 ContentResolver.setSyncAutomatically(account, GlobalResources.SYNC_AUTHORITY, true);
                 ContentResolver.setIsSyncable(account, GlobalResources.SYNC_AUTHORITY, 1);
+                
+                //TODO confirm but shouldn't have to force this - setSyncAutomatically should kick one off I believe 
 //                ContentResolver.requestSync(account, GlobalResources.SYNC_AUTHORITY, null);
 
             	Utils.setPeriodicSync(account, getApplicationContext());

@@ -76,10 +76,7 @@ public class Utils {
         	return;
         }
 
-        Bundle bundle = new Bundle();
-//    	bundle.putBoolean(GlobalResources.EXTRAS_SYNC_IS_PERIODIC, true);
-    	
-		ContentResolver.requestSync(account, GlobalResources.ACCOUNT_TYPE, bundle);
+		ContentResolver.requestSync(account, GlobalResources.ACCOUNT_TYPE, null);
 	}
 	
 	public static boolean canUpload(Context context) {
@@ -366,6 +363,10 @@ public class Utils {
 	
 	public static String[][] getTags(String nullitem, Context context) {
 		return getValues("tag", nullitem, context);
+	}
+
+	public static String[][] getFolders(String nullitem, Context context) {
+		return getValues("folder", nullitem, context);
 	}
 			
 	private static String[][] getValues(String type, String nullitem, Context context) {

@@ -59,8 +59,7 @@ public class MaharaAuthHandler {
     	// application preferences
     	SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
     	
-		String authSyncURI = mPrefs.getString(mContext.getResources().getString(R.string.pref_sync_url_key).toString(),
-				mContext.getResources().getString(R.string.pref_sync_url_default).toString());
+		String authSyncURI = Utils.getSyncURLPref(mContext);
 		
     	String token = mPrefs.getString(mContext.getResources().getString(R.string.pref_auth_token_key), "");
     	

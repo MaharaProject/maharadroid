@@ -128,7 +128,7 @@
     <string name="uploadsaved">Upload saved</string>
     <string name="uploadnotavailable">Sorry you can only uploaded files.</string>
     <string name="capturefailed">Sorry there was a problem capturing that image.</string>
-    <string name="uploadingartifact">Uploading #8230;</string>
+    <string name="uploadingartifact">Uploading &#8230;</string>
     <string name="uploading">Uploading</string>
     <string name="uploadnoconnection">Sorry you don\'t have a working data connection to upload at this time.</string>
     <string name="uploadincomplete">Sorry you must enter a title and an entry for journal posts</string>
@@ -159,7 +159,7 @@
     <string name="load_config_success">Successfully loaded the configuration file.</string>
     <string name="scan_not_available">Sorry you need to install ZXing Barcode Scanner for this.</string>
 		
-    <string name="login_authenticating">Authenticating #8230;</string>
+    <string name="login_authenticating">Authenticating &#8230;</string>
     <string name="only_one_account">Currently you may only have at most one account at any one time.</string>
 
     <string name="auth_result_no_connection">Server address or port number incorrect</string>

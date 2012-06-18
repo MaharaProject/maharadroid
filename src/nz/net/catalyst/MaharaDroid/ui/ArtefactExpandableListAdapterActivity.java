@@ -313,8 +313,6 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 			        }
 			        ((CheckBox) convertView.findViewById(R.id.txtArtefactIsDraft)).setChecked(art.getIsDraft());
 			        ((CheckBox) convertView.findViewById(R.id.txtArtefactAllowComments)).setChecked(art.getAllowComments());
-			    	if ( DEBUG ) Log.d(TAG, "getChildView draft: " + art.getIsDraft());
-			    	if ( DEBUG ) Log.d(TAG, "getChildView allow comments: " + art.getAllowComments());
 		        }
         		// TDODO hide layout
 	    		l = (LinearLayout)convertView.findViewById(R.id.ArtefactJournalLayout);

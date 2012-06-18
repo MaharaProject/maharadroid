@@ -52,6 +52,7 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.provider.SyncStateContract.Constants;
 import android.util.Log;
 
 public class Utils {
@@ -347,15 +348,41 @@ public class Utils {
 
 		Long periodic_sync = Long.valueOf(mPrefs.getString(context.getResources().getString(R.string.pref_sync_periodic_key), "0"));
 		if ( periodic_sync == null || periodic_sync <= 0 ) {
+			// Note - should only ever have 1
+			List<PeriodicSync> ps = ContentResolver.getPeriodicSyncs(account, GlobalResources.ACCOUNT_TYPE);
+    		while ( ps != null && ! ps.isEmpty() ) {
+    			if ( periodic_sync == 0 || ps.get(0).period != periodic_sync ) {
+        			ContentResolver.removePeriodicSync(account, GlobalResources.ACCOUNT_TYPE, ps.get(0).extras);
+        			if ( VERBOSE ) Log.v(TAG, "setPeriodicSync removing periodic sync '" + ps.get(0).period + "'");
+    			}
+    			ps.remove(0);
+    		}
 			return;
 		}
+		periodic_sync = periodic_sync * 60; // convert to seconds
+		
+		if ( DEBUG ) Log.v(TAG, "setPeriodicSync of '" + periodic_sync + "' seconds");
 
-    	Bundle bundle = new Bundle();
-    	bundle.putBoolean(GlobalResources.EXTRAS_SYNC_IS_PERIODIC, true);
-        	
-        ContentResolver.addPeriodicSync(account, GlobalResources.SYNC_AUTHORITY, bundle, periodic_sync * 60);
+		final Bundle bundle = new Bundle();
+        bundle.putBoolean( ContentResolver.SYNC_EXTRAS_UPLOAD, true );
+
+        ContentResolver.addPeriodicSync(account, GlobalResources.SYNC_AUTHORITY, bundle, periodic_sync);
 	}
-	
+	public static Account getAccount(Context context) {
+		AccountManager mAccountManager = AccountManager.get(context);
+		Account account = null;
+		
+//    	if ( periodic_sync != null && periodic_sync > 0 ) {
+//    		
+		// TODO replicated from AuthenticatorActivity
+		Account[] mAccounts = mAccountManager.getAccountsByType(GlobalResources.ACCOUNT_TYPE);
+        
+        if ( mAccounts.length > 0 ) {
+        	// Just pick the first one .. support multiple accounts can come later.
+        	account = mAccounts[0];
+        }
+        return account;
+	}
 
 	public static String[][] getJournals(String nullitem, Context context) {
 		return getValues("blog", nullitem, context);

@@ -1,4 +1,7 @@
 <!-- API Version 7 requires the accountType attribute to be hard-coded as a string -->
 <sync-adapter xmlns:android="http://schemas.android.com/apk/res/android"
     android:contentAuthority="nz.net.catalyst.MaharaDroid"
-    android:accountType="nz.net.catalyst.MaharaDroid.account"/>
+    android:accountType="nz.net.catalyst.MaharaDroid.account"
+    android:supportsUploading="true"
+    android:userVisible="true"
+    />

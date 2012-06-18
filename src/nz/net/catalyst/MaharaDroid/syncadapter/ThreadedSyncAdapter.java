@@ -47,25 +47,14 @@ public class ThreadedSyncAdapter extends AbstractThreadedSyncAdapter{
 			ContentProviderClient myProvider, SyncResult syncResult) {
 		if ( VERBOSE ) Log.v(TAG, "onPerformSync: Sync request issued");
 		
-		// One way or another, delay follow-up syncs for another 10 minutes.
-		syncResult.delayUntil = 600;
+//		// TODO not sure we need this (delay follow-up syncs for another 10 minutes.)
+//		syncResult.delayUntil = 600;
 
 		Date now = new Date();
 		if (sLastCompletedSync > 0 && now.getTime() - sLastCompletedSync < 5000) {
 		// If the last sync completed 10 seconds ago, ignore this request anyway.
 			if ( DEBUG ) Log.d(TAG, "Sync was CANCELLED because a sync completed within the past 5 seconds.");
 			return;
-		}
-		
-        // Push any saved posts befiore we sync
-		// Check if we have appropriate data access
-		if ( Utils.canUpload(mContext) ) {
-			if ( VERBOSE ) Log.v(TAG, "onPerformSync: canUpload so uploadAllSavedArtefacts");
-
-	        ArtefactDataSQLHelper artefactData = new ArtefactDataSQLHelper(mContext);
-	        artefactData.uploadAllSavedArtefacts();
-	        // syncResult.stats.numUpdates = // gets increased
-	        artefactData.close();
 		}
 		
 		//sync 
@@ -86,11 +75,22 @@ public class ThreadedSyncAdapter extends AbstractThreadedSyncAdapter{
 		JSONObject result = RestClient.AuthSync(authSyncURI, token, username, lastsync, mContext);
 
         if ( Utils.updateTokenFromResult(result, mContext) == null ) {
-			syncResult.stats.numAuthExceptions++;
+			++syncResult.stats.numAuthExceptions;
         } else if ( result.has("sync") ) {
         	syncResult.stats.numUpdates = Utils.processSyncResults(result, myProvider, mContext);
+        	
+        	// OK sync success - now push any uploads
+    		// Check if we have appropriate data access
+    		if ( Utils.canUpload(mContext) ) {
+    			if ( VERBOSE ) Log.v(TAG, "onPerformSync: canUpload so uploadAllSavedArtefacts");
+
+    	        ArtefactDataSQLHelper artefactData = new ArtefactDataSQLHelper(mContext);
+    	        artefactData.uploadAllSavedArtefacts();
+    	        // syncResult.stats.numUpdates = // gets increased
+    	        artefactData.close();
+    		}
         } else {
-			syncResult.stats.numParseExceptions++;
+			++syncResult.stats.numParseExceptions;
         }
         
 	}

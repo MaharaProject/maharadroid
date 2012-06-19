@@ -167,7 +167,7 @@
 			android:key="@string/pref_sync_periodic_key"
 			android:title="@string/pref_sync_periodic_title"
 			android:summary="@string/pref_sync_periodic_summary"
-			android:defaultValue="0"
+			android:defaultValue="15"
 			android:numeric="integer"
 		/>	
 	</PreferenceCategory>	

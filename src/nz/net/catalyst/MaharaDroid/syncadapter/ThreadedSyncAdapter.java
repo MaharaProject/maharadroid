@@ -69,7 +69,7 @@ public class ThreadedSyncAdapter extends AbstractThreadedSyncAdapter{
 				"");
 		Long lastsync = mPrefs.getLong("lastsync", 0);
 		
-		if ( VERBOSE ) Log.v(TAG, "Synchronizing Mahara account '" + username + "', " + "'" + token + "' and lastsync '" + lastsync + "'");
+		if ( VERBOSE ) Log.v(TAG, "Synchronizing Mahara account '" + username + "', " + "'" + token + "' for details as of lastsync '" + lastsync + "'");
 
 		// Get latest details from sync 
 		JSONObject result = RestClient.AuthSync(authSyncURI, token, username, lastsync, mContext);

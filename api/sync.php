@@ -77,12 +77,13 @@ try {
 }
 catch (ParameterException $e) { }
 
-$activity_arr = get_records_sql_array('select n.id, n.subject, n.message 
+$activity_arr = get_records_sql_array("select n.id, n.subject, n.message 
 					from {notification_internal_activity} n, {activity_type} a
-					where n.type=a.id and n.read=0 and '
-					. db_format_tsfield('n.ctime', '') . ' >= ? and n.usr= ? ', 
+					where n.type=a.id and n.read=0 
+                                          and FLOOR(EXTRACT(EPOCH FROM ctime AT TIME ZONE 'UTC')) >= ? 
+					  and n.usr= ? ", 
 					array($lastsync + 0, $USER->id));
-if ( trim($activity_arr) != '' ) 
+if ( count($activity_arr) > 0 ) 
   $json['activity'] = $activity_arr;
 
 // OK - let's add tags

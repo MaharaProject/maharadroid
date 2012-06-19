@@ -279,6 +279,7 @@ public class Utils {
 		// Save last sync time
 		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
 
+		// We save current time in seconds since 1970 in UTC!!
 		mPrefs.edit()
 			.putLong("lastsync", System.currentTimeMillis()/1000)
 			.commit()
@@ -344,6 +345,9 @@ public class Utils {
 	}
 	
 	public static void setPeriodicSync(Account account, Context context) {
+		if ( account == null ) 
+			return;
+		
 		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
 
 		Long periodic_sync = Long.valueOf(mPrefs.getString(context.getResources().getString(R.string.pref_sync_periodic_key), "0"));
@@ -382,6 +386,16 @@ public class Utils {
         	account = mAccounts[0];
         }
         return account;
+	}
+
+	public static void deleteAccount(Context context) {
+		AccountManager mAccountManager = AccountManager.get(context);
+		
+		Account[] mAccounts = mAccountManager.getAccountsByType(GlobalResources.ACCOUNT_TYPE);
+        
+        for ( int i = 0; i < mAccounts.length; i++ ) {
+        	mAccountManager.removeAccount(mAccounts[i], null, null);
+        }
 	}
 
 	public static String[][] getJournals(String nullitem, Context context) {
@@ -466,4 +480,5 @@ public class Utils {
 
 		return bm;	
     }
+
 }

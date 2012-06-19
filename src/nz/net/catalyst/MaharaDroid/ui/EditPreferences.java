@@ -157,6 +157,9 @@ public class EditPreferences extends PreferenceActivity implements OnSharedPrefe
 		if(VERBOSE) Log.v(TAG, "On destroy received ... ");
 		// If the username and token have 
 		if ( authDetailsChanged ) {
+			if(VERBOSE) Log.v(TAG, "Deleting old account ... ");
+			Utils.deleteAccount(this);
+
 			// force login.
 			if(VERBOSE) Log.v(TAG, "Starting auth activity ... ");
 			startActivity(new Intent(this, AuthenticatorActivity.class));

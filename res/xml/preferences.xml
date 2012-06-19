@@ -85,8 +85,13 @@
 		        android:dialogTitle="@string/pref_upload_tags_title" />
 		</PreferenceScreen>	
 		<PreferenceScreen android:title="@string/prefcat_defaults_notification" xmlns:android="http://schemas.android.com/apk/res/android">
-		    <!-- 
    		   	<CheckBoxPreference
+				android:key="@string/pref_sync_notification_usermessage_key"
+				android:enabled="true"
+				android:defaultValue="true"
+				android:summary="@string/pref_sync_notification_usermessage_summary"
+				android:title="@string/pref_sync_notification_usermessage_title" />
+  		   	<CheckBoxPreference
 				android:key="@string/pref_sync_notification_feedback_key"
 				android:enabled="true"
 				android:defaultValue="true"
@@ -104,18 +109,19 @@
 				android:defaultValue="true"
 				android:summary="@string/pref_sync_notification_maharamessage_summary"
 				android:title="@string/pref_sync_notification_maharamessage_title" />
-   		   	<CheckBoxPreference
-				android:key="@string/pref_sync_notification_usermessage_key"
-				android:enabled="true"
-				android:defaultValue="true"
-				android:summary="@string/pref_sync_notification_usermessage_summary"
-				android:title="@string/pref_sync_notification_usermessage_title" />
-   		   	<CheckBoxPreference
+		    <!-- 
+		   	<CheckBoxPreference
 				android:key="@string/pref_sync_notification_groupmessage_key"
 				android:enabled="true"
 				android:defaultValue="true"
 				android:summary="@string/pref_sync_notification_groupmessage_summary"
 				android:title="@string/pref_sync_notification_groupmessage_title" />
+   		   	<CheckBoxPreference
+				android:key="@string/pref_sync_notification_institutionmessage_key"
+				android:enabled="true"
+				android:defaultValue="true"
+				android:summary="@string/pref_sync_notification_institutionmessage_summary"
+				android:title="@string/pref_sync_notification_institutionmessage_title" />
 		   	<CheckBoxPreference
 				android:key="@string/pref_sync_notification_watchlist_key"
 				android:enabled="true"
@@ -152,12 +158,6 @@
 				android:defaultValue="true"
 				android:summary="@string/pref_sync_notification_virusrelease_summary"
 				android:title="@string/pref_sync_notification_virusrelease_title" />
-   		   	<CheckBoxPreference
-				android:key="@string/pref_sync_notification_institutionmessage_key"
-				android:enabled="true"
-				android:defaultValue="true"
-				android:summary="@string/pref_sync_notification_institutionmessage_summary"
-				android:title="@string/pref_sync_notification_institutionmessage_title" />
 				 -->
 		</PreferenceScreen>	
 	</PreferenceCategory>

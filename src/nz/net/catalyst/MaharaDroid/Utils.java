@@ -21,7 +21,9 @@
 
 package nz.net.catalyst.MaharaDroid;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -172,6 +174,21 @@ public class Utils {
 		
 		if ( DEBUG ) Log.d(TAG, "setting sync url to '" + sync_url + "'");
 		return sync_url;
+	}
+	public static String getSyncNotificationsPref(Context context) {
+		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+		String notificationString = "";
+		
+		Iterator<Entry<Integer, String>> it = GlobalResources.NOTIFICATIONS.entrySet().iterator();
+	    while (it.hasNext()) {
+	    	Entry<Integer, String> not = it.next();
+			if ( mPrefs.getBoolean(context.getResources().getString(not.getKey()), true) ) {
+				notificationString += ( notificationString.length() > 0 ) ? "," : "";
+				notificationString += not.getValue();
+			}
+	    }
+		if ( DEBUG ) Log.d(TAG, "setting notifications string to '" + notificationString + "'");
+		return ( notificationString == "" ) ? null : notificationString;
 	}
 
     public static String updateTokenFromResult(JSONObject json, Context context) {

@@ -154,7 +154,7 @@ public class EditPreferences extends PreferenceActivity implements OnSharedPrefe
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		prefs.unregisterOnSharedPreferenceChangeListener(this);
 		
-		if(VERBOSE) Log.v(TAG, "On destroy received ... ");
+		if(VERBOSE) Log.v(TAG, "On destroy received ... " + authDetailsChanged);
 		// If the username and token have 
 		if ( authDetailsChanged ) {
 			if(VERBOSE) Log.v(TAG, "Deleting old account ... ");
@@ -211,7 +211,9 @@ public class EditPreferences extends PreferenceActivity implements OnSharedPrefe
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 		// refresh displayed values by restarting activity (a hack, but apparently there
 		// isn't a nicer way)
+
 		if ( key == getString(R.string.pref_auth_token_key)) {
+			if(VERBOSE) Log.v(TAG, "onSharedPreferenceChanged received ... " + authDetailsChanged + ", key is: pref_auth_token_key");
 			authDetailsChanged = true;
 			if ( this.getCallingActivity() != null ) { 
 				if ( DEBUG ) Log.d(TAG, "Calling activity is '" + this.getCallingActivity().getClassName().toString());
@@ -220,10 +222,13 @@ public class EditPreferences extends PreferenceActivity implements OnSharedPrefe
 				}
 			}
 		} else if ( key == getString(R.string.pref_auth_username_key)) {
+			if(VERBOSE) Log.v(TAG, "onSharedPreferenceChanged received ... " + authDetailsChanged + ", key is: pref_auth_username_key");
 			authDetailsChanged = true;
 		} else if ( key == getString(R.string.pref_sync_url_key)) {
+			if(VERBOSE) Log.v(TAG, "onSharedPreferenceChanged received ... " + authDetailsChanged + ", key is: pref_sync_url_key");
 			authDetailsChanged = true;
 		} else if ( key == getString(R.string.pref_base_url_key)) {
+			if(VERBOSE) Log.v(TAG, "onSharedPreferenceChanged received ... " + authDetailsChanged + ", key is: pref_base_url_key");
 			authDetailsChanged = true;
 		} else if ( key == getString(R.string.pref_sync_periodic_key)) {
 			Account account = Utils.getAccount(this);

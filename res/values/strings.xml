@@ -92,6 +92,19 @@
         									Note: nothing will be shown until your first sync.</string>
 
     <string name="prefcat_defaults_notification">Default Notification Settings</string>
+    
+    <string name="pref_sync_notification_feedback_key">feedback</string>
+	<string name="pref_sync_notification_feedback_summary">Receive notifications when you receive feedback</string>
+	<string name="pref_sync_notification_feedback_title">Feedback</string>
+   	<string name="pref_sync_notification_newpost_key">newpost</string>
+	<string name="pref_sync_notification_newpost_summary">Receive notifications about new posts</string>
+	<string name="pref_sync_notification_newpost_title">New posts</string>		   	
+   	<string name="pref_sync_notification_maharamessage_key">maharamessage</string>
+	<string name="pref_sync_notification_maharamessage_summary">Receive notifications when you receive a message from Mahara</string>
+	<string name="pref_sync_notification_maharamessage_title">Mahara messages</string>
+   	<string name="pref_sync_notification_usermessage_key">usermessages</string>
+	<string name="pref_sync_notification_usermessage_summary">Receive notifications when users send messages to you</string>
+	<string name="pref_sync_notification_usermessage_title">User messages</string>
 
     <!--  Notification defaults -->
     <string name="pref_sync_notification_key">sync.notification</string>

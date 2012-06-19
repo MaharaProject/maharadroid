@@ -21,6 +21,10 @@
 
 package nz.net.catalyst.MaharaDroid;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 /*
  * The GlobalResources class is taken from the GlobalResources class
  * written by Russel Stewart (rnstewart@gmail.com) as part of the Flickr Free
@@ -50,6 +54,16 @@ public class GlobalResources {
 
 	public static final String[] CONTENT_TABLES = new String[] { "tag", "blog", "folder" };
 	public static final String[] CONTENT_FIELDS = new String[] { "ID", "VALUE" };
+
+	public static final Map<Integer, String> NOTIFICATIONS;
+    static {
+        Map<Integer, String> tmpNOTIFICATIONS = new HashMap<Integer, String>();
+        tmpNOTIFICATIONS.put(R.string.pref_sync_notification_feedback_key, "feedback");
+        tmpNOTIFICATIONS.put(R.string.pref_sync_notification_newpost_key, "newpost");
+        tmpNOTIFICATIONS.put(R.string.pref_sync_notification_maharamessage_key, "maharamessage");
+        tmpNOTIFICATIONS.put(R.string.pref_sync_notification_usermessage_key, "usermessage");
+        NOTIFICATIONS = Collections.unmodifiableMap(tmpNOTIFICATIONS);
+    }
 	
 	public static final String TEMP_PHOTO_FILENAME = "maharadroid-tmp.jpg";
 	

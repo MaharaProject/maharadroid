@@ -68,11 +68,13 @@ public class ThreadedSyncAdapter extends AbstractThreadedSyncAdapter{
 		String token = mPrefs.getString(mContext.getResources().getString(R.string.pref_auth_token_key).toString(),
 				"");
 		Long lastsync = mPrefs.getLong("lastsync", 0);
-		
+
+		String syncNotifications = Utils.getSyncNotificationsPref(mContext);
+
 		if ( VERBOSE ) Log.v(TAG, "Synchronizing Mahara account '" + username + "', " + "'" + token + "' for details as of lastsync '" + lastsync + "'");
 
 		// Get latest details from sync 
-		JSONObject result = RestClient.AuthSync(authSyncURI, token, username, lastsync, mContext);
+		JSONObject result = RestClient.AuthSync(authSyncURI, token, username, lastsync, syncNotifications, mContext);
 
         if ( Utils.updateTokenFromResult(result, mContext) == null ) {
 			++syncResult.stats.numAuthExceptions;

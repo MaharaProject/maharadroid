@@ -68,8 +68,6 @@ catch (AuthUnknownUserException $e) {
     jsonreply(array('fail' => 'Invalid user token'));
 }
 
-// error_log(var_dump($USER));
-
 // Add in bits of sync data - let's start with notifications
 $lastsync = time();
 try {
@@ -77,11 +75,22 @@ try {
 }
 catch (ParameterException $e) { }
 
+$notification_types_sql = '';
+try {
+    $notification_types = explode(",", param_variable('notifications'));
+    if ( count($notification_types) > 0 ) {
+        $notification_types_sql = ' and a.name IN (' . join(',', array_map('db_quote',$notification_types)) . ')';
+    }
+}
+catch (ParameterException $e) { }
+
+// TODO - note this may not work across timezeons as db_format_tsfield doesn't support setting the timezone
+//        Android (for example) defaults to 'UT' .. i.e. FLOOR(EXTRACT(EPOCH FROM ctime AT TIME ZONE 'UTC')) >= ? 
 $activity_arr = get_records_sql_array("select n.id, n.subject, n.message 
 					from {notification_internal_activity} n, {activity_type} a
-					where n.type=a.id and n.read=0 
-                                          and FLOOR(EXTRACT(EPOCH FROM ctime AT TIME ZONE 'UTC')) >= ? 
-					  and n.usr= ? ", 
+					where n.type=a.id and n.read=0 and " . 
+						db_format_tsfield('ctime', '') . " >= ? 
+					  and n.usr= ? " . $notification_types_sql, 
 					array($lastsync + 0, $USER->id));
 if ( count($activity_arr) > 0 ) 
   $json['activity'] = $activity_arr;

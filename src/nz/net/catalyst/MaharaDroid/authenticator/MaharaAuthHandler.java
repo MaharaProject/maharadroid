@@ -70,8 +70,10 @@ public class MaharaAuthHandler {
     	
         Utils.showNotification(NOTIFICATION, mContext.getResources().getText(R.string.login_authenticating), 
         						null, null, mContext);
+        
+		String syncNotifications = Utils.getSyncNotificationsPref(mContext);
     	
-    	JSONObject result = RestClient.AuthSync(authSyncURI, token, username, lastsync, mContext);
+    	JSONObject result = RestClient.AuthSync(authSyncURI, token, username, lastsync, syncNotifications, mContext);
         token = Utils.updateTokenFromResult(result, mContext);
 
         if ( token != null ) {

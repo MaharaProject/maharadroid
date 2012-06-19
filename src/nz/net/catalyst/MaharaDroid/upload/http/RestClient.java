@@ -163,7 +163,7 @@ public class RestClient {
 		
 		return CallFunction(url, paramNames, paramVals, context);
 	}
-	public static JSONObject AuthSync(String url, String token, String username, Long lastsync, Context context){
+	public static JSONObject AuthSync(String url, String token, String username, Long lastsync, String notifications, Context context){
 		Vector<String> pNames = new Vector<String>();
 		Vector<String> pVals = new Vector<String>();
 		
@@ -178,6 +178,14 @@ public class RestClient {
 		if ( lastsync != null ) {
 			pNames.add("lastsync");
 			pVals.add(lastsync.toString());
+		}
+		if ( lastsync != null ) {
+			pNames.add("lastsync");
+			pVals.add(lastsync.toString());
+		}
+		if ( notifications != null ) {
+			pNames.add("notifications");
+			pVals.add(notifications);
 		}
 		
 		String [] paramNames, paramVals;

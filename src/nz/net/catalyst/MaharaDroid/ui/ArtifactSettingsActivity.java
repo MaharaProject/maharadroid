@@ -76,6 +76,8 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 	// whether VERBOSE level logging is enabled
 	static final boolean VERBOSE = LogConfig.VERBOSE;
 	
+	private boolean DEFAULT_TO_JOURNAL = false;
+	
 	// application preferences
 	private SharedPreferences mPrefs;
 	
@@ -145,55 +147,61 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 //				InputMethodManager.HIDE_IMPLICIT_ONLY);
 
         m_extras = getIntent().getExtras();
-        if ( m_extras == null ) {
+        if ( m_extras == null ) { 
 	    	if ( DEBUG ) Log.d(TAG, "Nothing passed - write a journal post without attachment.");
 
 	    	setDefaultJournal();
 	    	setDefaultTag();
 	    	
 	    // Load a saved artefact
-        } else if ( m_extras.containsKey("artefact") ) {
-	    	if ( DEBUG ) Log.d(TAG, "Have a saved artefact to upload");
+        } else {
+        	DEFAULT_TO_JOURNAL = m_extras.containsKey("writejournal");
+	    	if ( DEBUG ) Log.d(TAG, "Have extras - default to journal? ... " + DEFAULT_TO_JOURNAL);
 
-        	a = m_extras.getParcelable("artefact");
-
-        	uris = new String[] { a.getFilename() };
-        	
-			((EditText)findViewById(R.id.txtArtefactTitle)).setText(a.getTitle());
-			((EditText)findViewById(R.id.txtArtefactTitle)).selectAll();
-			((EditText)findViewById(R.id.txtArtefactDescription)).setText(a.getDescription());
-			((EditText)findViewById(R.id.txtArtefactTags)).setText(a.getTags());
-			((EditText)findViewById(R.id.txtArtefactId)).setText(a.getId().toString());
-			((CheckBox)findViewById(R.id.txtArtefactIsDraft)).setChecked(a.getIsDraft());
-			((CheckBox)findViewById(R.id.txtArtefactAllowComments)).setChecked(a.getAllowComments());
-
-			setDefaultJournal();
-			
-
-	    } else if ( m_extras.containsKey("uri") ) {         
-        	if ( DEBUG ) Log.d(TAG, "Have a new upload");
-
-        	setDefaultJournal();
-	    	setDefaultTag();
-
-        	uris = m_extras.getStringArray("uri");
-        
-	        // If single - show the title (with default) and description
-	    	if ( uris.length == 1 ) {
-		    	if ( DEBUG ) Log.d(TAG, "Have a single upload");
-		    	a = new Artefact(uris[0]);
-		    	setDefaultTitle(a.getBaseFilename(mContext));
-	        } else if ( uris.length > 1 ) {
-		    	if ( DEBUG ) Log.d(TAG, "Have a multi upload");
+    	 	if ( m_extras.containsKey("artefact") ) {
+		    	if ( DEBUG ) Log.d(TAG, "Have a saved artefact to upload");
+	
+	        	a = m_extras.getParcelable("artefact");
+	
+	        	uris = new String[] { a.getFilename() };
+	        	
+				((EditText)findViewById(R.id.txtArtefactTitle)).setText(a.getTitle());
+				((EditText)findViewById(R.id.txtArtefactTitle)).selectAll();
+				((EditText)findViewById(R.id.txtArtefactDescription)).setText(a.getDescription());
+				((EditText)findViewById(R.id.txtArtefactTags)).setText(a.getTags());
+				((EditText)findViewById(R.id.txtArtefactId)).setText(a.getId().toString());
+				((CheckBox)findViewById(R.id.txtArtefactIsDraft)).setChecked(a.getIsDraft());
+				((CheckBox)findViewById(R.id.txtArtefactAllowComments)).setChecked(a.getAllowComments());
+	
+				setDefaultJournal();
+	
+		    } else if ( m_extras.containsKey("uri") ) {         
+	        	if ( DEBUG ) Log.d(TAG, "Have a new upload");
+	
+	        	setDefaultJournal();
+		    	setDefaultTag();
+	
+	        	uris = m_extras.getStringArray("uri");
+	        
+		        // If single - show the title (with default) and description
+		    	if ( uris.length == 1 ) {
+			    	if ( DEBUG ) Log.d(TAG, "Have a single upload");
+			    	a = new Artefact(uris[0]);
+			    	setDefaultTitle(a.getBaseFilename(mContext));
+		        } else if ( uris.length > 1 ) {
+			    	if ( DEBUG ) Log.d(TAG, "Have a multi upload");
+		        } else {
+			    	if ( DEBUG ) Log.d(TAG, "Passed uri key, but no uri's - bogus link?");
+			    	// TODO show toast message but not finish? Maybe they want to write a Journal post and
+			    	//       attach an file?
+			    	finish();
+		        }
 	        } else {
-		    	if ( DEBUG ) Log.d(TAG, "Passed uri key, but no uri's - bogus link?");
-		    	// TODO show toast message but not finish? Maybe they want to write a Journal post and
-		    	//       attach an file?
-		    	finish();
+	        	setDefaultJournal();
+	        	setDefaultTag();
 	        }
         }
-        
-		// Check acceptance of upload conditions
+	 	// Check acceptance of upload conditions
 		checkAcceptanceOfConditions();
 		
 		// Check data connection
@@ -247,6 +255,8 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 		} else {
 	        if ( mPrefs.getBoolean(getResources().getString(R.string.pref_upload_journal_default_key), false) ) {
 	        	journal_id = mPrefs.getString(getResources().getString(R.string.pref_upload_journal_key), null);
+	        } else if ( DEFAULT_TO_JOURNAL && journalKeys.length > 1 ) { // o - is upload file
+	        	journal_id = journalKeys[1];
 	        }
 		}
 

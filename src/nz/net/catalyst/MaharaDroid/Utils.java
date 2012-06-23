@@ -65,23 +65,6 @@ public class Utils {
 	// whether VERBOSE level logging is enabled
 	static final boolean VERBOSE = LogConfig.VERBOSE;
 	
-	public static void runSyncNow(Context context) {
-		AccountManager mAccountManager = AccountManager.get(context);
-		Account account;
-		
-		// TODO replicated from AuthenticatorActivity
-		Account[] mAccounts = mAccountManager.getAccountsByType(GlobalResources.ACCOUNT_TYPE);
-        
-        if ( mAccounts.length > 0 ) {
-        	// Just pick the first one .. support multiple accounts can come later.
-        	account = mAccounts[0];
-        } else {
-        	return;
-        }
-
-		ContentResolver.requestSync(account, GlobalResources.ACCOUNT_TYPE, null);
-	}
-	
 	public static boolean canUpload(Context context) {
 		
 		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -258,7 +241,7 @@ public class Utils {
 
     	mNM.cancel(id);
     }
-	public static long processSyncResults(JSONObject result, ContentProviderClient myProvider, Context context) {
+	public static long processSyncResults(JSONObject result, ContentProviderClient myProvider, Context context, String sync_key) {
 		// TODO Auto-generated method stub
 		long numUpdates = 0;
 		try {
@@ -285,6 +268,21 @@ public class Utils {
         		long newItems = updateListPreferenceFromJSON(myProvider, syncObj.getJSONArray("folders"), "folder");
     			numUpdates += newItems;
         	}
+        	if ( syncObj.has("time") ) {
+        		// Save last sync time
+        		String last_sync = syncObj.getString("time");
+    			Log.v(TAG, "saving sync time as: " + last_sync);
+
+        		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        		// We save current time in seconds since 1970 in UTC!!
+        		// TODO fix this - get the sync api to respond with the current server time which we can save here
+        		// i.e. a syncObj.has("time") piece containing the epoch to store.
+        		mPrefs.edit()
+        			.putString(sync_key, last_sync)
+        			.commit()
+        			;
+        	} 
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -293,15 +291,6 @@ public class Utils {
 			e.printStackTrace();
 		}
 
-		// Save last sync time
-		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-
-		// We save current time in seconds since 1970 in UTC!!
-		mPrefs.edit()
-			.putLong("lastsync", System.currentTimeMillis()/1000)
-			.commit()
-			;
-		
 		return numUpdates;
 	}
 

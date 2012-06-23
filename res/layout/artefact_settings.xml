@@ -46,7 +46,7 @@
 							  android:singleLine="false"
 							  android:layout_height="wrap_content"
 			  				  android:layout_margin="5dip"
-			  				  android:paddingBottom="5dip"
+			  				  android:paddingBottom="15dip"
 			  				  style="@android:style/TextAppearance.Small">
 					</TextView>
 			</LinearLayout>
@@ -61,7 +61,6 @@
 				  android:id="@+id/ArtefactTitleLayout"
 				  android:layout_width="fill_parent"
 				  android:layout_height="wrap_content"
-				  android:layout_marginTop="5dp"
 				  android:orientation="horizontal">
 
 					<TextView android:text="@string/upload_title_label"

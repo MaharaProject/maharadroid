@@ -67,7 +67,8 @@ public class ThreadedSyncAdapter extends AbstractThreadedSyncAdapter{
 				"");
 		String token = mPrefs.getString(mContext.getResources().getString(R.string.pref_auth_token_key).toString(),
 				"");
-		Long lastsync = mPrefs.getLong("lastsync", 0);
+		String sync_key = mContext.getResources().getString(R.string.pref_sync_time_key);
+		Long lastsync = Long.parseLong(mPrefs.getString(sync_key, "0"));
 
 		String syncNotifications = Utils.getSyncNotificationsPref(mContext);
 
@@ -79,7 +80,7 @@ public class ThreadedSyncAdapter extends AbstractThreadedSyncAdapter{
         if ( Utils.updateTokenFromResult(result, mContext) == null ) {
 			++syncResult.stats.numAuthExceptions;
         } else if ( result.has("sync") ) {
-        	syncResult.stats.numUpdates = Utils.processSyncResults(result, myProvider, mContext);
+        	syncResult.stats.numUpdates = Utils.processSyncResults(result, myProvider, mContext, sync_key);
         	
         	// OK sync success - now push any uploads
     		// Check if we have appropriate data access

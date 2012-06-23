@@ -32,7 +32,7 @@ require(dirname(dirname(dirname(__FILE__))) . '/init.php');
 safe_require('artefact', 'file');
 safe_require('artefact', 'blog');
 
-$json = array();
+$json = array( 'time' => time() );
 
 if (!get_config('allowmobileuploads')) {
     jsonreply(array('fail' => 'Mobile uploads disabled'));
@@ -69,7 +69,7 @@ catch (AuthUnknownUserException $e) {
 }
 
 // Add in bits of sync data - let's start with notifications
-$lastsync = time();
+$lastsync = 0;
 try {
     $lastsync = param_variable('lastsync') + 0;
 }
@@ -91,7 +91,7 @@ $activity_arr = get_records_sql_array("select n.id, n.subject, n.message
 					where n.type=a.id and n.read=0 and " . 
 						db_format_tsfield('ctime', '') . " >= ? 
 					  and n.usr= ? " . $notification_types_sql, 
-					array($lastsync + 0, $USER->id));
+					array($lastsync, $USER->id));
 if ( count($activity_arr) > 0 ) 
   $json['activity'] = $activity_arr;
 

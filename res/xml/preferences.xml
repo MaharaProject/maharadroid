@@ -170,5 +170,12 @@
 			android:defaultValue="15"
 			android:numeric="integer"
 		/>	
+		<EditTextPreference
+			android:key="@string/pref_sync_time_key"
+			android:title="@string/pref_sync_time_title"
+			android:summary="@string/pref_sync_time_summary"
+			android:defaultValue="0"
+			android:numeric="integer"
+		/>	
 	</PreferenceCategory>	
 </PreferenceScreen>

@@ -170,7 +170,7 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 	}
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-
+		Intent intent;
 		switch (item.getItemId()) {
 			case R.id.option_delete:
 				artefactData.deleteAllSavedArtefacts();
@@ -184,25 +184,25 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 				startActivity(new Intent(this, AboutActivity.class));
 				break;
 			case R.id.option_pref:
-				Intent intent = new Intent(this, EditPreferences.class);
+				intent = new Intent(this, EditPreferences.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				startActivity(intent);
 				break;
 			case R.id.option_account:
-				//i.putExtra(Settings.EXTRA_AUTHORITIES, new String[] {GlobalResources.ACCOUNT_TYPE});
-				
 				startActivity(new Intent(Settings.ACTION_SYNC_SETTINGS).putExtra(Settings.EXTRA_AUTHORITIES, new String[] {GlobalResources.SYNC_AUTHORITY}));
 				break;
 			case R.id.option_camera:
 				startActivityForResult(Utils.makeCameraIntent(mContext), GlobalResources.REQ_CAMERA_RETURN); 
 				break;
 			case R.id.option_gallery:
-				Intent i = new Intent(Intent.ACTION_PICK,
+				intent = new Intent(Intent.ACTION_PICK,
 			               android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-				startActivityForResult(i, GlobalResources.REQ_GALLERY_RETURN);
+				startActivityForResult(intent, GlobalResources.REQ_GALLERY_RETURN);
 				break;
 			case R.id.option_compose:
-				startActivity(new Intent(this, ArtifactSettingsActivity.class));
+				intent = new Intent(this, ArtifactSettingsActivity.class);
+				intent.putExtra("writejournal", true);
+				startActivity(intent);
 				break;
 		}
 		return true;

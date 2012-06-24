@@ -25,6 +25,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.net.Uri;
+
 /*
  * The GlobalResources class is taken from the GlobalResources class
  * written by Russel Stewart (rnstewart@gmail.com) as part of the Flickr Free
@@ -42,6 +44,8 @@ public class GlobalResources {
 	public static final String CONFIG_SCAN_MODE = "QR_CODE_MODE";
 
 	public static int ERROR_DELAY_MS = 1000;
+
+	public static Uri TEMP_PHOTO_URI;
 
 	public static final int UPLOADER_ID = 100;
 	public static final int UPLOADING_ID = UPLOADER_ID + 100;

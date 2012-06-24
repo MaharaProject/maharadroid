@@ -338,14 +338,14 @@ public class Utils {
 		values.put(MediaStore.Images.Media.DESCRIPTION,"Image capture by camera for MaharaDroid");
 		
 		//imageUri is the current activity attribute, define and save it for later usage (also in onSaveInstanceState)
-		Uri imageUri = context.getContentResolver().insert(
+		GlobalResources.TEMP_PHOTO_URI = context.getContentResolver().insert(
 				MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
-		if ( VERBOSE ) Log.v(TAG, "imageUri is '" + imageUri.toString() + "'");
+		if ( VERBOSE ) Log.v(TAG, "imageUri is '" + GlobalResources.TEMP_PHOTO_URI.toString() + "'");
 
 		//create new Intent
 		Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		i.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+		i.putExtra(MediaStore.EXTRA_OUTPUT, GlobalResources.TEMP_PHOTO_URI);
 		i.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
 		return i;
 	}

@@ -476,38 +476,31 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 		return true;
 	}
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) { 
-		if ( intent == null ) {
-			Log.e(TAG, "Empty intent received from request code '" + requestCode + "'");
-			Toast.makeText(mContext, getString(R.string.capturefailed), Toast.LENGTH_LONG);
-			return;
-		}
-		
         if (resultCode == Activity.RESULT_OK) {
-        	Uri uri;
+        	String imageFile = null;
     		switch (requestCode) {
 			case GlobalResources.REQ_CAMERA_RETURN:
-				if ( ! intent.hasExtra(MediaStore.EXTRA_OUTPUT) )
-					break;
-				uri = (Uri) intent.getParcelableExtra(MediaStore.EXTRA_OUTPUT);
-				if ( a == null ) {
-			    	a = new Artefact(uri.toString());
+				if ( intent == null ) {
+					Log.w(TAG, "Empty intent received from request code '" + requestCode + "'");
+					imageFile = GlobalResources.TEMP_PHOTO_URI.toString();
+				} else {
+					if ( intent.hasExtra(MediaStore.EXTRA_OUTPUT) ) {
+						imageFile = ((Uri) intent.getParcelableExtra(MediaStore.EXTRA_OUTPUT)).toString();
+					}
 				}
-	        	a.setFilename(uri.toString());
-	        	setDefaultTitle(a.getBaseFilename(mContext));
-	        	//a.save(mContext); // don't auto save - they might want to cancel
-	        	uris = new String[] { uri.toString() };
 	        	break;
 			case GlobalResources.REQ_GALLERY_RETURN:
-				uri = intent.getData();
-				if ( a == null ) {
-			    	a = new Artefact(uri.toString());
-				}
-	        	a.setFilename(uri.toString());
-	        	//a.save(mContext); // don't auto save - they might want to cancel
-	        	setDefaultTitle(a.getBaseFilename(mContext));
-	        	uris = new String[] { uri.toString() };
+				imageFile = intent.getData().toString();
 				break;
     		}
+
+    		if ( a == null ) {
+		    	a = new Artefact(imageFile);
+			}
+        	a.setFilename(imageFile);
+        	//a.save(mContext); // don't auto save - they might want to cancel
+        	setDefaultTitle(a.getBaseFilename(mContext));
+        	uris = new String[] { imageFile };
         }
 	}
 	public class TagChooser implements OnItemSelectedListener {

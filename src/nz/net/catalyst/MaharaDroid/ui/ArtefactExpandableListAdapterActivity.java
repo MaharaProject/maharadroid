@@ -209,27 +209,26 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) { 
-		if ( intent == null ) {
-			Log.e(TAG, "Empty intent received from request code '" + requestCode + "'");
-			Toast.makeText(mContext, getString(R.string.capturefailed), Toast.LENGTH_LONG);
-			return;
-		}
-		
         if (resultCode == Activity.RESULT_OK) {
+    		String imageFile = null;
         	Intent i = new Intent(this, ArtifactSettingsActivity.class);
-        	Uri uri;
-    		switch (requestCode) {
+
+        	switch (requestCode) {
 			case GlobalResources.REQ_CAMERA_RETURN:
-				uri = (Uri) intent.getParcelableExtra(MediaStore.EXTRA_OUTPUT);
-	        	i.putExtra("uri", new String[] { uri.toString() });
-	        	startActivity(i);
+	    		if ( intent == null ) {
+	    			Log.w(TAG, "Empty intent received from request code '" + requestCode + "'");
+	    			imageFile = GlobalResources.TEMP_PHOTO_URI.toString();
+	    		} else {
+	    			imageFile = ((Uri) intent.getParcelableExtra(MediaStore.EXTRA_OUTPUT)).toString();
+	    		}
 	        	break;
 			case GlobalResources.REQ_GALLERY_RETURN:
-				uri = intent.getData();
-	        	i.putExtra("uri", new String[] { uri.toString() });
-	        	startActivity(i);
+				imageFile = intent.getData().toString();
 				break;
     		}
+        	
+        	i.putExtra("uri", new String[] { imageFile });
+        	startActivity(i);
         }
 	}
 

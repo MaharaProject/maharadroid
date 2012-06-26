@@ -29,6 +29,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 import android.util.Log;
+import android.widget.Toast;
 
 /** Helper to the database, manages versions and creation */
 public class ArtefactDataSQLHelper extends SQLiteOpenHelper {
@@ -137,6 +138,21 @@ public class ArtefactDataSQLHelper extends SQLiteOpenHelper {
 			cursor.close();
 		}
 	}
+	
+	public int countSavedArtefacts() {
+		SQLiteDatabase db = this.getReadableDatabase();
+
+		int count = 0;
+		Cursor cursor = db.query(ArtefactDataSQLHelper.TABLE, null, null, null, null, null, null);
+		
+		try {
+			if (cursor == null)
+				return count;
+			return cursor.getCount();
+		} finally {
+			cursor.close();
+		}
+	}
 
 	public Artefact[] loadSavedArtefacts() {
 		SQLiteDatabase db = this.getReadableDatabase();
@@ -161,8 +177,8 @@ public class ArtefactDataSQLHelper extends SQLiteOpenHelper {
 						|| (a.getFilename() != null && a.getFilePath(mContext) != null)) {
 					a_array[items++] = a;
 				} else {
-					Log.i(TAG, "Artefact '" + a.getTitle() + "' file [" + a.getFilename()
-							+ "] no longer exists, deleting from saved artefacts");
+					Log.w(TAG, "File '" + a.getTitle() + "' does not exist on the device, deleting from saved artefacts");
+					Toast.makeText(mContext, "File '" + a.getTitle() + "' does not exist on the device, deleting from saved artefacts", Toast.LENGTH_LONG);
 					this.deleteSavedArtefact(a.getId());
 				}
 			}

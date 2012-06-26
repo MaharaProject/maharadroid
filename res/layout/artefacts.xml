@@ -3,63 +3,113 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:gravity="right" >
-	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:id="@+id/body_heading"
+    
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:id="@+id/introduction"
+	    android:orientation="vertical"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
+	    android:padding="2dip"
 	    style="@style/headerBackground"
-	    >			  
-   	   	<ImageView
-			android:id="@+id/saved"
+	    android:visibility="visible"
+	    >			
+
+    	<ImageView
+			android:id="@+id/banner"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:src="@drawable/saved"
-			android:layout_gravity="left"
-	   	    android:layout_marginLeft="10dp"	  
+			android:layout_margin="5dp"
+			android:src="@drawable/banner"
 		/>
-	    
-		<TextView android:id="@+id/saved_artefacts_header"
-			android:text="@string/options_menu_viewsaved"
-			android:layout_width="fill_parent" 
-			android:singleLine="true" 
-			android:layout_height="wrap_content" 
-		    style="@style/headerText"
-	   	    android:layout_marginLeft="10dp"	  
-	   	    android:gravity="left|bottom"  
-	   	    android:layout_toRightOf="@id/saved"
-	   	    android:layout_centerInParent="true"
-		/>
+
+		<TextView android:id="@+id/artefacts_banner_text"
+		    		android:text="@string/artefacts_banner_text"
+				  android:layout_width="wrap_content" 
+				  android:singleLine="false" 
+				  android:layout_height="wrap_content" 
+				  android:textStyle="bold" 
+					android:layout_margin="5dp"
+					style="@android:style/TextAppearance.Large"
+					android:layout_below="@+id/banner"
+				  />
+	  							
+		<TextView android:id="@+id/artefacts_banner_text2"
+		    	android:text="@string/artefacts_banner_text2"
+			  android:layout_margin="5dp"
+			  android:layout_width="fill_parent" 
+			  android:singleLine="false" 
+			  android:layout_height="wrap_content" 
+	 		  style="@android:style/TextAppearance.Small"
+	 		  android:layout_below="@+id/artefacts_banner_text"
+			  />
+
+		<TextView android:text="@string/artefacts_help"
+			  android:layout_margin="5dp"
+			  android:layout_width="fill_parent" 
+			  android:singleLine="false" 
+			  android:layout_height="wrap_content" 
+	 		  style="@android:style/TextAppearance.Small"
+  	 		  android:layout_below="@+id/artefacts_banner_text2"
+			  />
 	</RelativeLayout>
-	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:id="@+id/body"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:id="@+id/artefacts"
+	    android:orientation="vertical"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
-	    android:layout_below="@+id/body_heading"
-   	    android:layout_margin="5dp"	  
-	    >			  
-		<ExpandableListView android:id="@+id/listView"
-			android:scrollbars="none"
-			android:choiceMode="multipleChoice"
-			android:fastScrollEnabled="true"
-			android:layout_below="@+id/saved_artefacts_header"
-		    android:layout_weight="1"
-			android:layout_width="fill_parent"
-			android:layout_height="fill_parent"
-			android:visibility="gone"
-			android:headerDividersEnabled="true"
-			android:footerDividersEnabled="true"
-			
+	    android:padding="2dip"
+	    style="@style/headerBackground"
+	    android:visibility="visible"
+	    android:layout_below="@+id/introduction"
+	    >			
+    
+		<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		    android:id="@+id/body_heading"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    style="@style/headerBackground"
+		    >			  
+	   	   	<ImageView
+				android:id="@+id/saved"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:src="@drawable/saved"
+				android:layout_gravity="left"
+		   	    android:layout_marginLeft="10dp"	  
 			/>
-		<!--  android:groupIndicator="@drawable/expander_group" -->
-		<TextView android:id="@+id/no_saved_artefacts"
-			      android:text="@string/artefacts_no_saved_artefacts"
-				  android:layout_margin="0dp"
-				  android:layout_width="fill_parent" 
-				  android:singleLine="true" 
-				  android:layout_height="wrap_content" 
-		 		  style="@android:style/TextAppearance.Small"
-		 		  android:layout_below="@+id/listView"
-		  		  android:visibility="gone"
-				  />
+		    
+			<TextView android:id="@+id/saved_artefacts_header"
+				android:text="@string/options_menu_viewsaved"
+				android:layout_width="fill_parent" 
+				android:singleLine="true" 
+				android:layout_height="wrap_content" 
+			    style="@style/headerText"
+		   	    android:layout_marginLeft="10dp"	  
+		   	    android:gravity="left|bottom"  
+		   	    android:layout_toRightOf="@id/saved"
+		   	    android:layout_centerInParent="true"
+			/>
+		</RelativeLayout>
+		<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		    android:id="@+id/body"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_below="@+id/body_heading"
+	   	    android:layout_margin="5dp"	  
+		    >			  
+			<ExpandableListView android:id="@+id/listView"
+				android:scrollbars="none"
+				android:choiceMode="multipleChoice"
+				android:fastScrollEnabled="true"
+				android:layout_below="@+id/saved_artefacts_header"
+			    android:layout_weight="1"
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent"
+				android:headerDividersEnabled="true"
+				android:footerDividersEnabled="true"
+				
+				/>
+			<!--  android:groupIndicator="@drawable/expander_group" -->
+		</RelativeLayout>
 	</RelativeLayout>
 </RelativeLayout>

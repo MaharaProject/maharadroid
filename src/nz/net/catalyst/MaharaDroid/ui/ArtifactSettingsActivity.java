@@ -494,13 +494,23 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 				break;
     		}
 
-    		if ( a == null ) {
-		    	a = new Artefact(imageFile);
-			}
-        	a.setFilename(imageFile);
-        	//a.save(mContext); // don't auto save - they might want to cancel
-        	setDefaultTitle(a.getBaseFilename(mContext));
-        	uris = new String[] { imageFile };
+        	if ( uris == null ) {
+        		if ( a == null ) {
+    		    	a = new Artefact(imageFile);
+    			}
+            	a.setFilename(imageFile);
+            	//a.save(mContext); // don't auto save - they might want to cancel
+            	setDefaultTitle(a.getBaseFilename(mContext));
+
+            	uris = new String[] { imageFile };
+        	} else {
+        		String [] new_uris = new String[uris.length + 1];
+        		for ( int i = 0; i < uris.length; i++ ) {
+        			new_uris[i] = uris[i];
+        		}
+        		new_uris[uris.length] = imageFile;
+        		uris = new_uris;
+        	}
         }
 	}
 	public class TagChooser implements OnItemSelectedListener {

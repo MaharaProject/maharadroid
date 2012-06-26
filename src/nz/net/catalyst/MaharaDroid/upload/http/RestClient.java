@@ -269,7 +269,19 @@ public class RestClient {
 		SortedMap<String,String> sig_params = new TreeMap<String,String>();
 		
 		HttpResponse response = null;
-	    HttpPost httppost = new HttpPost(url);
+		HttpPost httppost = null;
+		
+		try { 
+			httppost = new HttpPost(url);
+		} catch (IllegalArgumentException e) {
+			try {
+				json.put("fail", e.getMessage());
+			} catch (JSONException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			return json;
+		}
 
 		try {
 		    File file = null;

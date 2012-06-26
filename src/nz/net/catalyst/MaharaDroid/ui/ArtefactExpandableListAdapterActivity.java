@@ -40,28 +40,24 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
-import android.view.View.OnCreateContextMenuListener;
+import android.view.Window;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
 
-public class ArtefactExpandableListAdapterActivity extends Activity implements OnCreateContextMenuListener {
+public class ArtefactExpandableListAdapterActivity extends Activity {
 	static final String TAG = LogConfig.getLogTag(ArtefactExpandableListAdapterActivity.class);
 	// whether DEBUG level logging is enabled (whether globally, or explicitly
 	// for this log tag)
@@ -74,44 +70,42 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 	private ArtefactDataSQLHelper artefactData;
 	
 	//private ArrayList<Artefact> items = new ArrayList<Artefact>();
-    
-	private ExpandableListAdapter adapter;
+	private ArtefactExpandableListAdapter adapter;
 	
 	private ExpandableListView listview;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
-	    requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
-
-	    setContentView(R.layout.artefacts);
 	    mContext = this;
 	    
-        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.windowtitle);
-	
-        ((TextView) findViewById(R.id.windowtitle_text)).setText(getString(R.string.app_name));
-//        ((ImageView) findViewById(R.id.windowtitle_icon)).setVisibility(View.GONE);
-        
-        listview = (ExpandableListView) findViewById(R.id.listView);
-//        listview.setOnChildClickListener(this);
-        registerForContextMenu(listview);
-        
-//    	if ( DEBUG ) Log.d(TAG, "onCreate() calls loadSavedArtefacts");
+	    requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+        setContentView(R.layout.artefacts);
 
-//	    loadSavedArtefacts();
+        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.windowtitle);
+	    
+        adapter  = new ArtefactExpandableListAdapter(this, new ArrayList<String>(), 
+    			new ArrayList<ArrayList<Artefact>>());
+
+        listview = (ExpandableListView) findViewById(R.id.listView);
+		listview.setAdapter(adapter);
+
+		// A content view has now be set so lets set the title.
+        ((TextView) findViewById(R.id.windowtitle_text)).setText(getString(R.string.app_name));
+
+    	if ( VERBOSE ) Log.v(TAG, "onCreate() called");
+    	
 	}
 
 	public void onResume() {
 	    super.onResume();   
-    	if ( DEBUG ) Log.d(TAG, "onResume() calls loadSavedArtefacts");
-
-	    loadSavedArtefacts();		
+    	if ( VERBOSE ) Log.v(TAG, "onResume() calls loadSavedArtefacts");
+		//TODO remove this db access stuff with wrapper class or move to Arefact
+	    updateView();		
 	}    
 	public void onStart() {
 	    super.onStart();   
-//    	if ( DEBUG ) Log.d(TAG, "onStart() calls loadSavedArtefacts");
-//
-//	    loadSavedArtefacts();		
+    	if ( VERBOSE ) Log.v(TAG, "onStart() called");
 	}    
   
 	@Override
@@ -127,39 +121,39 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 	    super.onDestroy();
 	}
 
-	private Integer loadSavedArtefacts() {
-        adapter  = new ExpandableListAdapter(this, new ArrayList<String>(), 
-    			new ArrayList<ArrayList<Artefact>>());
-
-		//TODO remove this db access stuff with wrapper class or move to Arefact
+	private void updateView() {
+		// First lets get our DB object
     	if ( artefactData == null )
     		artefactData = new ArtefactDataSQLHelper(this);
 
+    	// Lets see how many saved artefacts we have
 	    Artefact[] a_array = artefactData.loadSavedArtefacts();
+	    
     	if ( DEBUG ) Log.d(TAG, "returned " + a_array.length + " items");
 
-	    for ( int i = 0; i < a_array.length && a_array[i] != null; i++ ) {
-	    	if ( DEBUG ) Log.d(TAG, "adding item " + a_array[i].getFilename() + " [" + i + "]");
-			adapter.addItem(a_array[i]);
-		}
-
-	    if ( a_array.length > 0 ) {
-	        listview.setVisibility(View.VISIBLE);
-	    	((TextView) findViewById(R.id.no_saved_artefacts)).setVisibility(View.GONE);
-	    } else {
-	        listview.setVisibility(View.GONE);
-	    	((TextView) findViewById(R.id.no_saved_artefacts)).setVisibility(View.VISIBLE);
-	    }
-
-	    // Set this blank adapter to the list view
-		listview.setAdapter(adapter);
-		// notifiyDataSetChanged triggers the re-draw
-		adapter.notifyDataSetChanged();
-
-		//TODO remove this db access stuff with wrapper class or move to Artefact
-	    artefactData.close();
-		
-		return a_array.length;
+    	// If none then we show introduction screen
+    	if ( a_array == null || a_array.length <= 0 ) {
+    		// Show the introduction screen
+            ((RelativeLayout) findViewById(R.id.introduction)).setVisibility(View.VISIBLE);
+            ((RelativeLayout) findViewById(R.id.artefacts)).setVisibility(View.GONE);
+    		
+		// Else we have some artefacts to show lets load them up in our ExpandableListAdapter
+    	} else {
+			// Hide the introduction bits
+            ((RelativeLayout) findViewById(R.id.introduction)).setVisibility(View.GONE);
+            ((RelativeLayout) findViewById(R.id.artefacts)).setVisibility(View.VISIBLE);
+			
+		    for ( int i = 0; i < a_array.length && a_array[i] != null; i++ ) {
+		    	if ( DEBUG ) Log.d(TAG, "adding item " + a_array[i].getFilename() + " [" + i + "]");
+				adapter.addItem(a_array[i]);
+			}
+	
+			// notifiyDataSetChanged triggers the re-draw
+		    // Set this blank adapter to the list view
+			adapter.notifyDataSetChanged();
+			listview.invalidate();
+    	}
+    	
 	}
 	public boolean onCreateOptionsMenu(Menu menu) {
 		boolean result = super.onCreateOptionsMenu(menu);
@@ -174,11 +168,11 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 		switch (item.getItemId()) {
 			case R.id.option_delete:
 				artefactData.deleteAllSavedArtefacts();
-				loadSavedArtefacts();
+				updateView();
 				break;
 			case R.id.option_upload:
 				artefactData.uploadAllSavedArtefacts();
-				loadSavedArtefacts();
+				updateView();
 				break;
 			case R.id.about:
 				startActivity(new Intent(this, AboutActivity.class));
@@ -232,31 +226,29 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
         }
 	}
 
-	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-		adapter.onCreateContextMenu(menu, v, menuInfo);
-	}
-	public boolean onContextItemSelected(MenuItem item) {
-		adapter.onContextItemSelected(item);
-		return false;
-	}
-
-	public class ExpandableListAdapter extends BaseExpandableListAdapter implements OnClickListener, OnCreateContextMenuListener {
-
+//	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+//		adapter.onCreateContextMenu(menu, v, menuInfo);
+//	}
+//	public boolean onContextItemSelected(MenuItem item) {
+//		adapter.onContextItemSelected(item);
+//		return false;
+//	}
+	public class ArtefactExpandableListAdapter extends BaseExpandableListAdapter implements OnClickListener {
 	    @Override
 	    public boolean areAllItemsEnabled()
 	    {
 	        return true;
 	    }
 
-	    private Context eContext;
+	    private Context mContext;
 
 	    private ArrayList<String> groups;
 
 	    private ArrayList<ArrayList<Artefact>> children;
 
-	    public ExpandableListAdapter(Context context, ArrayList<String> groups,
+	    public ArtefactExpandableListAdapter(Context context, ArrayList<String> groups,
 	            ArrayList<ArrayList<Artefact>> children) {
-	        this.eContext = context;
+	        this.mContext = context;
 	        this.groups = groups;
 	        this.children = children;
 	    }
@@ -264,6 +256,7 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 	    public void addItem(Artefact art) {
 	        if (!groups.contains(art.getGroup())) {
 	            groups.add(art.getGroup());
+	        	if ( VERBOSE ) Log.v(TAG, "adding item '" + art.getGroup() + "'");
 	        }
 	        int index = groups.indexOf(art.getGroup());
 	        if (children.size() < index + 1) {
@@ -289,16 +282,16 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 	            View convertView, ViewGroup parent) {
 	    	Artefact art = (Artefact) getChild(groupPosition, childPosition);
 	        if (convertView == null) {
-	            LayoutInflater infalInflater = (LayoutInflater) eContext
+	            LayoutInflater infalInflater = (LayoutInflater) mContext
 	                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	            convertView = infalInflater.inflate(R.layout.artefact_row_child, null);
 	        }
 	        Date date = new Date (art.getTime());
 
-    		LinearLayout l;
+			LinearLayout l;
 	        // TODO General YUCK .. need to clean up and create a Journal / MaharaProvide class / utility methods
 	        // && Long.valueOf(art.getJournalId()) <= 0
-        	if ( art.isJournal() ) {
+	    	if ( art.isJournal() ) {
 		        String[][] journals = Utils.getJournals("", mContext); // TODO consider refreshing onResume
 		        if ( journals != null ) { 
 			        String[] journalKeys = journals[0];
@@ -313,28 +306,28 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 			        ((CheckBox) convertView.findViewById(R.id.txtArtefactIsDraft)).setChecked(art.getIsDraft());
 			        ((CheckBox) convertView.findViewById(R.id.txtArtefactAllowComments)).setChecked(art.getAllowComments());
 		        }
-        		// TDODO hide layout
+	    		// TDODO hide layout
 	    		l = (LinearLayout)convertView.findViewById(R.id.ArtefactJournalLayout);
 	    		if ( l != null ) l.setVisibility(LinearLayout.VISIBLE);
 	    		l = (LinearLayout)convertView.findViewById(R.id.ArtefactJournalExtrasLayout);
 	    		if ( l != null ) l.setVisibility(LinearLayout.VISIBLE);
 	    		
-	    		((TextView) convertView.findViewById(R.id.txtArtefactDescriptionLabel)).setText(getResources().getString(R.string.upload_journal_description_label));
+	    		((TextView) convertView.findViewById(R.id.txtArtefactDescriptionLabel)).setText(mContext.getResources().getString(R.string.upload_journal_description_label));
 
-        	} else {
-        		// TDODO hide layout
+	    	} else {
+	    		// TDODO hide layout
 	    		l = (LinearLayout)convertView.findViewById(R.id.ArtefactJournalLayout);
 	    		if ( l != null ) l.setVisibility(LinearLayout.GONE);
 	    		l = (LinearLayout)convertView.findViewById(R.id.ArtefactJournalExtrasLayout);
 	    		if ( l != null ) l.setVisibility(LinearLayout.GONE);
 
-	    		((TextView) convertView.findViewById(R.id.txtArtefactDescriptionLabel)).setText(getResources().getString(R.string.upload_file_description_label));
-        	}
+	    		((TextView) convertView.findViewById(R.id.txtArtefactDescriptionLabel)).setText(mContext.getResources().getString(R.string.upload_file_description_label));
+	    	}
 	        ((TextView) convertView.findViewById(R.id.txtArtefactTime)).setText(date.toString());
 	        ((TextView) convertView.findViewById(R.id.txtArtefactDescription)).setText(art.getDescription());
 	        ((TextView) convertView.findViewById(R.id.txtArtefactTags)).setText(art.getTags());
 	        
-    		l = (LinearLayout)convertView.findViewById(R.id.ArtefactFileLayout);
+			l = (LinearLayout)convertView.findViewById(R.id.ArtefactFileLayout);
 	        if ( art.getFilename() != null ) {
 		        ((TextView) convertView.findViewById(R.id.txtArtefactFilename)).setText(art.getFilename());
 
@@ -343,7 +336,7 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 		        iv.setOnClickListener(this);
 		        iv.setTag(art);
 
-		        Bitmap bm = art.getFileThumbData(eContext);
+		        Bitmap bm = art.getFileThumbData(mContext);
 	        	if ( bm != null ) {
 			        iv.setImageBitmap(bm);
 			        iv.invalidate();
@@ -386,7 +379,7 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 	            ViewGroup parent) {
 	        String group = (String) getGroup(groupPosition);
 	        if (convertView == null) {
-	            LayoutInflater infalInflater = (LayoutInflater) eContext
+	            LayoutInflater infalInflater = (LayoutInflater) mContext
 	                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	            convertView = infalInflater.inflate(R.layout.artefact_row, null);
 	        }
@@ -427,75 +420,17 @@ public class ArtefactExpandableListAdapterActivity extends Activity implements O
 			
 			switch (v.getId()) {
 			case R.id.btnEdit:
-				a.edit(eContext);
+				a.edit(mContext);
 				break;
 			case R.id.txtArtefactFileThumb:
-				a.view(eContext);
+				a.view(mContext);
 				break;
 			case R.id.btnDelete:
-				a.delete(eContext);
-				loadSavedArtefacts();
+				a.delete(mContext);
+				updateView();
 				break;
 			}
 		}
 
-		public boolean onContextItemSelected(MenuItem item) {
-			Boolean delete = false, upload = false, view = false;
-			
-			switch (item.getItemId()) {
-				case R.id.context_upload:
-					upload = true;
-					break;
-				case R.id.context_view:
-					view = true;
-					break;
-				case R.id.context_delete:
-					delete = true;
-			}
-			
-			ExpandableListContextMenuInfo info = (ExpandableListContextMenuInfo) item.getMenuInfo();
-			int groupPosition = ExpandableListView.getPackedPositionGroup(info.packedPosition); 
-
-			int type = ExpandableListView.getPackedPositionType(info.packedPosition);
-			if (type == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
-				int childPosition = ExpandableListView.getPackedPositionChild(info.packedPosition); 
-       
-				Artefact a = (Artefact) getChild(groupPosition, childPosition);
-                   
-				if ( delete ) {
-					a.delete(eContext);
-					loadSavedArtefacts();
-				} else if ( upload ) {  
-					a.upload(true, eContext);
-				} else if ( view ) {
-					a.view(eContext);
-				}
-				return true;
-			} else if (type == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
-//				String title = ((TextView) info.targetView).getText().toString();
-
-				for ( int i = 0; i < getChildrenCount(groupPosition); i++ ) {
-					Artefact a = (Artefact) getChild(groupPosition, i);
-					if ( delete ) {
-						a.delete(eContext);
-					} else if ( upload ) {
-						a.upload(true, eContext);
-					} else if ( view ) {
-						a.view(eContext);
-					}
-				}
-				
-				if ( delete )
-					loadSavedArtefacts();
-					return true; //TODO why the different here and below?
-				}
-	   
-				return false;                   
-		}
-
-		public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-			                       MenuInflater inflater = getMenuInflater();
-			                       inflater.inflate(R.menu.context, menu);
-		}
 	}
 }

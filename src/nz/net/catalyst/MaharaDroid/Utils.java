@@ -242,6 +242,10 @@ public class Utils {
     	mNM.cancel(id);
     }
 	public static long processSyncResults(JSONObject result, ContentProviderClient myProvider, Context context, String sync_key) {
+		if ( myProvider == null ) {
+			Uri uri = Uri.parse("content://" + GlobalResources.CONTENT_URL);
+			myProvider = context.getContentResolver().acquireContentProviderClient(uri);
+		}
 		// TODO Auto-generated method stub
 		long numUpdates = 0;
 		try {

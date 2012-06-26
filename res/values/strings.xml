@@ -7,7 +7,7 @@
     <string name="artefacts_help">
         
     </string>
-    <string name="artefacts_no_saved_artefacts">Nothing saved.</string>
+    <string name="artefacts_no_saved_artefacts">Nothing saved at present.</string>
     
     <string name="options_menu_prefs">Preferences</string>
     <string name="options_menu_account">Account &amp; Sync</string>
@@ -16,7 +16,7 @@
     <string name="options_menu_compose">Write</string>
     <string name="options_menu_deleteall">Delete All</string>
     <string name="options_menu_uploadall">Upload All</string>
-    <string name="options_menu_viewsaved">Saved</string>
+    <string name="options_menu_viewsaved">Saved for upload</string>
 
     <string name="context_menu_upload">Upload</string>
     <string name="context_menu_view">View</string>

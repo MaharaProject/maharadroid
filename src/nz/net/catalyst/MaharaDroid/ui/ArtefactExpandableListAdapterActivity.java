@@ -84,12 +84,6 @@ public class ArtefactExpandableListAdapterActivity extends Activity {
 
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.windowtitle);
 	    
-        adapter  = new ArtefactExpandableListAdapter(this, new ArrayList<String>(), 
-    			new ArrayList<ArrayList<Artefact>>());
-
-        listview = (ExpandableListView) findViewById(R.id.listView);
-		listview.setAdapter(adapter);
-
 		// A content view has now be set so lets set the title.
         ((TextView) findViewById(R.id.windowtitle_text)).setText(getString(R.string.app_name));
 
@@ -139,6 +133,11 @@ public class ArtefactExpandableListAdapterActivity extends Activity {
     		
 		// Else we have some artefacts to show lets load them up in our ExpandableListAdapter
     	} else {
+            adapter  = new ArtefactExpandableListAdapter(this, new ArrayList<String>(), 
+        			new ArrayList<ArrayList<Artefact>>());
+            listview = (ExpandableListView) findViewById(R.id.listView);
+    		listview.setAdapter(adapter);
+
 			// Hide the introduction bits
             ((RelativeLayout) findViewById(R.id.introduction)).setVisibility(View.GONE);
             ((RelativeLayout) findViewById(R.id.artefacts)).setVisibility(View.VISIBLE);

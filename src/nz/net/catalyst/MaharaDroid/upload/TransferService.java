@@ -147,6 +147,8 @@ public class TransferService extends IntentService {
 		notification.setLatestEventInfo(mContext, title, description, contentIntent);
 		notification.flags |= Notification.FLAG_ONGOING_EVENT;
 		notification.flags |= Notification.FLAG_AUTO_CANCEL;
+		notification.flags |= Notification.DEFAULT_SOUND;
+		notification.flags |= Notification.FLAG_SHOW_LIGHTS;
 
 		// Send the notification.
 		mNM.notify(id, notification);

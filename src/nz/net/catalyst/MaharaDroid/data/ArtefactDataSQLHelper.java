@@ -249,17 +249,17 @@ public class ArtefactDataSQLHelper extends SQLiteOpenHelper {
 		SQLiteDatabase db = this.getWritableDatabase();
 	    ContentValues values = new ContentValues();
 	    values.put(ArtefactDataSQLHelper.TIME, System.currentTimeMillis());
-	    if ( filename != null )
+//	    if ( filename != null )
 	    	values.put(ArtefactDataSQLHelper.FILENAME, filename);
-	    if ( title != null )
+//	    if ( title != null )
 	    	values.put(ArtefactDataSQLHelper.TITLE, title);
-	    if ( description != null )
+//	    if ( description != null )
 	    	values.put(ArtefactDataSQLHelper.DESCRIPTION, description);
-	    if ( tags != null )
+//	    if ( tags != null )
 	    	values.put(ArtefactDataSQLHelper.TAGS, tags);
 	    if ( saved_id != null )
 	    	values.put(ArtefactDataSQLHelper.SAVED_ID, saved_id);
-	    if ( journal_id != null )
+//	    if ( journal_id != null )
 	    	values.put(ArtefactDataSQLHelper.JOURNAL_ID, journal_id);
     	values.put(ArtefactDataSQLHelper.IS_DRAFT, is_draft);
     	values.put(ArtefactDataSQLHelper.ALLOW_COMMENTS, allow_comments);

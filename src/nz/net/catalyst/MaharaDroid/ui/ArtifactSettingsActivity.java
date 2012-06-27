@@ -219,6 +219,7 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
         ia = new ImageAdapter(this, uris);
         Gallery gallery = (Gallery) findViewById(R.id.FileGallery);
         gallery.setAdapter(ia);
+        gallery.invalidate();
     }
 
 	private void setDefaultTitle(String f) {
@@ -494,7 +495,7 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 				break;
     		}
 
-        	if ( uris == null ) {
+        	if ( uris == null || uris.length == 0 ) {
         		if ( a == null ) {
     		    	a = new Artefact(imageFile);
     			}

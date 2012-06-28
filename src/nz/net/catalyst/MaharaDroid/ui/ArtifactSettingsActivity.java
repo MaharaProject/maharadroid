@@ -26,6 +26,7 @@ import nz.net.catalyst.MaharaDroid.LogConfig;
 import nz.net.catalyst.MaharaDroid.R;
 import nz.net.catalyst.MaharaDroid.Utils;
 import nz.net.catalyst.MaharaDroid.data.Artefact;
+import nz.net.catalyst.MaharaDroid.data.SyncUtils;
 import nz.net.catalyst.MaharaDroid.upload.TransferService;
 import android.app.Activity;
 import android.content.Context;
@@ -115,7 +116,7 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
         ((TextView) findViewById(R.id.windowtitle_text)).setText(getString(R.string.artifactsettings));
 		
         Spinner spinner = (Spinner) findViewById(R.id.upload_journal_spinner);
-        String[][] journalItems = Utils.getJournals(getString(R.string.upload_journal_default), mContext);
+        String[][] journalItems = SyncUtils.getJournals(getString(R.string.upload_journal_default), mContext);
         journalKeys = journalItems[0];
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, 
         							android.R.layout.simple_spinner_item, journalItems[1]); 
@@ -125,7 +126,7 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 
         spinner = (Spinner) findViewById(R.id.upload_tags_spinner);
         
-		final String[][] tagItems = Utils.getTags(getString(R.string.upload_tags_prompt), mContext);
+		final String[][] tagItems = SyncUtils.getTags(getString(R.string.upload_tags_prompt), mContext);
         adapter = new ArrayAdapter<String>(this, 
 									android.R.layout.simple_spinner_item, tagItems[1]); 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -216,12 +217,13 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
     public void onResume() {
         super.onResume();
         
-        ia = new ImageAdapter(this, uris);
-        Gallery gallery = (Gallery) findViewById(R.id.FileGallery);
-        gallery.setAdapter(ia);
-        gallery.invalidate();
+        refreshGallery();
     }
-
+    private void refreshGallery() {
+	    ia = new ImageAdapter(this, uris);
+	    Gallery gallery = (Gallery) findViewById(R.id.FileGallery);
+	    gallery.setAdapter(ia);
+	} 
 	private void setDefaultTitle(String f) {
 		EditText et = (EditText)findViewById(R.id.txtArtefactTitle);
 
@@ -415,11 +417,25 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 			a.setJournalId(journal);
 			a.setIsDraft(is_draft);
 			a.setAllowComments(allow_comments);
-			// Note: no need to set the file - it can't be changed.
+			
+			// Note: no changes - keep current
+			if ( uris == null ) {
+				a.save(mContext);
+			} else {
+				// We have some uris added so lets set the first and create artefacts for the rest 
+				for ( int i = 0; i < uris.length; i++ ) {
+					if ( i == 0 ) {
+						a.setFilename(uris[i]);
+						a.save(mContext);
+					} else {
+						// Create a new Artefact for each (will have same details so show in saved listed as semi-duplicates
+						a = new Artefact((long) 0, uris[i], title, description, tags, null, journal, is_draft, allow_comments);
+						a.save(mContext);
+					}
+				}
+			}
 
-			a.save(mContext);
-
-		// New journal entry - no attachment
+			// New journal entry - no attachment
 		} else if ( uris == null ) {
 			a = new Artefact((long) 0, null, title, description, tags, null, journal, is_draft, allow_comments);
 			a.save(mContext);
@@ -494,16 +510,20 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
 				imageFile = intent.getData().toString();
 				break;
     		}
-
+    		
+    		// TODO - what a mess ;)
+    		// No file URI's passed in  
         	if ( uris == null || uris.length == 0 ) {
+        		uris = new String[] { imageFile };
+
         		if ( a == null ) {
     		    	a = new Artefact(imageFile);
-    			}
+    			} 
             	a.setFilename(imageFile);
             	//a.save(mContext); // don't auto save - they might want to cancel
             	setDefaultTitle(a.getBaseFilename(mContext));
 
-            	uris = new String[] { imageFile };
+        	// we have a bunch of URIs but no saved artefact
         	} else {
         		String [] new_uris = new String[uris.length + 1];
         		for ( int i = 0; i < uris.length; i++ ) {
@@ -512,6 +532,7 @@ public class ArtifactSettingsActivity extends Activity implements OnClickListene
         		new_uris[uris.length] = imageFile;
         		uris = new_uris;
         	}
+        	refreshGallery();
         }
 	}
 	public class TagChooser implements OnItemSelectedListener {

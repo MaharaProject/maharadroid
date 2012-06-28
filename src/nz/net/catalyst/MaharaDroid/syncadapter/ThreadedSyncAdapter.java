@@ -7,7 +7,8 @@ import org.json.JSONObject;
 import nz.net.catalyst.MaharaDroid.LogConfig;
 import nz.net.catalyst.MaharaDroid.R;
 import nz.net.catalyst.MaharaDroid.Utils;
-import nz.net.catalyst.MaharaDroid.data.ArtefactDataSQLHelper;
+import nz.net.catalyst.MaharaDroid.data.ArtefactUtils;
+import nz.net.catalyst.MaharaDroid.data.SyncUtils;
 import nz.net.catalyst.MaharaDroid.upload.http.RestClient;
 import android.accounts.Account;
 import android.content.AbstractThreadedSyncAdapter;
@@ -61,7 +62,7 @@ public class ThreadedSyncAdapter extends AbstractThreadedSyncAdapter{
     	// application preferences
     	SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
     	
-		String authSyncURI = Utils.getSyncURLPref(mContext);
+		String authSyncURI = SyncUtils.getSyncURLPref(mContext);
 		
 		String username = mPrefs.getString(mContext.getResources().getString(R.string.pref_auth_username_key).toString(),
 				"");
@@ -70,7 +71,7 @@ public class ThreadedSyncAdapter extends AbstractThreadedSyncAdapter{
 		String sync_key = mContext.getResources().getString(R.string.pref_sync_time_key);
 		Long lastsync = Long.parseLong(mPrefs.getString(sync_key, "0"));
 
-		String syncNotifications = Utils.getSyncNotificationsPref(mContext);
+		String syncNotifications = SyncUtils.getSyncNotificationsPref(mContext);
 
 		if ( VERBOSE ) Log.v(TAG, "Synchronizing Mahara account '" + username + "', " + "'" + token + "' for details as of lastsync '" + lastsync + "'");
 
@@ -80,17 +81,14 @@ public class ThreadedSyncAdapter extends AbstractThreadedSyncAdapter{
         if ( Utils.updateTokenFromResult(result, mContext) == null ) {
 			++syncResult.stats.numAuthExceptions;
         } else if ( result.has("sync") ) {
-        	syncResult.stats.numUpdates = Utils.processSyncResults(result, myProvider, mContext, sync_key);
+        	syncResult.stats.numUpdates += SyncUtils.processSyncResults(result, myProvider, mContext, sync_key);
         	
         	// OK sync success - now push any uploads
     		// Check if we have appropriate data access
     		if ( Utils.canUpload(mContext) ) {
     			if ( VERBOSE ) Log.v(TAG, "onPerformSync: canUpload so uploadAllSavedArtefacts");
 
-    	        ArtefactDataSQLHelper artefactData = new ArtefactDataSQLHelper(mContext);
-    	        artefactData.uploadAllSavedArtefacts();
-    	        // syncResult.stats.numUpdates = // gets increased
-    	        artefactData.close();
+    			syncResult.stats.numUpdates += ArtefactUtils.uploadAllSavedArtefacts(mContext);
     		}
         } else {
 			++syncResult.stats.numParseExceptions;

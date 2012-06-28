@@ -17,6 +17,7 @@
 package nz.net.catalyst.MaharaDroid.authenticator;
 
 import nz.net.catalyst.MaharaDroid.authenticator.AuthenticatorActivity;
+import nz.net.catalyst.MaharaDroid.data.SyncUtils;
 import nz.net.catalyst.MaharaDroid.GlobalResources;
 import nz.net.catalyst.MaharaDroid.LogConfig;
 import nz.net.catalyst.MaharaDroid.Utils;
@@ -103,7 +104,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
                 //TODO confirm but shouldn't have to force this - setSyncAutomatically should kick one off I believe 
 //                ContentResolver.requestSync(account, GlobalResources.SYNC_AUTHORITY, null);
 
-            	Utils.setPeriodicSync(account, getApplicationContext());
+            	SyncUtils.setPeriodicSync(account, getApplicationContext());
             }
             
             final Intent intent = new Intent();

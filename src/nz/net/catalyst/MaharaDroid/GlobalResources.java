@@ -52,12 +52,16 @@ public class GlobalResources {
 	
 	public static final String ACCOUNT_TYPE = "nz.net.catalyst.MaharaDroid.account";
 	public static final String AUTHTOKEN_TYPE = "nz.net.catalyst.MaharaDroid.account";
-	public static final String CONTENT_URL = "nz.net.catalyst.MaharaDroid";
+	
+	public static final String SYNC_CONTENT_URL = "nz.net.catalyst.MaharaDroid.Sync";
+	public static final String ARTEFACT_CONTENT_URL = "nz.net.catalyst.MaharaDroid.Artefact";
+	
 	public static final String SYNC_AUTHORITY = "nz.net.catalyst.MaharaDroid";
 	public static final String EXTRAS_SYNC_IS_PERIODIC = "nz.net.catalyst.MaharaDroid.periodic";
+	public static final String BROADCAST_ACTION = "nz.net.catalyst.MaharaDroid.UPLOAD_COMPLETED";
 
-	public static final String[] CONTENT_TABLES = new String[] { "tag", "blog", "folder" };
-	public static final String[] CONTENT_FIELDS = new String[] { "ID", "VALUE" };
+	public static final String[] SYNC_CONTENT_TABLES = new String[] { "tag", "blog", "folder" };
+	public static final String[] SYNC_CONTENT_FIELDS = new String[] { "ID", "VALUE" };
 
 	public static final Map<Integer, String> NOTIFICATIONS;
     static {
@@ -76,5 +80,4 @@ public class GlobalResources {
 	public static final int REQ_RECORD_AUDIO_RETURN = 2;
 	
     public static final int REGISTRATION_TIMEOUT = 30 * 1000; // ms
-	
 }

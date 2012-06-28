@@ -3,7 +3,8 @@ package nz.net.catalyst.MaharaDroid.authenticator;
 import nz.net.catalyst.MaharaDroid.LogConfig;
 import nz.net.catalyst.MaharaDroid.R;
 import nz.net.catalyst.MaharaDroid.Utils;
-import nz.net.catalyst.MaharaDroid.provider.MaharaProvider;
+import nz.net.catalyst.MaharaDroid.data.SyncUtils;
+import nz.net.catalyst.MaharaDroid.provider.SyncContentProvider;
 import nz.net.catalyst.MaharaDroid.upload.http.RestClient;
 
 import org.json.JSONObject;
@@ -61,7 +62,7 @@ public class MaharaAuthHandler {
     	// application preferences
     	SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
     	
-		String authSyncURI = Utils.getSyncURLPref(mContext);
+		String authSyncURI = SyncUtils.getSyncURLPref(mContext);
 		
     	String token = mPrefs.getString(mContext.getResources().getString(R.string.pref_auth_token_key), "");
     	
@@ -74,12 +75,12 @@ public class MaharaAuthHandler {
         Utils.showNotification(NOTIFICATION, mContext.getResources().getText(R.string.login_authenticating), 
         						null, null, mContext);
         
-		String syncNotifications = Utils.getSyncNotificationsPref(mContext);
+		String syncNotifications = SyncUtils.getSyncNotificationsPref(mContext);
     	
     	JSONObject result = RestClient.AuthSync(authSyncURI, token, username, lastsync, syncNotifications, mContext);
         token = Utils.updateTokenFromResult(result, mContext);
         if ( result.has("sync") ) {
-        	Utils.processSyncResults(result, null, mContext, sync_key);
+        	SyncUtils.processSyncResults(result, null, mContext, sync_key);
         }
 
         if ( token != null ) {

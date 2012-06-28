@@ -62,7 +62,9 @@ import nz.net.catalyst.MaharaDroid.GlobalResources;
 import nz.net.catalyst.MaharaDroid.LogConfig;
 import nz.net.catalyst.MaharaDroid.R;
 import nz.net.catalyst.MaharaDroid.Utils;
+import nz.net.catalyst.MaharaDroid.authenticator.AccountUtils;
 import nz.net.catalyst.MaharaDroid.authenticator.AuthenticatorActivity;
+import nz.net.catalyst.MaharaDroid.data.SyncUtils;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -112,10 +114,10 @@ public class EditPreferences extends PreferenceActivity implements OnSharedPrefe
 	private void loadPreferenceLists(String pref_key, String pref_table) {
 		
     	ContentResolver cr = this.getContentResolver();
-    	Uri uri = Uri.parse("content://" + GlobalResources.CONTENT_URL + "/" + pref_table);
+    	Uri uri = Uri.parse("content://" + GlobalResources.SYNC_CONTENT_URL + "/" + pref_table);
     	
     	
-    	Cursor cursor = cr.query(uri, GlobalResources.CONTENT_FIELDS, null, null, null);
+    	Cursor cursor = cr.query(uri, GlobalResources.SYNC_CONTENT_FIELDS, null, null, null);
 		ListPreference lp = (ListPreference) findPreference(pref_key);
 
 		if (lp != null && cursor != null) {
@@ -158,7 +160,7 @@ public class EditPreferences extends PreferenceActivity implements OnSharedPrefe
 		// If the username and token have 
 		if ( authDetailsChanged ) {
 			if(VERBOSE) Log.v(TAG, "Deleting old account ... ");
-			Utils.deleteAccount(this);
+			AccountUtils.deleteAccount(this);
 
 			// force login.
 			if(VERBOSE) Log.v(TAG, "Starting auth activity ... ");
@@ -231,8 +233,8 @@ public class EditPreferences extends PreferenceActivity implements OnSharedPrefe
 			if(VERBOSE) Log.v(TAG, "onSharedPreferenceChanged received ... " + authDetailsChanged + ", key is: pref_base_url_key");
 			authDetailsChanged = true;
 		} else if ( key == getString(R.string.pref_sync_periodic_key)) {
-			Account account = Utils.getAccount(this);
-			Utils.setPeriodicSync(account, this);
+			Account account = AccountUtils.getAccount(this);
+			SyncUtils.setPeriodicSync(account, this);
 		}
 	}
 

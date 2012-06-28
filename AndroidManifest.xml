@@ -94,8 +94,14 @@
 	    	<meta-data android:name="android.content.SyncAdapter"
 	    			android:resource="@xml/syncadapter" />
 	    </service>
-		<provider android:name="nz.net.catalyst.MaharaDroid.provider.MaharaProvider"
-	              android:authorities="nz.net.catalyst.MaharaDroid"
+		<provider android:name=".provider.SyncContentProvider"
+	              android:authorities="nz.net.catalyst.MaharaDroid.Sync"
+	              android:label="MaharaDroid"
+	 		      android:syncable="true"
+	  			  android:enabled="true">
+	  	</provider>
+		<provider android:name=".provider.ArtefactContentProvider"
+	              android:authorities="nz.net.catalyst.MaharaDroid.Artefact"
 	              android:label="MaharaDroid"
 	 		      android:syncable="true"
 	  			  android:enabled="true">

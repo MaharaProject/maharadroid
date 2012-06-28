@@ -43,7 +43,7 @@
 	 		  android:layout_below="@+id/artefacts_banner_text"
 			  />
 
-		<TextView android:text="@string/artefacts_help"
+		<TextView android:id="@+id/artefacts_help"
 			  android:layout_margin="5dp"
 			  android:layout_width="fill_parent" 
 			  android:singleLine="false" 

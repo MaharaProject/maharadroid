@@ -21,16 +21,12 @@
 
 package nz.net.catalyst.MaharaDroid.upload;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import nz.net.catalyst.MaharaDroid.GlobalResources;
 import nz.net.catalyst.MaharaDroid.LogConfig;
 import nz.net.catalyst.MaharaDroid.R;
 import nz.net.catalyst.MaharaDroid.Utils;
 import nz.net.catalyst.MaharaDroid.data.Artefact;
+import nz.net.catalyst.MaharaDroid.data.SyncUtils;
 import nz.net.catalyst.MaharaDroid.upload.http.RestClient;
 
 import org.json.JSONException;
@@ -45,7 +41,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 public class TransferService extends IntentService {
 	
@@ -105,8 +100,11 @@ public class TransferService extends IntentService {
 			//m_uploads.clear();
 		} else if ( result.has("success") ) {
 			Utils.updateTokenFromResult(result, mContext);
-			a.delete(mContext);
+			
 			publishProgress("finish", id, a.getTitle());
+
+			// Delete the artefact 
+			a.delete(mContext);
 		}
 	}
 	
@@ -164,7 +162,7 @@ public class TransferService extends IntentService {
 	private String getUploadFolderPref() {
 		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 
-		String[][] folderItems = Utils.getFolders(null, mContext);
+		String[][] folderItems = SyncUtils.getFolders(null, mContext);
 		
 		if ( mPrefs.getBoolean(mContext.getResources().getString(R.string.pref_upload_folder_default_key), false) ) {
 			

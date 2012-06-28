@@ -241,9 +241,7 @@ public class Artefact extends Object implements Parcelable {
 		mContext.startService(i);
 	}
 	public void delete(Context mContext) {
-        ArtefactDataSQLHelper artefactData = new ArtefactDataSQLHelper(mContext);
-        artefactData.deleteSavedArtefact(id);
-        artefactData.close();
+		ArtefactUtils.deleteSavedArtefact(mContext, id);
 	}
 	public void view(Context mContext) {
 		try {
@@ -269,21 +267,29 @@ public class Artefact extends Object implements Parcelable {
 		mContext.startActivity(i);
 	}
 	public void save(Context mContext) {
-		ArtefactDataSQLHelper artefactData = new ArtefactDataSQLHelper(mContext);
 		if ( id != 0 ) { 	// update
 	    	Log.d("Artefact", "save: is_draft: " + is_draft);
 	    	Log.d("Artefact", "save: allow comments: " + allow_comments);
-			artefactData.update(id, filename, title, description, tags, saved_id, journal_id, is_draft, allow_comments);
+			ArtefactUtils.update(mContext, id, filename, title, description, tags, saved_id, journal_id, is_draft, allow_comments);
 
 		} else { // add
-			artefactData.add(filename, title, description, tags, journal_id, is_draft, allow_comments);
+			ArtefactUtils.add(mContext, filename, title, description, tags, journal_id, is_draft, allow_comments);
 		}
-		artefactData.close();
 	}
 	public void load(Context mContext, Long id) {
-		ArtefactDataSQLHelper artefactData = new ArtefactDataSQLHelper(mContext);
-        artefactData.loadSavedArtefact(id);
-        artefactData.close();
+        Artefact ta = ArtefactUtils.loadSavedArtefact(mContext, id);
+        
+        this.id = ta.getId();
+        this.time = ta.getTime();
+        filename = ta.getFilename();
+        title = ta.getTitle();
+        description = ta.getDescription();
+        tags = ta.getTags();
+        saved_id = ta.saved_id;
+        journal_id = ta.getJournalId();
+        is_draft = ta.getIsDraft();
+        allow_comments = ta.getAllowComments();
+        
 	}
     public String getFilePath(Context context) {
     	if ( filename == null )

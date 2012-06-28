@@ -29,16 +29,22 @@ import nz.net.catalyst.MaharaDroid.LogConfig;
 import nz.net.catalyst.MaharaDroid.R;
 import nz.net.catalyst.MaharaDroid.Utils;
 import nz.net.catalyst.MaharaDroid.data.Artefact;
-import nz.net.catalyst.MaharaDroid.data.ArtefactDataSQLHelper;
+import nz.net.catalyst.MaharaDroid.data.ArtefactUtils;
+import nz.net.catalyst.MaharaDroid.data.SyncUtils;
 import nz.net.catalyst.MaharaDroid.ui.about.AboutActivity;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -67,12 +73,31 @@ public class ArtefactExpandableListAdapterActivity extends Activity {
 
 	private static Context mContext;
 	
-	private ArtefactDataSQLHelper artefactData;
-	
 	//private ArrayList<Artefact> items = new ArrayList<Artefact>();
 	private ArtefactExpandableListAdapter adapter;
 	
 	private ExpandableListView listview;
+	
+    ArtefactContentObserver acObserver = new ArtefactContentObserver(new Handler());
+	
+	private class ArtefactContentObserver extends ContentObserver {
+
+		public ArtefactContentObserver(Handler handler) {
+	        super(handler);
+	    }
+
+		@Override
+		public boolean deliverSelfNotifications() {
+			return true;
+		}
+
+	    @Override
+	    public void onChange(boolean selfChange) {
+	        super.onChange(selfChange);
+	    	if ( VERBOSE ) Log.v(TAG, "ArtefactContentObserver: onChange() called");
+	    	updateView();
+	    }
+	}
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -83,7 +108,12 @@ public class ArtefactExpandableListAdapterActivity extends Activity {
         setContentView(R.layout.artefacts);
 
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.windowtitle);
+        
+        this.getContentResolver().registerContentObserver(ArtefactUtils.URI, true, acObserver);
 	    
+        // Load artefacts on the UI
+        updateView();
+        
 		// A content view has now be set so lets set the title.
         ((TextView) findViewById(R.id.windowtitle_text)).setText(getString(R.string.app_name));
 
@@ -91,37 +121,20 @@ public class ArtefactExpandableListAdapterActivity extends Activity {
     	
 	}
 
-	public void onResume() {
-	    super.onResume();   
-    	if ( VERBOSE ) Log.v(TAG, "onResume() calls loadSavedArtefacts");
-		//TODO remove this db access stuff with wrapper class or move to Arefact
-	    updateView();		
-	}    
-	public void onStart() {
-	    super.onStart();   
-    	if ( VERBOSE ) Log.v(TAG, "onStart() called");
-	}    
-  
-	@Override
+//	public void onResume() {
+//	    super.onResume();   
+//    	if ( VERBOSE ) Log.v(TAG, "onResume() calls loadSavedArtefacts");
+//	    updateView();		
+//	}    
 	public void onDestroy() {
-    	if ( artefactData != null )
-    		artefactData.close();
 	    super.onDestroy();
-	}
-	@Override
-	public void onPause() {
-    	if ( artefactData != null )
-    		artefactData.close();
-	    super.onDestroy();
-	}
 
+        this.getContentResolver().unregisterContentObserver(acObserver);
+	}
 	private void updateView() {
 		// First lets get our DB object
-    	if ( artefactData == null )
-    		artefactData = new ArtefactDataSQLHelper(this);
-
     	// Lets see how many saved artefacts we have
-	    Artefact[] a_array = artefactData.loadSavedArtefacts();
+	    Artefact[] a_array = ArtefactUtils.loadSavedArtefacts(mContext);
 	    
     	if ( DEBUG ) Log.d(TAG, "returned " + a_array.length + " items");
 
@@ -129,6 +142,7 @@ public class ArtefactExpandableListAdapterActivity extends Activity {
     	if ( a_array == null || a_array.length <= 0 ) {
     		// Show the introduction screen
             ((RelativeLayout) findViewById(R.id.introduction)).setVisibility(View.VISIBLE);
+            ((TextView) findViewById(R.id.artefacts_help)).setText(Html.fromHtml(getString(R.string.artefacts_help)));
             ((RelativeLayout) findViewById(R.id.artefacts)).setVisibility(View.GONE);
     		
 		// Else we have some artefacts to show lets load them up in our ExpandableListAdapter
@@ -166,11 +180,11 @@ public class ArtefactExpandableListAdapterActivity extends Activity {
 		Intent intent;
 		switch (item.getItemId()) {
 			case R.id.option_delete:
-				artefactData.deleteAllSavedArtefacts();
+				ArtefactUtils.deleteAllSavedArtefacts(mContext);
 				updateView();
 				break;
 			case R.id.option_upload:
-				artefactData.uploadAllSavedArtefacts();
+				ArtefactUtils.uploadAllSavedArtefacts(mContext);
 				updateView();
 				break;
 			case R.id.about:
@@ -291,7 +305,7 @@ public class ArtefactExpandableListAdapterActivity extends Activity {
 	        // TODO General YUCK .. need to clean up and create a Journal / MaharaProvide class / utility methods
 	        // && Long.valueOf(art.getJournalId()) <= 0
 	    	if ( art.isJournal() ) {
-		        String[][] journals = Utils.getJournals("", mContext); // TODO consider refreshing onResume
+		        String[][] journals = SyncUtils.getJournals("", mContext); // TODO consider refreshing onResume
 		        if ( journals != null ) { 
 			        String[] journalKeys = journals[0];
 			        String[] journalValues = journals[1]; 

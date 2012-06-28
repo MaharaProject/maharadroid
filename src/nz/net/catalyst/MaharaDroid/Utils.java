@@ -21,40 +21,26 @@
 
 package nz.net.catalyst.MaharaDroid;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map.Entry;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import nz.net.catalyst.MaharaDroid.R;
 import nz.net.catalyst.MaharaDroid.ui.ArtefactExpandableListAdapterActivity;
-import nz.net.catalyst.MaharaDroid.ui.about.AboutActivity;
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.PeriodicSync;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.Bundle;
-import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.provider.SyncStateContract.Constants;
 import android.util.Log;
 
 public class Utils {
@@ -133,47 +119,6 @@ public class Utils {
 		return upload_url;
 	}
 
-	public static String getSyncURLPref(Context context) {
-		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-
-		String sync_url = mPrefs.getString(context.getResources().getString(R.string.pref_sync_url_key), 
-										   context.getResources().getString(R.string.pref_sync_url_default)).trim();
-		
-		// If the part overrides the whole - just go with the part.
-		if ( sync_url.startsWith("http://") ) {
-			if ( DEBUG ) Log.d(TAG, "setting sync url to '" + sync_url + "'");
-			return sync_url;
-		}
-
-		String base_url = mPrefs.getString(context.getResources().getString(R.string.pref_base_url_key), 
-										   context.getResources().getString(R.string.pref_base_url_default)).trim().toLowerCase();
-		if ( ! base_url.startsWith("http") )
-			base_url = "http://" + base_url;
-		
-		if ( ! base_url.endsWith("/") && ! sync_url.startsWith("/") ) 
-			base_url = base_url + "/";
-		// multiple joining '//' are fine
-		sync_url = base_url + sync_url;		
-		
-		if ( DEBUG ) Log.d(TAG, "setting sync url to '" + sync_url + "'");
-		return sync_url;
-	}
-	public static String getSyncNotificationsPref(Context context) {
-		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-		String notificationString = "";
-		
-		Iterator<Entry<Integer, String>> it = GlobalResources.NOTIFICATIONS.entrySet().iterator();
-	    while (it.hasNext()) {
-	    	Entry<Integer, String> not = it.next();
-			if ( mPrefs.getBoolean(context.getResources().getString(not.getKey()), true) ) {
-				notificationString += ( notificationString.length() > 0 ) ? "," : "";
-				notificationString += not.getValue();
-			}
-	    }
-		if ( DEBUG ) Log.d(TAG, "setting notifications string to '" + notificationString + "'");
-		return ( notificationString == "" ) ? null : notificationString;
-	}
-
     public static String updateTokenFromResult(JSONObject json, Context context) {
     	String newToken = null;
         if (json == null || json.has("fail")) {
@@ -241,94 +186,7 @@ public class Utils {
 
     	mNM.cancel(id);
     }
-	public static long processSyncResults(JSONObject result, ContentProviderClient myProvider, Context context, String sync_key) {
-		if ( myProvider == null ) {
-			Uri uri = Uri.parse("content://" + GlobalResources.CONTENT_URL);
-			myProvider = context.getContentResolver().acquireContentProviderClient(uri);
-		}
-		// TODO Auto-generated method stub
-		long numUpdates = 0;
-		try {
-        	JSONObject syncObj = result.getJSONObject("sync");
-    		//Log.i(TAG, syncObj.toString());
-        	if ( syncObj.has("activity") && syncObj.optJSONArray("activity") != null ) {
-        		JSONArray notArr = syncObj.getJSONArray("activity");
-    			for (int i=0; i<notArr.length(); i++) {
-        	        Utils.showNotification(Integer.parseInt(notArr.getJSONObject(i).getString("id")), 
-        	        		notArr.getJSONObject(i).getString("subject"), notArr.getJSONObject(i).getString("message"), 
-        	        		null, context);
-        			numUpdates++;
-    			}
-        	} 
-        	if ( syncObj.has("tags") && syncObj.optJSONArray("tags") != null ) {
-        		long newItems = updateListPreferenceFromJSON(myProvider, syncObj.getJSONArray("tags"), "tag");
-    			numUpdates += newItems;
-        	}
-        	if ( syncObj.has("blogs") && syncObj.optJSONArray("blogs") != null ) {
-        		long newItems = updateListPreferenceFromJSON(myProvider, syncObj.getJSONArray("blogs"), "blog");
-    			numUpdates += newItems;
-        	}
-        	if ( syncObj.has("folders") && syncObj.optJSONArray("folders") != null ) {
-        		long newItems = updateListPreferenceFromJSON(myProvider, syncObj.getJSONArray("folders"), "folder");
-    			numUpdates += newItems;
-        	}
-        	if ( syncObj.has("time") ) {
-        		// Save last sync time
-        		String last_sync = syncObj.getString("time");
-    			Log.v(TAG, "saving sync time as: " + last_sync);
 
-        		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-
-        		// We save current time in seconds since 1970 in UTC!!
-        		// TODO fix this - get the sync api to respond with the current server time which we can save here
-        		// i.e. a syncObj.has("time") piece containing the epoch to store.
-        		mPrefs.edit()
-        			.putString(sync_key, last_sync)
-        			.commit()
-        			;
-        	} 
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return numUpdates;
-	}
-
-	private static long updateListPreferenceFromJSON(ContentProviderClient myProvider, JSONArray jsonArray, String fieldName) throws JSONException, RemoteException {
-		int items = jsonArray.length();
-		
-		ContentValues[] cv = new ContentValues[items];
-		Uri uri = Uri.parse("content://" + GlobalResources.CONTENT_URL + "/" + fieldName);
-		
-		Log.i(TAG, jsonArray.toString());
-
-		for (int i=0; i<items; i++) {
-			String value = jsonArray.getJSONObject(i).getString(fieldName);
-			String id = jsonArray.getJSONObject(i).getString("id");
-
-			Log.v(TAG, "saving " + fieldName + " [ id: " + id + ", value: " + value + "]");
-
-			// test provider query
-			myProvider.query(uri, null, null, null, null);
-			
-			if ( cv[i] == null )
-				cv[i] = new ContentValues();
-			
-			cv[i].put("ID", id);
-			cv[i].put("VALUE", value);
-			//}
-		}
-		// TODO add a 'last_seen' column and delete any last_seen < this_sync
-		myProvider.delete(uri, null, null); // delete them all
-		
-		myProvider.bulkInsert(uri, cv);
-
-		return items;
-	}
 	public static Intent makeCameraIntent(Context context) {
 		
 		//define the file-name to save photo taken by Camera activity
@@ -354,108 +212,6 @@ public class Utils {
 		return i;
 	}
 	
-	public static void setPeriodicSync(Account account, Context context) {
-		if ( account == null ) 
-			return;
-		
-		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-
-		Long periodic_sync = Long.valueOf(mPrefs.getString(context.getResources().getString(R.string.pref_sync_periodic_key), "0"));
-		if ( periodic_sync == null || periodic_sync <= 0 ) {
-			// Note - should only ever have 1
-			List<PeriodicSync> ps = ContentResolver.getPeriodicSyncs(account, GlobalResources.ACCOUNT_TYPE);
-    		while ( ps != null && ! ps.isEmpty() ) {
-    			if ( periodic_sync == 0 || ps.get(0).period != periodic_sync ) {
-        			ContentResolver.removePeriodicSync(account, GlobalResources.ACCOUNT_TYPE, ps.get(0).extras);
-        			if ( VERBOSE ) Log.v(TAG, "setPeriodicSync removing periodic sync '" + ps.get(0).period + "'");
-    			}
-    			ps.remove(0);
-    		}
-			return;
-		}
-		periodic_sync = periodic_sync * 60; // convert to seconds
-		
-		if ( DEBUG ) Log.v(TAG, "setPeriodicSync of '" + periodic_sync + "' seconds");
-
-		final Bundle bundle = new Bundle();
-        bundle.putBoolean( ContentResolver.SYNC_EXTRAS_UPLOAD, true );
-
-        ContentResolver.addPeriodicSync(account, GlobalResources.SYNC_AUTHORITY, bundle, periodic_sync);
-	}
-	public static Account getAccount(Context context) {
-		AccountManager mAccountManager = AccountManager.get(context);
-		Account account = null;
-		
-//    	if ( periodic_sync != null && periodic_sync > 0 ) {
-//    		
-		// TODO replicated from AuthenticatorActivity
-		Account[] mAccounts = mAccountManager.getAccountsByType(GlobalResources.ACCOUNT_TYPE);
-        
-        if ( mAccounts.length > 0 ) {
-        	// Just pick the first one .. support multiple accounts can come later.
-        	account = mAccounts[0];
-        }
-        return account;
-	}
-
-	public static void deleteAccount(Context context) {
-		AccountManager mAccountManager = AccountManager.get(context);
-		
-		Account[] mAccounts = mAccountManager.getAccountsByType(GlobalResources.ACCOUNT_TYPE);
-        
-        for ( int i = 0; i < mAccounts.length; i++ ) {
-        	mAccountManager.removeAccount(mAccounts[i], null, null);
-        }
-	}
-
-	public static String[][] getJournals(String nullitem, Context context) {
-		return getValues("blog", nullitem, context);
-	}
-	
-	public static String[][] getTags(String nullitem, Context context) {
-		return getValues("tag", nullitem, context);
-	}
-
-	public static String[][] getFolders(String nullitem, Context context) {
-		return getValues("folder", nullitem, context);
-	}
-			
-	private static String[][] getValues(String type, String nullitem, Context context) {
-		Uri uri = Uri.parse("content://" + GlobalResources.CONTENT_URL + "/" + type);
-		
-		ContentProviderClient myProvider = context.getContentResolver().acquireContentProviderClient(uri);
-		Cursor cursor = null;
-		try {
-			cursor = myProvider.query(uri, new String[] { "ID", "VALUE" }, null, null, null);
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			Log.e(TAG, "Failed to aquire content provider for query - is there an active sync running?");
-			e.printStackTrace();
-		}
-		
-		if ( cursor == null ) {
-			return null;
-		}
-	    if ( VERBOSE ) Log.v(TAG, "getValues: have acquired content provider for " + type + 
-	    							" (" + cursor.getCount() + " items returned for " + uri.toString() + ")");
-		cursor.moveToFirst();
-		
-		String[] k = new String[cursor.getCount() + 1];
-		String[] v = new String[cursor.getCount() + 1];
-	    if ( VERBOSE ) Log.v(TAG, "getValues: size " + k.length + " for " + type);
-		k[0] = null;
-		v[0] = nullitem;
-		
-	    while (! cursor.isAfterLast() ) {
-	    	
-			k[cursor.getPosition() + 1] = cursor.getString(0);
-			v[cursor.getPosition() + 1] = cursor.getString(1);
-		    if ( VERBOSE ) Log.v(TAG, "getValues: adding " + cursor.getString(0) + " at position " + cursor.getPosition() + " to " + type);
-		    cursor.moveToNext();
-		} 		
-		cursor.close();
-		return new String[][] { k, v };
-	}
     public static Bitmap getFileThumbData(Context context, String filename) {
     	if ( filename == null )
     		return null;
@@ -490,5 +246,4 @@ public class Utils {
 
 		return bm;	
     }
-
 }

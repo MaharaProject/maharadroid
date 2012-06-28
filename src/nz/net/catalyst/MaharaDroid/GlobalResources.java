@@ -56,7 +56,7 @@ public class GlobalResources {
 	public static final String SYNC_CONTENT_URL = "nz.net.catalyst.MaharaDroid.Sync";
 	public static final String ARTEFACT_CONTENT_URL = "nz.net.catalyst.MaharaDroid.Artefact";
 	
-	public static final String SYNC_AUTHORITY = "nz.net.catalyst.MaharaDroid";
+	public static final String SYNC_AUTHORITY = "nz.net.catalyst.MaharaDroid.Sync";
 	public static final String EXTRAS_SYNC_IS_PERIODIC = "nz.net.catalyst.MaharaDroid.periodic";
 	public static final String BROADCAST_ACTION = "nz.net.catalyst.MaharaDroid.UPLOAD_COMPLETED";
 

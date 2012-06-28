@@ -20,7 +20,6 @@ import nz.net.catalyst.MaharaDroid.authenticator.AuthenticatorActivity;
 import nz.net.catalyst.MaharaDroid.data.SyncUtils;
 import nz.net.catalyst.MaharaDroid.GlobalResources;
 import nz.net.catalyst.MaharaDroid.LogConfig;
-import nz.net.catalyst.MaharaDroid.Utils;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;

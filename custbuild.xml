@@ -1,0 +1,114 @@
+<?eclipse.ant.import?>
+<!-- custom targets
+This file is included in build.xml whe exported from Eclipse
+Project tag does not need name/basedir/default attributes
+ref: http://ant.apache.org/manual/
+-->
+<project >
+
+  <property name="CUST_DIR" value="./res_sol"/>
+  <property name="RES_DIR" value="./res"/>
+
+  <target depends="init"  description="test target" name="testtarget">
+    <echo message="Hello, world"/>
+  </target>
+
+  <target depends="init"  description="copy icons" name="copyicons">
+    <echo message="copying icons"/>
+
+    <mkdir dir="${RES_DIR}/drawable/std"/>
+
+    <copy file="${RES_DIR}/drawable/icon.png" todir="${RES_DIR}/drawable/std/" 
+          overwrite="true" failonerror="false" verbose="true"/>
+    <copy file="${CUST_DIR}/drawable/icon.png" todir="${RES_DIR}/drawable/"
+          overwrite="true" failonerror="false" verbose="true"/>
+
+    <copy file="${RES_DIR}/drawable/button.9.png" todir="${RES_DIR}/drawable/" 
+          overwrite="true" failonerror="false" verbose="true"/>
+    <copy file="${CUST_DIR}/drawable/button.9.png" todir="${RES_DIR}/drawable/"
+          overwrite="true" failonerror="false" verbose="true"/>
+
+    <copy file="${RES_DIR}/drawable/button_pressed.9.png" todir="${RES_DIR}/drawable/std/" 
+          overwrite="true" failonerror="false" verbose="true"/>
+    <copy file="${CUST_DIR}/drawable/button_pressed.9.png" todir="${RES_DIR}/drawable/"
+          overwrite="true" failonerror="false" verbose="true"/>
+
+    <copy file="${RES_DIR}/drawable/windowtitle_background.png" todir="${RES_DIR}/drawable/std/" 
+          overwrite="true" failonerror="false" verbose="true"/>
+    <copy file="${CUST_DIR}/drawable/windowtitle_background.png" todir="${RES_DIR}/drawable/"
+          overwrite="true" failonerror="false" verbose="true"/>
+
+
+    <property name="SCRSZ" value="-hdpi"/>
+    <mkdir dir="${RES_DIR}/drawable${SCRSZ}/std"/>
+
+    <copy file="${RES_DIR}/drawable${SCRSZ}/icon.png" todir="${RES_DIR}/drawable${SCRSZ}/std/" 
+          overwrite="true" failonerror="false" verbose="true"/>
+    <copy file="${CUST_DIR}/drawable${SCRSZ}/icon.png" todir="${RES_DIR}/drawable${SCRSZ}/"
+          overwrite="true" failonerror="true" verbose="true"/>
+
+    <property name="SCRSZxh" value="-xhdpi"/>
+    <mkdir dir="${RES_DIR}/drawable${SCRSZxh}/std"/>
+
+    <copy file="${RES_DIR}/drawable${SCRSZxh}/icon.png" todir="${RES_DIR}/drawable${SCRSZxh}/std/" 
+          overwrite="true" failonerror="false" verbose="true"/>
+    <copy file="${CUST_DIR}/drawable${SCRSZxh}/icon.png" todir="${RES_DIR}/drawable${SCRSZxh}/"
+          overwrite="true" failonerror="true" verbose="true"/>
+
+    <property name="SCRSZl" value="-ldpi"/>
+    <mkdir dir="${RES_DIR}/drawable${SCRSZl}/std"/>
+
+    <copy file="${RES_DIR}/drawable${SCRSZl}/icon.png" todir="${RES_DIR}/drawable${SCRSZl}/std/" 
+          overwrite="true" failonerror="false" verbose="true"/>
+    <copy file="${CUST_DIR}/drawable${SCRSZl}/icon.png" todir="${RES_DIR}/drawable${SCRSZl}/"
+          overwrite="true" failonerror="true" verbose="true"/>
+
+    <property name="SCRSZm" value="-mdpi"/>
+    <mkdir dir="${RES_DIR}/drawable${SCRSZm}/std"/>
+
+    <copy file="${RES_DIR}/drawable${SCRSZm}/icon.png" todir="${RES_DIR}/drawable${SCRSZm}/std/" 
+          overwrite="true" failonerror="false" verbose="true"/>
+    <copy file="${CUST_DIR}/drawable${SCRSZm}/icon.png" todir="${RES_DIR}/drawable${SCRSZm}/"
+          overwrite="true" failonerror="true" verbose="true"/>
+
+  </target>
+
+  <target depends="init"  description="edit custom strings" name="editstrings">
+    <!-- this makes a copy of the original file in the std dir
+        If run a second time - it will not overwrite the saved file, and will not make changes
+        to the main one as the token will not now match - hopefully what we want!
+        Note: if a different language than default is used  - then the lang specific files will need to 
+        be manually changed -->
+    <echo message="editing custom strings"/>
+    <mkdir dir="${RES_DIR}/values/std"/>
+    <copy file="${RES_DIR}/values/strings.xml"  todir="${RES_DIR}/values/std/" 
+          overwrite="false" failonerror="false" verbose="true"/>
+    <replace file="${RES_DIR}/values/strings.xml" 
+          token="&lt;string name=&quot;pref_base_url_default&quot;&gt;&lt;/string&gt;" 
+          value="&lt;string name=&quot;pref_base_url_default&quot;&gt;http://solent-mahara.catalystdemo.co.uk&lt;/string&gt;" 
+          summary="true"/>
+          <!-- <upload.base.uri>http://solent-mahara.catalystdemo.co.uk</upload.base.uri>   -->
+  </target>
+  
+  
+
+  <target depends="init"  description="copy apk" name="copyapk">
+    <echo message="copying apk"/>
+    <echo message="now copy ./bin/ArtefactExpandableListAdapterActivity.apk to server"/>
+  </target>
+
+  <target description="generate qr code from config.xml" name="genqr">
+    <!-- qrencode -o config.png < config.xml -->
+    <exec executable="qrencode" input="config.xml">
+      <arg value="-o"/>
+      <arg value="config.png"/>
+    </exec>
+  </target>
+
+  <target description="run draw9patch" name="draw9patch">
+    <exec executable="draw9patch" >
+    </exec>
+  </target>
+
+
+</project>

@@ -9,10 +9,14 @@ ref: http://ant.apache.org/manual/
   <property name="CUST_DIR" value="./res_sol"/>
   <property name="RES_DIR" value="./res"/>
 
-  <target depends="init"  description="test target" name="testtarget">
-    <echo message="Hello, world"/>
+  <target depends="init,copyicons,editstrings"  description="All customisation" name="custom" >
+    <echo message="Doing custom tasks"/>
+    
   </target>
 
+  
+  
+  
   <target depends="init"  description="copy icons" name="copyicons">
     <echo message="copying icons"/>
 
@@ -81,17 +85,58 @@ ref: http://ant.apache.org/manual/
         be manually changed -->
     <echo message="editing custom strings"/>
     <mkdir dir="${RES_DIR}/values/std"/>
+
+    <!-- <upload.base.uri>http://solent-mahara.catalystdemo.co.uk</upload.base.uri>   -->
     <copy file="${RES_DIR}/values/strings.xml"  todir="${RES_DIR}/values/std/" 
           overwrite="false" failonerror="false" verbose="true"/>
     <replace file="${RES_DIR}/values/strings.xml" 
           token="&lt;string name=&quot;pref_base_url_default&quot;&gt;&lt;/string&gt;" 
           value="&lt;string name=&quot;pref_base_url_default&quot;&gt;http://solent-mahara.catalystdemo.co.uk&lt;/string&gt;" 
           summary="true"/>
-          <!-- <upload.base.uri>http://solent-mahara.catalystdemo.co.uk</upload.base.uri>   -->
+          
+      <!-- string name="app_name">MaharaDroid</string-->
+      <replace file="${RES_DIR}/values/strings.xml" 
+          token="&lt;string name=&quot;app_name&quot;&gt;MaharaDroid&lt;/string&gt;" 
+          value="&lt;string name=&quot;app_name&quot;&gt;myPortfolio&lt;/string&gt;" 
+          summary="true"/>
+  </target>
+  
+  
+  <target depends="init"  description="edit windowtitle" name="editwindowtitle">
+    <!-- this makes a copy of the original file in the std dir
+         Notes as for editstrings - though this cannot reliably detect if content is already there
+     -->
+    <echo message="adding custom windowtitle element"/>
+    <mkdir dir="${RES_DIR}/values/std"/>
+
+    <copy file="${RES_DIR}/layout/windowtitle.xml"  todir="${RES_DIR}/layout/std/" 
+          overwrite="false" failonerror="false" verbose="true"/>
+    <replace file="${RES_DIR}/layout/windowtitle.xml" 
+          token="&lt;/LinearLayout&gt;"
+          value="       &lt;!--  custom icon on right of header --&gt;&#xa;
+     &lt;ImageView&#xa;
+        android:id=&quot;@+id/windowtitle_cust_icon&quot;&#xa;
+        android:src=&quot;@drawable/windowtitle_cust_icon&quot;&#xa;
+        android:layout_width=&quot;wrap_content&quot;&#xa;
+        android:layout_height=&quot;wrap_content&quot;&#xa;
+        android:layout_gravity=&quot;right&quot;&#xa;
+        android:layout_weight=&quot;0&quot;&#xa;
+        android:padding=&quot;0dp&quot;&#xa;
+        android:layout_margin=&quot;0dp&quot;&#xa;
+        android:scaleType=&quot;fitStart&quot;&#xa;
+        /&gt;&#xa;
+&lt;/LinearLayout&gt;&#xa;"
+          summary="true"/>
   </target>
   
   
 
+  
+  
+  
+  
+  
+  <!-- to build apk - in eclipse do clean, then Run->Run As ->Android application (this builds Release verion of apk) -->
   <target depends="init"  description="copy apk" name="copyapk">
     <echo message="copying apk"/>
     <echo message="now copy ./bin/ArtefactExpandableListAdapterActivity.apk to server"/>

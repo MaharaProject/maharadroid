@@ -1,7 +1,14 @@
 <?eclipse.ant.import?>
 <!-- custom targets
-This file is included in build.xml whe exported from Eclipse
-Project tag does not need name/basedir/default attributes
+To customise:
+- Create a set of custom image files in a parallel directory structure to ./res
+and change 'res_sol' below to the directory name. Change filenames to be copied below as required.
+- Check changes in text below, and add your own.
+- In Eclipse do File->Export, Ant buildfiles, select project name, Finish. 
+This will create a build.xml file which will do an include on this one (because of the PI on the top line above)
+- Do ant custom to run the customisations
+- To build apk - in Eclipse do Project->Clean, then Run->Run As->Android application (this builds Release version of apk)
+
 ref: http://ant.apache.org/manual/
 -->
 <project >
@@ -9,12 +16,9 @@ ref: http://ant.apache.org/manual/
   <property name="CUST_DIR" value="./res_sol"/>
   <property name="RES_DIR" value="./res"/>
 
-  <target depends="init,copyicons,editstrings"  description="All customisation" name="custom" >
+  <target depends="init,copyicons,editstrings,editwindowtitle"  description="All customisation" name="custom" >
     <echo message="Doing custom tasks"/>
-    
   </target>
-
-  
   
   
   <target depends="init"  description="copy icons" name="copyicons">
@@ -77,6 +81,7 @@ ref: http://ant.apache.org/manual/
 
   </target>
 
+
   <target depends="init"  description="edit custom strings" name="editstrings">
     <!-- this makes a copy of the original file in the std dir
         If run a second time - it will not overwrite the saved file, and will not make changes
@@ -130,13 +135,8 @@ ref: http://ant.apache.org/manual/
   </target>
   
   
-
   
-  
-  
-  
-  
-  <!-- to build apk - in eclipse do clean, then Run->Run As ->Android application (this builds Release verion of apk) -->
+  <!-- see above for build information -->
   <target depends="init"  description="copy apk" name="copyapk">
     <echo message="copying apk"/>
     <echo message="now copy ./bin/ArtefactExpandableListAdapterActivity.apk to server"/>

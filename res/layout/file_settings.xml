@@ -13,20 +13,6 @@
 		
 			<LinearLayout
 				  xmlns:android="http://schemas.android.com/apk/res/android"
-				  android:id="@+id/ArtefactJournalLayout"
-				  android:layout_width="fill_parent"
-				  android:layout_height="wrap_content"
-				  android:orientation="horizontal">
-				  
-			    <Spinner 
-			        android:id="@+id/upload_journal_spinner"
-			        android:layout_width="fill_parent"
-			        android:layout_height="wrap_content"
-					android:prompt="@string/upload_journal_prompt"
-			    	/>
-			</LinearLayout>
-			<LinearLayout
-				  xmlns:android="http://schemas.android.com/apk/res/android"
 				  android:id="@+id/ArtefactJournalPostLayout"
 				  android:layout_width="fill_parent"
 				  android:layout_height="wrap_content"
@@ -157,64 +143,6 @@
 					        android:layout_height="wrap_content"
 				    />
 			</LinearLayout>	
-			<LinearLayout
-				  xmlns:android="http://schemas.android.com/apk/res/android"
-				  android:id="@+id/ArtefactJournalExtrasLayout"
-				  android:layout_width="fill_parent"
-				  android:layout_height="wrap_content"
-				  android:orientation="vertical"
-				  >
-   				<LinearLayout
-					  xmlns:android="http://schemas.android.com/apk/res/android"
-					  android:id="@+id/ArtefactIsDraftLayout"
-					  android:layout_width="fill_parent"
-					  android:layout_height="wrap_content"
-					  android:orientation="horizontal">
-					  
-   				    <!-- android:text="@string/upload_is_draft_label"-->
-						<CheckBox 
-								style="@android:style/TextAppearance.Small"
-								android:id="@+id/txtArtefactIsDraft"
-								android:layout_height="wrap_content"
-								android:layout_margin="5dip"
-								android:checked="false"
-							    android:layout_width="60dip"
-				  							  />
-						
-						<TextView android:text="@string/upload_is_draft_text"
-								  android:layout_width="wrap_content"
-								  android:singleLine="false"
-								  android:layout_height="wrap_content"
-				  				  android:padding="5dip"
-				  				  android:layout_margin="5dip"
-				  				  style="@android:style/TextAppearance.Small">
-						</TextView>
-				</LinearLayout>
-				<LinearLayout
-					  xmlns:android="http://schemas.android.com/apk/res/android"
-					  android:id="@+id/ArtefactAllowCommentsLayout"
-					  android:layout_width="fill_parent"
-					  android:layout_height="wrap_content"
-					  android:orientation="horizontal">
-					  <!-- android:text="@string/upload_allow_comments_label" -->
-						<CheckBox 
-								style="@android:style/TextAppearance.Small"
-								android:id="@+id/txtArtefactAllowComments"
-								android:layout_height="wrap_content"
-								android:layout_margin="5dip"
-								android:checked="true"
-						   		android:layout_width="60dip"
-				  							  />
-						<TextView android:text="@string/upload_allow_comments_text"
-								android:layout_width="wrap_content"
-								android:singleLine="false"
-								android:layout_height="wrap_content"
-				  				android:padding="5dip"
-				  				android:layout_margin="5dip"
-				  				style="@android:style/TextAppearance.Small">
-						</TextView>
-				</LinearLayout>
-			</LinearLayout>			
 			<Gallery xmlns:android="http://schemas.android.com/apk/res/android" 
 			    android:id="@+id/FileGallery"
 			    android:layout_width="fill_parent"

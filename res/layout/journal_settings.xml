@@ -27,45 +27,6 @@
 			</LinearLayout>
 			<LinearLayout
 				  xmlns:android="http://schemas.android.com/apk/res/android"
-				  android:id="@+id/ArtefactJournalPostLayout"
-				  android:layout_width="fill_parent"
-				  android:layout_height="wrap_content"
-				  android:orientation="horizontal">
-				  
-			    <Spinner 
-			        android:id="@+id/upload_journal_post_spinner"
-			        android:layout_width="fill_parent"
-			        android:layout_height="wrap_content"
-					android:prompt="@string/upload_journal_post_prompt"
-			    	/>
-			</LinearLayout>
-			<LinearLayout
-				  xmlns:android="http://schemas.android.com/apk/res/android"
-				  android:id="@+id/ArtefactConfirmLayout"
-				  android:layout_width="fill_parent"
-				  android:layout_height="wrap_content"
-				  android:orientation="horizontal">
-				  
-					<CheckBox 
-							style="@android:style/TextAppearance.Small"
-							android:id="@+id/chkUpload"
-						    android:layout_width="60dip"
-							android:layout_height="wrap_content"
-							android:layout_margin="5dip"
-			  							  />
-					
-					<TextView android:text="@string/upload_confirm_text"
-							  android:id="@+id/txtArtefactConfirm"
-							  android:layout_width="wrap_content"
-							  android:singleLine="false"
-							  android:layout_height="wrap_content"
-			  				  android:layout_margin="5dip"
-			  				  android:paddingBottom="15dip"
-			  				  style="@android:style/TextAppearance.Small">
-					</TextView>
-			</LinearLayout>
-			<LinearLayout
-				  xmlns:android="http://schemas.android.com/apk/res/android"
 				  android:id="@+id/ArtefactTitleLayout"
 				  android:layout_width="fill_parent"
 				  android:layout_height="wrap_content"
@@ -215,17 +176,6 @@
 						</TextView>
 				</LinearLayout>
 			</LinearLayout>			
-			<Gallery xmlns:android="http://schemas.android.com/apk/res/android" 
-			    android:id="@+id/FileGallery"
-			    android:layout_width="fill_parent"
-			    android:layout_height="wrap_content"
-  				android:layout_margin="5dip"
-  				android:gravity="center_horizontal"
-  				android:layout_gravity="fill_horizontal"
-				android:spacing="5dip"
-				android:scrollbars="horizontal"
-			/>						    		    
-							
 			<LinearLayout
 			  xmlns:android="http://schemas.android.com/apk/res/android"
 			  android:id="@+id/ArtefactSettingsButtonLayout"
@@ -240,7 +190,7 @@
 						android:layout_weight="1"
 						android:layout_width="fill_parent"
 						android:layout_height="wrap_content"
-						android:enabled="false"
+						android:enabled="true"
 						style="@style/MaharaButton"
 						>
 				</Button>

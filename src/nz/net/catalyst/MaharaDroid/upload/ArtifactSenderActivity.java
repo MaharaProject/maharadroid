@@ -25,7 +25,7 @@ import java.util.ArrayList;
 
 import nz.net.catalyst.MaharaDroid.LogConfig;
 import nz.net.catalyst.MaharaDroid.R;
-import nz.net.catalyst.MaharaDroid.ui.ArtifactSettingsActivity;
+import nz.net.catalyst.MaharaDroid.ui.FileSettingsActivity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -85,7 +85,7 @@ public class ArtifactSenderActivity extends Activity {
 		if ( uris == null ) {
 			Toast.makeText(getApplicationContext(), R.string.uploadnotavailable, Toast.LENGTH_SHORT).show();
 		} else {
-			Intent i = new Intent(this, ArtifactSettingsActivity.class);
+			Intent i = new Intent(this, FileSettingsActivity.class);
 			i.putExtra("uri", uris);
 			startActivity(i);
 		}

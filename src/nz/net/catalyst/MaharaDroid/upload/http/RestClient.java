@@ -109,7 +109,7 @@ public class RestClient {
 	}
 
     // TODO: change this to be a hash of post variables
-	public static JSONObject UploadArtifact(String url, String token, String username, String blog, boolean draft, boolean allowcomments,
+	public static JSONObject UploadArtifact(String url, String token, String username, String blog, String blogpost, boolean draft, boolean allowcomments,
 												String foldername, String tags, String filename, String title, 
 												String description, Context context){
 		Vector<String> pNames = new Vector<String>();
@@ -147,6 +147,10 @@ public class RestClient {
 			pNames.add("blog");
 			pVals.add(blog);
 		}
+		if (blogpost != null ) {
+			pNames.add("blogpost");
+			pVals.add(blogpost);
+		}
 		if ( draft ) {
 			pNames.add("draft");
 			pVals.add("true");
@@ -174,10 +178,6 @@ public class RestClient {
 		if ( username != null ) {
 			pNames.add("username");
 			pVals.add(username);
-		}
-		if ( lastsync != null ) {
-			pNames.add("lastsync");
-			pVals.add(lastsync.toString());
 		}
 		if ( lastsync != null ) {
 			pNames.add("lastsync");

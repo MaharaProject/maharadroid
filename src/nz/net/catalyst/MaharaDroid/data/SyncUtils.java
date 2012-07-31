@@ -21,7 +21,9 @@
 
 package nz.net.catalyst.MaharaDroid.data;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -33,31 +35,18 @@ import nz.net.catalyst.MaharaDroid.GlobalResources;
 import nz.net.catalyst.MaharaDroid.LogConfig;
 import nz.net.catalyst.MaharaDroid.R;
 import nz.net.catalyst.MaharaDroid.Utils;
-import nz.net.catalyst.MaharaDroid.ui.ArtefactExpandableListAdapterActivity;
-import nz.net.catalyst.MaharaDroid.ui.about.AboutActivity;
 import android.accounts.Account;
-import android.accounts.AccountManager;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.content.PeriodicSync;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
-import android.provider.SyncStateContract.Constants;
 import android.util.Log;
 
 public class SyncUtils {
@@ -98,12 +87,12 @@ public class SyncUtils {
 		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
 		String notificationString = "";
 		
-		Iterator<Entry<Integer, String>> it = GlobalResources.NOTIFICATIONS.entrySet().iterator();
+		Iterator<Entry<Integer, Integer>> it = GlobalResources.NOTIFICATIONS.entrySet().iterator();
 	    while (it.hasNext()) {
-	    	Entry<Integer, String> not = it.next();
-			if ( mPrefs.getBoolean(context.getResources().getString(not.getKey()), true) ) {
+	    	Entry<Integer, Integer> not = it.next();
+			if ( mPrefs.getBoolean(context.getResources().getString(not.getKey()), context.getResources().getString(not.getValue()).equals("true")) ) {
 				notificationString += ( notificationString.length() > 0 ) ? "," : "";
-				notificationString += not.getValue();
+				notificationString += context.getResources().getString(not.getKey());
 			}
 	    }
 		if ( DEBUG ) Log.d(TAG, "setting notifications string to '" + notificationString + "'");
@@ -129,15 +118,19 @@ public class SyncUtils {
     			}
         	} 
         	if ( syncObj.has("tags") && syncObj.optJSONArray("tags") != null ) {
-        		long newItems = updateListPreferenceFromJSON(syncContentProvider, syncObj.getJSONArray("tags"), "tag");
+        		long newItems = updateListPreferenceFromJSON(syncContentProvider, syncObj.getJSONArray("tags"), "tag", context);
     			numUpdates += newItems;
         	}
         	if ( syncObj.has("blogs") && syncObj.optJSONArray("blogs") != null ) {
-        		long newItems = updateListPreferenceFromJSON(syncContentProvider, syncObj.getJSONArray("blogs"), "blog");
+        		long newItems = updateListPreferenceFromJSON(syncContentProvider, syncObj.getJSONArray("blogs"), "blog", context);
+    			numUpdates += newItems;
+        	}
+        	if ( syncObj.has("blogposts") && syncObj.optJSONArray("blogposts") != null ) {
+        		long newItems = updateListPreferenceFromJSON(syncContentProvider, syncObj.getJSONArray("blogposts"), "blogpost", context);
     			numUpdates += newItems;
         	}
         	if ( syncObj.has("folders") && syncObj.optJSONArray("folders") != null ) {
-        		long newItems = updateListPreferenceFromJSON(syncContentProvider, syncObj.getJSONArray("folders"), "folder");
+        		long newItems = updateListPreferenceFromJSON(syncContentProvider, syncObj.getJSONArray("folders"), "folder", context);
     			numUpdates += newItems;
         	}
         	if ( syncObj.has("time") ) {
@@ -162,11 +155,13 @@ public class SyncUtils {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+//		syncContentProvider.release();
+		
 		return numUpdates;
 	}
 
-	private static long updateListPreferenceFromJSON(ContentProviderClient syncContentProvider, JSONArray jsonArray, String fieldName) throws JSONException, RemoteException {
+	private static long updateListPreferenceFromJSON(ContentProviderClient syncContentProvider, JSONArray jsonArray, String fieldName, Context context) throws JSONException, RemoteException {
+
 		int items = jsonArray.length();
 		
 		ContentValues[] cv = new ContentValues[items];
@@ -196,6 +191,30 @@ public class SyncUtils {
 		syncContentProvider.bulkInsert(uri, cv);
 
 		return items;
+	}
+	public static void insertJournalPostListPreference(String id, String value, Context context) throws JSONException, RemoteException {
+
+		// TODO - urg .. hardwired blogpost 
+		Uri uri = Uri.parse("content://" + GlobalResources.SYNC_CONTENT_URL + "/blogpost");
+		
+		Log.v(TAG, "saving blogpost [ id: " + id + ", value: " + value + "]");
+
+		// test provider query
+		ContentProviderClient syncContentProvider = context.getContentResolver().acquireContentProviderClient(uri);
+			
+		ContentValues cv = new ContentValues();
+			
+		cv.put("ID", id);
+		cv.put("VALUE", value);
+		
+		try {
+			syncContentProvider.insert(uri, cv);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			Log.e(TAG, "Failed to aquire content provider for query - is there an active sync running?");
+		}
+
+		syncContentProvider.release();
 	}
 	public static void setPeriodicSync(Account account, Context context) {
 		if ( account == null ) 
@@ -228,7 +247,9 @@ public class SyncUtils {
 	public static String[][] getJournals(String nullitem, Context context) {
 		return getValues("blog", nullitem, context);
 	}
-	
+	public static String[][] getJournalPosts(String nullitem, Context context) {
+		return getValues("blogpost", nullitem, context);
+	}	
 	public static String[][] getTags(String nullitem, Context context) {
 		return getValues("tag", nullitem, context);
 	}
@@ -240,6 +261,8 @@ public class SyncUtils {
 	private static String[][] getValues(String type, String nullitem, Context context) {
 		Uri uri = Uri.parse("content://" + GlobalResources.SYNC_CONTENT_URL + "/" + type);
 		
+		boolean hasNullItem = ( nullitem != null );
+		
 		ContentProviderClient syncContentProvider = context.getContentResolver().acquireContentProviderClient(uri);
 		Cursor cursor = null;
 		try {
@@ -247,30 +270,34 @@ public class SyncUtils {
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			Log.e(TAG, "Failed to aquire content provider for query - is there an active sync running?");
-			e.printStackTrace();
 		}
 		
 		if ( cursor == null ) {
+			syncContentProvider.release();
 			return null;
 		}
 	    if ( VERBOSE ) Log.v(TAG, "getValues: have acquired content provider for " + type + 
 	    							" (" + cursor.getCount() + " items returned for " + uri.toString() + ")");
 		cursor.moveToFirst();
 		
-		String[] k = new String[cursor.getCount() + 1];
-		String[] v = new String[cursor.getCount() + 1];
-	    if ( VERBOSE ) Log.v(TAG, "getValues: size " + k.length + " for " + type);
-		k[0] = null;
-		v[0] = nullitem;
-		
+		String[] k = new String[cursor.getCount() + ( ( hasNullItem ) ? 1 : 0 )];
+		String[] v = new String[cursor.getCount() + ( ( hasNullItem ) ? 1 : 0 )];
+	    if ( VERBOSE ) Log.v(TAG, "getValues: size " + cursor.getCount() + " for " + type);
+	    
+	    if ( hasNullItem ) { 
+	    	k[cursor.getPosition()] = null;
+	    	v[cursor.getPosition()] = nullitem;
+	    }
+	    
 	    while (! cursor.isAfterLast() ) {
-	    	
-			k[cursor.getPosition() + 1] = cursor.getString(0);
-			v[cursor.getPosition() + 1] = cursor.getString(1);
+	    	k[cursor.getPosition() + ( ( hasNullItem ) ? 1 : 0 )] = cursor.getString(0);
+	    	v[cursor.getPosition() + ( ( hasNullItem ) ? 1 : 0 )] = cursor.getString(1);
 		    if ( VERBOSE ) Log.v(TAG, "getValues: adding " + cursor.getString(0) + " at position " + cursor.getPosition() + " to " + type);
 		    cursor.moveToNext();
 		} 		
 		cursor.close();
+		syncContentProvider.release();
+		
 		return new String[][] { k, v };
 	}
 }

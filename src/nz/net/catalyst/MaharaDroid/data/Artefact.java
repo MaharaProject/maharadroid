@@ -25,19 +25,19 @@ import java.io.File;
 
 import nz.net.catalyst.MaharaDroid.LogConfig;
 import nz.net.catalyst.MaharaDroid.Utils;
-import nz.net.catalyst.MaharaDroid.ui.ArtifactSettingsActivity;
+import nz.net.catalyst.MaharaDroid.ui.FileSettingsActivity;
+import nz.net.catalyst.MaharaDroid.ui.JournalSettingsActivity;
 import nz.net.catalyst.MaharaDroid.upload.TransferService;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.provider.MediaStore;
 import android.util.Log;
 
 public class Artefact extends Object implements Parcelable {
@@ -48,17 +48,18 @@ public class Artefact extends Object implements Parcelable {
 	// whether VERBOSE level logging is enabled
 	static final boolean VERBOSE = LogConfig.VERBOSE;
 	
-	private long id = 0;
+	private Long id = 0L;
 	private long time;
 	private String filename;
 	private String title;
 	private String description;
 	private String tags;
-	private Long saved_id;
 	private String journal_id;
 	private boolean is_draft = false;
 	private boolean allow_comments = false;
-
+	private boolean upload_ready = false;
+	private String journal_post_id;
+	
 	public Long getId() {
 		return id;
 	}
@@ -67,13 +68,6 @@ public class Artefact extends Object implements Parcelable {
 	}
 	public String getFilename() {
 		return filename;
-	}
-	public String getBaseFilename(Context context) {
-		// Returns the base of the actual file name - not the content store file 
-		// (which would just be it's content:// ... /ID)
-		String filepath = this.getFilePath(context);
-		
-		return ( filepath == null ) ? null : filepath.substring(filepath.lastIndexOf("/") + 1);
 	}
 	public String getTitle() {
 		return title;
@@ -87,11 +81,17 @@ public class Artefact extends Object implements Parcelable {
 	public String getJournalId() {
 		return journal_id;
 	}
+	public String getJournalPostId() {
+		return journal_post_id;
+	}
 	public boolean getIsDraft() {
 		return is_draft;
 	}
 	public boolean getAllowComments() {
 		return allow_comments;
+	}
+	public boolean getUploadReady() {
+		return upload_ready;
 	}
 	public void setId(Long i) {
 		id = i;
@@ -114,15 +114,28 @@ public class Artefact extends Object implements Parcelable {
 	public void setJournalId(String j) {
 		journal_id = j;
 	}
+	public void setJournalPostId(String p) {
+		journal_post_id = p;
+	}
 	public void setIsDraft(Boolean d) {
 		is_draft = d;
 	}
 	public void setAllowComments(Boolean a) {
 		allow_comments = a;
 	}
+	public void setUploadReady(Boolean u) {
+		upload_ready = u;
+	}
 	public String getGroup() {
+		String group_id = "";
 		// In the meantime just set the article ID, i.e force no grouping
-		return this.title;
+		if ( this.journal_id != null )
+			group_id += (this.journal_id + this.title);
+		else if ( this.journal_post_id != null )
+			group_id += this.journal_post_id;
+		else 
+			group_id += ((Long) this.id).toString();
+		return group_id;
 	}
 	public boolean isJournal() {
 		return ( journal_id != null && Long.parseLong(journal_id) > 0 );
@@ -132,7 +145,8 @@ public class Artefact extends Object implements Parcelable {
 	}
 	public boolean canUpload() {
 		// journal must have title and description otherwise a title and filename will do 
-		if ( ( title != null && title.trim().length() > 0 ) 
+		if ( upload_ready 
+				&& ( title != null && title.trim().length() > 0 ) 
 				&& ( ( isJournal() && ( description != null && description.trim().length() > 0 ) ) 
 						|| filename != null ) ) {
 			return true;
@@ -156,10 +170,8 @@ public class Artefact extends Object implements Parcelable {
 		dest.writeString(tags);
 		dest.writeLong(time);
 		dest.writeString(journal_id);
-		dest.writeBooleanArray(new boolean[] { is_draft, allow_comments });
-    	Log.d("Artefact", "writeToParcel: is_draft: " + is_draft);
-    	Log.d("Artefact", "writeToParcel: allow comments: " + allow_comments);
-
+		dest.writeString(journal_post_id);
+		dest.writeBooleanArray(new boolean[] { is_draft, allow_comments, upload_ready });
 	}
 		
 	/**
@@ -175,11 +187,12 @@ public class Artefact extends Object implements Parcelable {
 			return new Artefact[size];
 		}
 	};
+
 	/**
 	 * For use by CREATOR
 	 * @param in
 	 */
-	private Artefact(Parcel in) {
+	protected Artefact(Parcel in) {
 		id = in.readLong();
 		filename = in.readString();
 		title = in.readString();
@@ -187,47 +200,53 @@ public class Artefact extends Object implements Parcelable {
 		tags = in.readString();
 		time = in.readLong();
 		journal_id = in.readString();
-		boolean[] b = new boolean[2];
+		journal_post_id = in.readString();
+		boolean[] b = new boolean[3];
 		in.readBooleanArray(b); 
 		is_draft = b[0];
 		allow_comments = b[1];
-		
-    	Log.d("Artefact", "instantiate from parcel: is_draft: " + is_draft);
-    	Log.d("Artefact", "instantiate from parcel: allow comments: " + allow_comments);
+		upload_ready = b[2];
+	}
+	public Artefact() {
+		// For sub-classes.
 	}
 
-	public Artefact(String f, String t, String d, String tgs, String j, boolean dr, boolean a) {
+	public Artefact(String f, String t, String d, String tgs, String j, String p, boolean dr, boolean a, boolean u) {
 		filename = f;
 		title = t;
 		description = d;
 		tags = tgs;
 		journal_id = j;
 		is_draft = dr;
+		journal_post_id = p;
 		allow_comments = a;
+		upload_ready = u;
 		time = System.currentTimeMillis();
 	}
-	public Artefact(Long i, Long tm, String f, String t, String d, String tgs, Long sid, String j, boolean dr, boolean a) {
+	public Artefact(long i, Long tm, String f, String t, String d, String tgs, String j, String p, boolean dr, boolean a, boolean u) {
 		id = i;
 		filename = f;
 		title = t;
 		description = d;
 		tags = tgs;
 		time = tm;
-		saved_id = sid;
 		journal_id = j;
+		journal_post_id = p;
 		is_draft = dr;
 		allow_comments = a;
+		upload_ready = u;
 	}
-	public Artefact(Long i, String f, String t, String d, String tgs, Long sid, String j, boolean dr, boolean a) {
-		id = i;  // may be null for a new item.
+	public Artefact(long i, String f, String t, String d, String tgs, String j, String p, boolean dr, boolean a, boolean u) {
+		id = i;  // may be 0 for a new item.
 		filename = f;
 		title = t;
 		description = d;
 		tags = tgs;
-		saved_id = sid;
 		journal_id = j;
+		journal_post_id = p;
 		is_draft = dr;
 		allow_comments = a;
+		upload_ready = u;
 		time = System.currentTimeMillis();
 	}
 	public Artefact(String f) {
@@ -262,7 +281,11 @@ public class Artefact extends Object implements Parcelable {
 	}
 	
 	public void edit(Context mContext) {
-		Intent i = new Intent(mContext, ArtifactSettingsActivity.class);
+		Intent i;
+		if ( this.isJournal() )
+			i = new Intent(mContext, JournalSettingsActivity.class);
+		else 
+			i = new Intent(mContext, FileSettingsActivity.class);
 		i.putExtra("artefact", this );
 		mContext.startActivity(i);
 	}
@@ -270,10 +293,10 @@ public class Artefact extends Object implements Parcelable {
 		if ( id != 0 ) { 	// update
 	    	Log.d("Artefact", "save: is_draft: " + is_draft);
 	    	Log.d("Artefact", "save: allow comments: " + allow_comments);
-			ArtefactUtils.update(mContext, id, filename, title, description, tags, saved_id, journal_id, is_draft, allow_comments);
-
+			ArtefactUtils.update(mContext, id, filename, title, description, tags, journal_id, journal_post_id, is_draft, allow_comments, upload_ready);
 		} else { // add
-			ArtefactUtils.add(mContext, filename, title, description, tags, journal_id, is_draft, allow_comments);
+			Uri uri = ArtefactUtils.add(mContext, filename, title, description, tags, journal_id, journal_post_id, is_draft, allow_comments, upload_ready);
+			this.id = ContentUris.parseId(uri);
 		}
 	}
 	public void load(Context mContext, Long id) {
@@ -285,13 +308,13 @@ public class Artefact extends Object implements Parcelable {
         title = ta.getTitle();
         description = ta.getDescription();
         tags = ta.getTags();
-        saved_id = ta.saved_id;
         journal_id = ta.getJournalId();
+        journal_post_id = ta.getJournalPostId();
         is_draft = ta.getIsDraft();
         allow_comments = ta.getAllowComments();
-        
+        upload_ready = ta.getUploadReady();
 	}
-    public String getFilePath(Context context) {
+	public String getFilePath(Context context) {
     	if ( filename == null )
     		return null;
     	

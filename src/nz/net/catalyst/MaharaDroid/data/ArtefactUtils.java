@@ -66,6 +66,7 @@ public class ArtefactUtils {
 		} finally {
 			cursor.close();
 		}
+//		artefactContentProvider.release();
 		return a;
 	}
 	public static Artefact loadSavedArtefact(Context context, Long id) {
@@ -119,18 +120,21 @@ public class ArtefactUtils {
     		return null;
     	}
     	
+    	if ( VERBOSE ) Log.v(TAG, "createArtefactFromCursor id: " + cursor.getInt(0));
     	if ( VERBOSE ) Log.v(TAG, "createArtefactFromCursor draft: " + cursor.getInt(8));
     	if ( VERBOSE ) Log.v(TAG, "createArtefactFromCursor allow comments: " + cursor.getInt(9));
-		return new Artefact(	cursor.getLong(0), 
-								cursor.getLong(1), 
+		return new Artefact(	cursor.getInt(0),
+								cursor.getLong(1),
 								cursor.getString(2), 
 								cursor.getString(3), 
 								cursor.getString(4), 
 								cursor.getString(5),
-								cursor.getLong(6),
+								cursor.getString(6),
 								cursor.getString(7),
 								cursor.getInt(8)>0,
-								cursor.getInt(9)>0);
+								cursor.getInt(9)>0,
+								cursor.getInt(10)>0
+							);
     }
 	
     //---deletes a particular item---
@@ -147,6 +151,8 @@ public class ArtefactUtils {
 		}
 		if ( deleted > 0 )
 			context.getContentResolver().notifyChange(URI, null);
+		else 
+			Log.e(TAG, "No items acually deleted .. likely issues.");
 
 		return deleted;
     }
@@ -169,7 +175,7 @@ public class ArtefactUtils {
 		return deleted;
     }
     
-	public static Uri add(Context context, String filename, String title, String description, String tags, String journal_id, boolean is_draft, boolean allow_comments) {
+	public static Uri add(Context context, String filename, String title, String description, String tags, String journal_id, String journal_post_id, boolean is_draft, boolean allow_comments, boolean upload_ready) {
 		ContentValues contentvalues = new ContentValues();
 		
 		contentvalues.put(ArtefactContentProvider.FILENAME, filename);
@@ -177,8 +183,10 @@ public class ArtefactUtils {
 		contentvalues.put(ArtefactContentProvider.DESCRIPTION, description);
 		contentvalues.put(ArtefactContentProvider.TAGS, tags);
 		contentvalues.put(ArtefactContentProvider.JOURNAL_ID, journal_id);
+		contentvalues.put(ArtefactContentProvider.JOURNAL_POST_ID, journal_post_id);
 		contentvalues.put(ArtefactContentProvider.IS_DRAFT, is_draft);
 		contentvalues.put(ArtefactContentProvider.ALLOW_COMMENTS, allow_comments);
+		contentvalues.put(ArtefactContentProvider.UPLOAD_READY, upload_ready);
 		
 		return add(context, contentvalues);
 	}
@@ -189,6 +197,7 @@ public class ArtefactUtils {
 
 		try {
 			Uri u = artefactContentProvider.insert(URI, cv);
+			if ( VERBOSE ) Log.v(TAG, "Inserting " + URI.toString());
 			if ( u != null  )
 				context.getContentResolver().notifyChange(u, null);
 			return u;
@@ -200,17 +209,18 @@ public class ArtefactUtils {
 		}
 		return null;
 	}
-	public static int update(Context context, Long id, String filename, String title, String description, String tags, Long saved_id, String journal_id, boolean is_draft, boolean allow_comments) {
+	public static int update(Context context, Long id, String filename, String title, String description, String tags, String journal_id, String journal_post_id, boolean is_draft, boolean allow_comments, boolean upload_ready ) {
 		ContentValues contentvalues = new ContentValues();
 		
 		contentvalues.put(ArtefactContentProvider.FILENAME, filename);
 		contentvalues.put(ArtefactContentProvider.TITLE, title);
 		contentvalues.put(ArtefactContentProvider.DESCRIPTION, description);
 		contentvalues.put(ArtefactContentProvider.TAGS, tags);
-		contentvalues.put(ArtefactContentProvider.SAVED_ID, saved_id);
 		contentvalues.put(ArtefactContentProvider.JOURNAL_ID, journal_id);
+		contentvalues.put(ArtefactContentProvider.JOURNAL_POST_ID, journal_post_id);
 		contentvalues.put(ArtefactContentProvider.IS_DRAFT, is_draft);
 		contentvalues.put(ArtefactContentProvider.ALLOW_COMMENTS, allow_comments);
+		contentvalues.put(ArtefactContentProvider.UPLOAD_READY, upload_ready);
 		
 		return update(context, id, contentvalues);
  	}

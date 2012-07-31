@@ -69,7 +69,10 @@ public class ThreadedSyncAdapter extends AbstractThreadedSyncAdapter{
 		String token = mPrefs.getString(mContext.getResources().getString(R.string.pref_auth_token_key).toString(),
 				"");
 		String sync_key = mContext.getResources().getString(R.string.pref_sync_time_key);
-		Long lastsync = Long.parseLong(mPrefs.getString(sync_key, "0"));
+		long lastsync = 0;
+		try {
+			lastsync = Long.parseLong(mPrefs.getString(sync_key, "0"));
+		} catch ( NumberFormatException e ) {	}
 
 		String syncNotifications = SyncUtils.getSyncNotificationsPref(mContext);
 

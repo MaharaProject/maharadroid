@@ -26,6 +26,7 @@ import nz.net.catalyst.MaharaDroid.LogConfig;
 import nz.net.catalyst.MaharaDroid.R;
 import nz.net.catalyst.MaharaDroid.Utils;
 import nz.net.catalyst.MaharaDroid.data.Artefact;
+import nz.net.catalyst.MaharaDroid.data.ArtefactUtils;
 import nz.net.catalyst.MaharaDroid.data.SyncUtils;
 import nz.net.catalyst.MaharaDroid.upload.http.RestClient;
 
@@ -40,7 +41,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 public class TransferService extends IntentService {
 	
@@ -79,7 +82,7 @@ public class TransferService extends IntentService {
 				Utils.getUploadURLPref(mContext), 
 				getUploadAuthTokenPref(),
 				getUploadUsernamePref(),
-				a.getJournalId(),
+				a.getJournalId(), a.getJournalPostId(),
 				a.getIsDraft(), a.getAllowComments(),
 				getUploadFolderPref(),
 				a.getTags(),
@@ -102,6 +105,18 @@ public class TransferService extends IntentService {
 			Utils.updateTokenFromResult(result, mContext);
 			
 			publishProgress("finish", id, a.getTitle());
+			
+			if ( result.has("id") ) {
+				String journal_post_id;
+				try {
+					journal_post_id = result.getString("id");
+					SyncUtils.insertJournalPostListPreference(journal_post_id, a.getTitle(), mContext);
+				} catch (JSONException e) {
+					Log.i(TAG, "ID provided in JSON but couldn't get result - next sync will clean it up.");
+				} catch (RemoteException e) {
+					Log.i(TAG, "Failed to insert new journal post in list preference - next sync will clean it up.");
+				}
+			}
 
 			// Delete the artefact 
 			a.delete(mContext);

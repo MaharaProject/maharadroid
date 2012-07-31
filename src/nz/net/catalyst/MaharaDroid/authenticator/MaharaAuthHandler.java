@@ -70,7 +70,10 @@ public class MaharaAuthHandler {
         	username = mPrefs.getString(mContext.getResources().getString(R.string.pref_auth_username_key), "");
         }
 		String sync_key = mContext.getResources().getString(R.string.pref_sync_time_key);
-		Long lastsync = Long.parseLong(mPrefs.getString(sync_key, "0"));
+		long lastsync = 0;
+		try {
+			lastsync = Long.parseLong(mPrefs.getString(sync_key, "0"));
+		} catch ( NumberFormatException e ) {	}
     	
         Utils.showNotification(NOTIFICATION, mContext.getResources().getText(R.string.login_authenticating), 
         						null, null, mContext);

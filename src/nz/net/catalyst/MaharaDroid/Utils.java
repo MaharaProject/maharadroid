@@ -21,6 +21,8 @@
 
 package nz.net.catalyst.MaharaDroid;
 
+import java.io.File;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -51,6 +53,99 @@ public class Utils {
 	// whether VERBOSE level logging is enabled
 	static final boolean VERBOSE = LogConfig.VERBOSE;
 	
+	public static String getBaseFilename(Context context, String filename) {
+		// Returns the base of the actual file name - not the content store file 
+		// (which would just be it's content:// ... /ID)
+		String filepath = getFilePath(context, filename);
+		
+		return ( filepath == null ) ? null : filepath.substring(filepath.lastIndexOf("/") + 1);
+	}
+    public static String getFilePath(Context context, String filename) {
+    	if ( filename == null )
+    		return null;
+    	
+    	Uri uri = Uri.parse(filename);
+    	
+    	String file_path = null;
+    	
+		if ( DEBUG ) Log.d(TAG, "URI = '" + uri.toString() + "', scheme = '" + uri.getScheme() + "'");
+
+		if ( uri.getScheme() != null && uri.getScheme().equals("content") ) {
+	    	// Get the filename of the media file and use that as the default title.
+	    	ContentResolver cr = context.getContentResolver();
+	    	Cursor cursor = cr.query(uri, new String[]{	android.provider.MediaStore.MediaColumns.DATA, 
+	    												android.provider.MediaStore.MediaColumns.MIME_TYPE}, null, null, null);
+			if (cursor != null) {
+				if ( DEBUG ) Log.d(TAG, "cursor query succeeded");
+				cursor.moveToFirst();
+				try { 
+					file_path = cursor.getString(0);
+				} catch ( android.database.CursorIndexOutOfBoundsException e ) { 
+					if ( DEBUG ) Log.d(TAG, "couldn't get file_path from cursor");
+					return null;
+				}
+				cursor.close();
+			} else {
+				if ( DEBUG ) Log.d(TAG, "cursor query failed");
+				return null;
+			}
+		} else {
+			if ( DEBUG ) Log.d(TAG, "Not content scheme - returning native path");
+			// Not a content query 
+			file_path = uri.getPath();
+			File t = new File(file_path);
+			if ( ! t.exists() )
+				return null;
+		}
+		
+		// Online image not in gallery
+		// TODO check http://jimmi1977.blogspot.co.nz/2012/01/android-api-quirks-getting-image-from.html
+		//      for workaround
+		if ( file_path == "null" ){
+			return null;
+		}
+		if ( DEBUG ) Log.d(TAG, "file path valid [" + file_path + "]");
+		return file_path;
+    }
+    public String getFileMimeType(Context context, String filename) {
+    	if ( filename == null )
+    		return null;
+    	
+    	Uri uri = Uri.parse(filename);
+    	
+    	String mimetype = null;
+    	
+		if ( DEBUG ) Log.d(TAG, "URI = '" + uri.toString() + "', scheme = '" + uri.getScheme() + "'");
+
+		if ( uri.getScheme() != null && uri.getScheme().equals("content") ) {
+	    	// Get the filename of the media file and use that as the default title.
+	    	ContentResolver cr = context.getContentResolver();
+	    	Cursor cursor = cr.query(uri, new String[]{	android.provider.MediaStore.MediaColumns.MIME_TYPE}, null, null, null);
+			if (cursor != null) {
+				if ( DEBUG ) Log.d(TAG, "cursor query succeeded");
+				cursor.moveToFirst();
+				try { 
+					mimetype = cursor.getString(0);
+				} catch ( android.database.CursorIndexOutOfBoundsException e ) { 
+					if ( DEBUG ) Log.d(TAG, "couldn't get file_path from cursor");
+					return null;
+				}
+				cursor.close();
+			} else {
+				if ( DEBUG ) Log.d(TAG, "cursor query failed");
+				return null;
+			}
+		// TODO .. Yuck - extend this? 
+		} else if ( uri.getLastPathSegment().endsWith(".mp4") ) {
+			mimetype = "video/mp4";
+		} else if ( uri.getLastPathSegment().endsWith(".mp3") ) {
+			mimetype = "audio/mp3";
+		} else if ( uri.getLastPathSegment().endsWith(".m4a") ) {
+			mimetype = "audio/mpeg";
+		}
+		
+		return mimetype;
+    }
 	public static boolean canUpload(Context context) {
 		
 		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -187,31 +282,6 @@ public class Utils {
     	mNM.cancel(id);
     }
 
-	public static Intent makeCameraIntent(Context context) {
-		
-		//define the file-name to save photo taken by Camera activity
-		String fileName = GlobalResources.TEMP_PHOTO_FILENAME;
-
-		if ( VERBOSE ) Log.v(TAG, "invoking camera (" + fileName + ")");
-
-		//create parameters for Intent with filename
-		ContentValues values = new ContentValues();
-		values.put(MediaStore.Images.Media.TITLE, fileName);
-		values.put(MediaStore.Images.Media.DESCRIPTION,"Image capture by camera for MaharaDroid");
-		
-		//imageUri is the current activity attribute, define and save it for later usage (also in onSaveInstanceState)
-		GlobalResources.TEMP_PHOTO_URI = context.getContentResolver().insert(
-				MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-
-		if ( VERBOSE ) Log.v(TAG, "imageUri is '" + GlobalResources.TEMP_PHOTO_URI.toString() + "'");
-
-		//create new Intent
-		Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		i.putExtra(MediaStore.EXTRA_OUTPUT, GlobalResources.TEMP_PHOTO_URI);
-		i.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-		return i;
-	}
-	
     public static Bitmap getFileThumbData(Context context, String filename) {
     	if ( filename == null )
     		return null;

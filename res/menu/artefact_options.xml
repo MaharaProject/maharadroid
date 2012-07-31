@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/option_camera"
-          android:icon= "@android:drawable/ic_menu_camera"
-          android:title="@string/options_menu_camera" />
-    <item android:id="@+id/option_gallery"
-          android:icon= "@android:drawable/ic_menu_gallery"
-          android:title="@string/options_menu_gallery" />
     <item android:id="@+id/option_compose"
           android:icon= "@drawable/ic_menu_compose"
           android:title="@string/options_menu_compose" />

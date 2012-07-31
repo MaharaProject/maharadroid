@@ -38,7 +38,7 @@
 			</intent-filter>
 		</activity>
 		
-	    <activity android:name=".ui.ArtifactSettingsActivity" 
+	    <activity android:name=".ui.FileSettingsActivity" 
 	    		  android:label="@string/artifactsettings"
 	    	      android:theme="@style/MaharaTheme"
 	    	      >
@@ -47,7 +47,16 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        
+	    <activity android:name=".ui.JournalSettingsActivity" 
+	    		  android:label="@string/artifactsettings"
+	    	      android:theme="@style/MaharaTheme"
+	    	      >
+            <intent-filter>
+                <action android:name="nz.net.catalyst.MaharaDroid.JOURNALSETTINGS" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+	    
 		<activity android:name=".upload.ArtifactSenderActivity" 
 				  android:label="@string/app_name"
 		          android:enabled="true" android:exported="true">

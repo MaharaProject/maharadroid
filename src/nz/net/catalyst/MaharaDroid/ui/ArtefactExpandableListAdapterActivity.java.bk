@@ -27,17 +27,22 @@ import java.util.Date;
 import nz.net.catalyst.MaharaDroid.GlobalResources;
 import nz.net.catalyst.MaharaDroid.LogConfig;
 import nz.net.catalyst.MaharaDroid.R;
+import nz.net.catalyst.MaharaDroid.Utils;
 import nz.net.catalyst.MaharaDroid.data.Artefact;
 import nz.net.catalyst.MaharaDroid.data.ArtefactUtils;
 import nz.net.catalyst.MaharaDroid.data.SyncUtils;
 import nz.net.catalyst.MaharaDroid.ui.about.AboutActivity;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.Html;
 import android.util.Log;
@@ -176,11 +181,11 @@ public class ArtefactExpandableListAdapterActivity extends Activity {
 		switch (item.getItemId()) {
 			case R.id.option_delete:
 				ArtefactUtils.deleteAllSavedArtefacts(mContext);
-				updateView();
+//				updateView();
 				break;
 			case R.id.option_upload:
 				ArtefactUtils.uploadAllSavedArtefacts(mContext);
-				updateView();
+//				updateView();
 				break;
 			case R.id.about:
 				startActivity(new Intent(this, AboutActivity.class));
@@ -193,14 +198,8 @@ public class ArtefactExpandableListAdapterActivity extends Activity {
 			case R.id.option_account:
 				startActivity(new Intent(Settings.ACTION_SYNC_SETTINGS).putExtra(Settings.EXTRA_AUTHORITIES, new String[] {GlobalResources.SYNC_AUTHORITY}));
 				break;
-			case R.id.option_image_gallery:
-				intent = new Intent(Intent.ACTION_PICK,
-			               android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-				startActivityForResult(intent, GlobalResources.REQ_GALLERY_RETURN);
-				break;
 			case R.id.option_compose:
 				intent = new Intent(this, JournalSettingsActivity.class);
-				intent.putExtra("writejournal", true);
 				startActivity(intent);
 				break;
 		}
@@ -277,31 +276,31 @@ public class ArtefactExpandableListAdapterActivity extends Activity {
 	    @Override
 	    public View getChildView(int groupPosition, int childPosition, boolean isLastChild,
 	            View convertView, ViewGroup parent) {
-	    	Artefact art = (Artefact) getChild(groupPosition, childPosition);
-	        if (convertView == null) {
-	            LayoutInflater infalInflater = (LayoutInflater) mContext
-	                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-	            convertView = infalInflater.inflate(R.layout.artefact_row_child, null);
-	        }
-	        Date date = new Date (art.getTime());
-
+	    	Artefact a = (Artefact) getChild(groupPosition, childPosition);
 			LinearLayout l;
-	        // TODO General YUCK .. need to clean up and create a Journal / MaharaProvide class / utility methods
-	        // && Long.valueOf(art.getJournalId()) <= 0
-	    	if ( art.isJournal() ) {
+            LayoutInflater infalInflater = (LayoutInflater) mContext
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+	        if (convertView == null) {
+	            convertView = infalInflater.inflate(R.layout.artefact_row_child_header, null);
+	        }
+//
+//		        // TODO General YUCK .. need to clean up and create a Journal / MaharaProvide class / utility methods
+//		        // && Long.valueOf(art.getJournalId()) <= 0
+	    	if ( a.isJournal() ) {
 		        String[][] journals = SyncUtils.getJournals("", mContext); // TODO consider refreshing onResume
 		        if ( journals != null ) { 
 			        String[] journalKeys = journals[0];
 			        String[] journalValues = journals[1]; 
 		        
-			        for ( int i = 0 ; i < journalKeys.length && journalValues[i] != null ; i++ ) {
-			        	if ( art.getJournalId().equals(journalKeys[i]) ) {
-			    	        ((TextView) convertView.findViewById(R.id.txtArtefactJournal)).setText(journalValues[i]);
+			        for ( int j = 0 ; j < journalKeys.length && journalValues[j] != null ; j++ ) {
+			        	if ( a.getJournalId().equals(journalKeys[j]) ) {
+			    	        ((TextView) convertView.findViewById(R.id.txtArtefactJournal)).setText(journalValues[j]);
 			    	        break;
 			        	}
 			        }
-			        ((CheckBox) convertView.findViewById(R.id.txtArtefactIsDraft)).setChecked(art.getIsDraft());
-			        ((CheckBox) convertView.findViewById(R.id.txtArtefactAllowComments)).setChecked(art.getAllowComments());
+			        ((CheckBox) convertView.findViewById(R.id.txtArtefactIsDraft)).setChecked(a.getIsDraft());
+			        ((CheckBox) convertView.findViewById(R.id.txtArtefactAllowComments)).setChecked(a.getAllowComments());
 		        }
 	    		// TDODO hide layout
 	    		l = (LinearLayout)convertView.findViewById(R.id.ArtefactJournalLayout);
@@ -310,29 +309,32 @@ public class ArtefactExpandableListAdapterActivity extends Activity {
 	    		if ( l != null ) l.setVisibility(LinearLayout.VISIBLE);
 	    		
 	    		((TextView) convertView.findViewById(R.id.txtArtefactDescriptionLabel)).setText(mContext.getResources().getString(R.string.upload_journal_description_label));
-
+//
 	    	} else {
 	    		// TDODO hide layout
 	    		l = (LinearLayout)convertView.findViewById(R.id.ArtefactJournalLayout);
 	    		if ( l != null ) l.setVisibility(LinearLayout.GONE);
 	    		l = (LinearLayout)convertView.findViewById(R.id.ArtefactJournalExtrasLayout);
 	    		if ( l != null ) l.setVisibility(LinearLayout.GONE);
-
-	    		((TextView) convertView.findViewById(R.id.txtArtefactDescriptionLabel)).setText(getString(R.string.upload_file_description_label));
+//
+	    		((TextView) convertView.findViewById(R.id.txtArtefactDescriptionLabel)).setText(mContext.getResources().getString(R.string.upload_file_description_label));
 	    	}
-	        ((TextView) convertView.findViewById(R.id.txtArtefactDescription)).setText(art.getDescription());
-	        ((TextView) convertView.findViewById(R.id.txtArtefactTags)).setText(art.getTags());
+	        ((TextView) convertView.findViewById(R.id.txtArtefactDescription)).setText(a.getDescription());
+	        ((TextView) convertView.findViewById(R.id.txtArtefactTags)).setText(a.getTags());
 	        
+	        // Add the child to the bottom of the header
+	        ((ViewGroup) convertView).addView(infalInflater.inflate(R.layout.artefact_row_child, null));
+
 			l = (LinearLayout)convertView.findViewById(R.id.ArtefactFileLayout);
-	        if ( art.getFilename() != null ) {
-		        ((TextView) convertView.findViewById(R.id.txtArtefactFilename)).setText(art.getFilename());
+	        if ( a.getFilename() != null ) {
+		        ((TextView) convertView.findViewById(R.id.txtArtefactFilename)).setText(a.getFilename());
 
 		        ImageView iv = (ImageView) convertView.findViewById(R.id.txtArtefactFileThumb);
 		        iv.setClickable(true);
 		        iv.setOnClickListener(this);
-		        iv.setTag(art);
+		        iv.setTag(a);
 
-		        Bitmap bm = art.getFileThumbData(mContext);
+		        Bitmap bm = a.getFileThumbData(mContext);
 	        	if ( bm != null ) {
 			        iv.setImageBitmap(bm);
 			        iv.invalidate();
@@ -343,9 +345,9 @@ public class ArtefactExpandableListAdapterActivity extends Activity {
 	        }
 	        
 	        ((Button) convertView.findViewById(R.id.btnEdit)).setOnClickListener(this);
-	        ((Button) convertView.findViewById(R.id.btnEdit)).setTag(art);
+	        ((Button) convertView.findViewById(R.id.btnEdit)).setTag(a);
 	        ((Button) convertView.findViewById(R.id.btnDelete)).setOnClickListener(this);
-	        ((Button) convertView.findViewById(R.id.btnDelete)).setTag(art);
+	        ((Button) convertView.findViewById(R.id.btnDelete)).setTag(a);
 	        return convertView;
 	    }
 
@@ -373,19 +375,23 @@ public class ArtefactExpandableListAdapterActivity extends Activity {
 	    @Override
 	    public View getGroupView(int groupPosition, boolean isExpanded, View convertView,
 	            ViewGroup parent) {
-	        String group = (String) getGroup(groupPosition);
 	        if (convertView == null) {
 	            LayoutInflater infalInflater = (LayoutInflater) mContext
 	                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	            convertView = infalInflater.inflate(R.layout.artefact_row, null);
 	        }
-	        TextView tv = (TextView) convertView.findViewById(R.id.title);
-	        tv.setText(group);
 	        
 	        // TODO .. lets make this more efficient ;) 
 	        // Default to image - change if journal
 	        for ( int i = 0 ; i < children.get(groupPosition).size(); i++ ) {
 	        	Artefact a = children.get(groupPosition).get(i);
+
+	        	// Set group title to be the title of first entry
+	        	if ( i == 0 ) {
+		        	TextView tv = (TextView) convertView.findViewById(R.id.title);
+			        tv.setText(a.getTitle());			        
+	        	}
+	        	
 	        	if ( a.isJournal() ) {
 	        		ImageView iv = (ImageView) convertView.findViewById(R.id.artefact_icon);
 	    	        iv.setImageResource(R.drawable.ic_menu_compose);

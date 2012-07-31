@@ -60,24 +60,32 @@ public class GlobalResources {
 	public static final String EXTRAS_SYNC_IS_PERIODIC = "nz.net.catalyst.MaharaDroid.periodic";
 	public static final String BROADCAST_ACTION = "nz.net.catalyst.MaharaDroid.UPLOAD_COMPLETED";
 
-	public static final String[] SYNC_CONTENT_TABLES = new String[] { "tag", "blog", "folder" };
+	public static final String[] SYNC_CONTENT_TABLES = new String[] { "tag", "blog", "folder", "blogpost" };
 	public static final String[] SYNC_CONTENT_FIELDS = new String[] { "ID", "VALUE" };
 
-	public static final Map<Integer, String> NOTIFICATIONS;
+	public static final Map<Integer, Integer> NOTIFICATIONS;
     static {
-        Map<Integer, String> tmpNOTIFICATIONS = new HashMap<Integer, String>();
-        tmpNOTIFICATIONS.put(R.string.pref_sync_notification_feedback_key, "feedback");
-        tmpNOTIFICATIONS.put(R.string.pref_sync_notification_newpost_key, "newpost");
-        tmpNOTIFICATIONS.put(R.string.pref_sync_notification_maharamessage_key, "maharamessage");
-        tmpNOTIFICATIONS.put(R.string.pref_sync_notification_usermessage_key, "usermessage");
+        Map<Integer, Integer> tmpNOTIFICATIONS = new HashMap<Integer, Integer>();
+        tmpNOTIFICATIONS.put(R.string.pref_sync_notification_usermessage_key, R.string.pref_sync_notification_usermessage_default);
+        tmpNOTIFICATIONS.put(R.string.pref_sync_notification_feedback_key, R.string.pref_sync_notification_feedback_default);
+        tmpNOTIFICATIONS.put(R.string.pref_sync_notification_newpost_key, R.string.pref_sync_notification_newpost_default);
+        tmpNOTIFICATIONS.put(R.string.pref_sync_notification_maharamessage_key, R.string.pref_sync_notification_maharamessage_default);
+        tmpNOTIFICATIONS.put(R.string.pref_sync_notification_groupmessage_key, R.string.pref_sync_notification_groupmessage_default);
+        tmpNOTIFICATIONS.put(R.string.pref_sync_notification_institutionmessage_key, R.string.pref_sync_notification_institutionmessage_default);
+        tmpNOTIFICATIONS.put(R.string.pref_sync_notification_watchlist_key, R.string.pref_sync_notification_watchlist_default);
+        tmpNOTIFICATIONS.put(R.string.pref_sync_notification_viewaccess_key, R.string.pref_sync_notification_viewaccess_default);
+        tmpNOTIFICATIONS.put(R.string.pref_sync_notification_contactus_key, R.string.pref_sync_notification_contactus_default);
+        tmpNOTIFICATIONS.put(R.string.pref_sync_notification_objectionable_key, R.string.pref_sync_notification_objectionable_default);
+        tmpNOTIFICATIONS.put(R.string.pref_sync_notification_virusrepeat_key, R.string.pref_sync_notification_virusrepeat_default);
+        tmpNOTIFICATIONS.put(R.string.pref_sync_notification_virusrelease_key, R.string.pref_sync_notification_virusrelease_default);
         NOTIFICATIONS = Collections.unmodifiableMap(tmpNOTIFICATIONS);
     }
 	
-	public static final String TEMP_PHOTO_FILENAME = "maharadroid-tmp.jpg";
-	
-	public static final int REQ_CAMERA_RETURN = 0;
-	public static final int REQ_GALLERY_RETURN = 1;
-	public static final int REQ_RECORD_AUDIO_RETURN = 2;
+	public static final int REQ_GALLERY_RETURN = 0;
+	public static final int REQ_IMAGE_GALLERY_RETURN = 1;
+	public static final int REQ_AUDIO_GALLERY_RETURN = 2;
+	public static final int REQ_VIDEO_GALLERY_RETURN = 3;
 	
     public static final int REGISTRATION_TIMEOUT = 30 * 1000; // ms
+
 }

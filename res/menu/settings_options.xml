@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 
     <item android:id="@+id/option_camera"
           android:icon= "@android:drawable/ic_menu_camera"
           android:title="@string/options_menu_camera" />
-    <item android:id="@+id/option_gallery"
+    <item android:id="@+id/option_recorder"
+          android:icon= "@drawable/ic_menu_sound"
+          android:title="@string/options_menu_record" />
+           -->
+    <item android:id="@+id/option_image_gallery"
           android:icon= "@android:drawable/ic_menu_gallery"
-          android:title="@string/options_menu_gallery" />
+          android:title="@string/options_menu_image_gallery" />
+    <item android:id="@+id/option_audio_gallery"
+          android:icon= "@android:drawable/ic_menu_gallery"
+          android:title="@string/options_menu_audio_gallery" />
+    <item android:id="@+id/option_video_gallery"
+          android:icon= "@android:drawable/ic_menu_gallery"
+          android:title="@string/options_menu_video_gallery" />
 </menu>

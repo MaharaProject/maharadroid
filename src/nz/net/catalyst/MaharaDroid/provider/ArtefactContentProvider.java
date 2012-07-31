@@ -46,8 +46,7 @@ public class ArtefactContentProvider extends ContentProvider {
 	private DatabaseHelper dbHelper;
 	
 	private static final String DATABASE_NAME = "maharadroid_artefact.db";
-	private static final int DATABASE_VERSION = 2;
-	private static Context mContext;
+	private static final int DATABASE_VERSION = 5;
 
 	// Table name
 	public static final String TABLE = "artefacts";
@@ -59,10 +58,11 @@ public class ArtefactContentProvider extends ContentProvider {
 	public static final String TITLE = "title";
 	public static final String DESCRIPTION = "description";
 	public static final String TAGS = "tags";
-	public static final String SAVED_ID = "id";
 	public static final String JOURNAL_ID = "journal_id";
+	public static final String JOURNAL_POST_ID = "journal_post_id";
 	public static final String IS_DRAFT = "is_draft";
 	public static final String ALLOW_COMMENTS = "allow_comments";
+	public static final String UPLOAD_READY = "upload_ready";
 
 	private static class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -73,15 +73,17 @@ public class ArtefactContentProvider extends ContentProvider {
 		@Override
 		public void onCreate(SQLiteDatabase db) {
 			String sql = "create table " + TABLE + "( " + BaseColumns._ID
-					+ " integer primary key autoincrement, " + TIME + " integer, "
+					+ " integer primary key autoincrement, " 
+					+ TIME + " integer, "
 					+ FILENAME + " text, " 
 					+ TITLE + " text not null, " 
 					+ DESCRIPTION + " text, " 
 					+ TAGS + " text, "  
-					+ SAVED_ID + " integer, "  
 					+ JOURNAL_ID + " text, "  
+					+ JOURNAL_POST_ID + " text, "  
 					+ IS_DRAFT + " boolean, "  
-					+ ALLOW_COMMENTS + " boolean "  
+					+ ALLOW_COMMENTS + " boolean, "  
+					+ UPLOAD_READY + " boolean "  
 					+ ");";
 			if ( DEBUG ) Log.d(TAG, "onCreate: " + sql);
 			db.execSQL(sql);
@@ -94,7 +96,7 @@ public class ArtefactContentProvider extends ContentProvider {
 
 			String sql = null;
 			// Version 1 is the first version with SQL
-			if (oldVersion < 2) {
+			if (oldVersion < 4) {
 				db.execSQL("DROP TABLE " + TABLE + "; ");
 				this.onCreate(db);
 				if ( DEBUG ) Log.d(TAG, "onUpgrade	: " + sql);
@@ -105,12 +107,12 @@ public class ArtefactContentProvider extends ContentProvider {
 	public ArtefactContentProvider() {
 		super();
 	}
-	public ArtefactContentProvider(Context context) {
-		super();
-		this.dbHelper = new DatabaseHelper(context);
-		
-		mContext = context;
-	}
+//	public ArtefactContentProvider(Context context) {
+//		super();
+//		this.dbHelper = new DatabaseHelper(context);
+//		
+//		mContext = context;
+//	}
 	@Override
 	public int delete(Uri uri, String s, String[] as) {
 		sqlDB = dbHelper.getWritableDatabase();

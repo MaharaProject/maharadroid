@@ -113,7 +113,11 @@ try {
     $blog = param_integer('blog');
 }
 catch (ParameterException $e) { }
-
+try {
+	$blogpost = param_integer('blogpost');
+}
+catch (ParameterException $e) {
+}
 try {
     $draft = param_variable('draft');
 }
@@ -160,9 +164,6 @@ if ( $_FILES ) {
         }
         $data->tags = $tags;
         $artefact_id = ArtefactTypeFile::save_uploaded_file('userfile', $data);
-        if ( $artefact_id ) {
-            $json['id'] = $artefact_id;
-        }
     }
     catch (QuotaExceededException $e) {
         jsonreply( array('fail' => 'Quota exceeded' ) );
@@ -176,10 +177,6 @@ if ( $_FILES ) {
 $postobj = '';      // our resulting blog post object on creation
 
 if ( $blog ) {
-    if ( ! ( $title && $description ) ) {
-    	jsonreply( array('fail' => 'Journal posts must have a title and entry (description).') );
-    }
-
     if (!get_record('artefact', 'id', $blog, 'owner', $USER->get('id'))) {
         // Blog security is also checked closer to when blogs are added, this 
         // check ensures that malicious users do not even see the screen for 
@@ -201,7 +198,7 @@ if ( $blog ) {
             throw new AccessDeniedException(get_string('submittedforassessment', 'view'));
         }
     } else {
-        $postobj = new ArtefactTypeBlogPost($blogpost, null);
+        $postobj = new ArtefactTypeBlogPost(null, null);
         $postobj->set('title', $title);
         $postobj->set('description', $description);
         $postobj->set('tags', $tags);
@@ -210,7 +207,17 @@ if ( $blog ) {
         $postobj->set('parent', $blog);
         $postobj->set('owner', $USER->id);
         $postobj->commit();
+        $blogpost = $postobj->get('id');
     }
+} else if ( $blogpost ) {
+	$postobj = new ArtefactTypeBlogPost($blogpost);
+	$postobj->check_permission();
+	if ($postobj->get('locked')) {
+		throw new AccessDeniedException(get_string('submittedforassessment', 'view'));
+	}
+}
+if ( $blogpost ) {
+	$json['id'] = $blogpost;
 }
 
 // Check to see if we're creating a journal entry
@@ -224,7 +231,7 @@ if ( $artefact_id && $postobj ) {
 }
 
 // Here we need to create a new hash - update our own store of it and return it to the handset
-jsonreply( array('success' => $USER->refresh_mobileuploadtoken($token) ) );
+jsonreply( array('success' => $USER->refresh_mobileuploadtoken($token) );
 
 function jsonreply( $arr ) {
   global $json;

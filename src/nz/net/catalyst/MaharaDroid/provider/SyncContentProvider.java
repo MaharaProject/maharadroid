@@ -17,7 +17,7 @@ public class SyncContentProvider extends ContentProvider {
 	private DatabaseHelper dbHelper;
 
 	private static final String DATABASE_NAME = "maharadroid_sync.db";
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 
 	private static class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -95,9 +95,9 @@ public class SyncContentProvider extends ContentProvider {
 	public Cursor query(Uri uri, String[] projection, String selection,
 			String[] selectionArgs, String sortOrder) {
 		SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		sqlDB = dbHelper.getReadableDatabase();
 		qb.setTables(uri.getLastPathSegment());
-		Cursor c = qb.query(db, projection, selection, null, null, null,
+		Cursor c = qb.query(sqlDB, projection, selection, null, null, null,
 				sortOrder);
 		//c.setNotificationUri(getContext().getContentResolver(), uri);
 		return c;

@@ -19,8 +19,9 @@
     
     <string name="options_menu_prefs">Preferences</string>
     <string name="options_menu_account">Account &amp; Sync</string>
-    <string name="options_menu_camera">Camera</string>
-    <string name="options_menu_gallery">Gallery</string>
+    <string name="options_menu_image_gallery">Add Image</string>
+    <string name="options_menu_audio_gallery">Add Audio</string>
+    <string name="options_menu_video_gallery">Add Video</string>
     <string name="options_menu_compose">Write</string>
     <string name="options_menu_deleteall">Delete All</string>
     <string name="options_menu_uploadall">Upload All</string>
@@ -104,19 +105,66 @@
 
     <string name="prefcat_defaults_notification">Default Notification Settings</string>
     
-    <string name="pref_sync_notification_feedback_key">feedback</string>
-	<string name="pref_sync_notification_feedback_summary">Receive notifications when you receive feedback</string>
-	<string name="pref_sync_notification_feedback_title">Feedback</string>
-   	<string name="pref_sync_notification_newpost_key">newpost</string>
-	<string name="pref_sync_notification_newpost_summary">Receive notifications about new posts</string>
-	<string name="pref_sync_notification_newpost_title">New posts</string>		   	
-   	<string name="pref_sync_notification_maharamessage_key">maharamessage</string>
-	<string name="pref_sync_notification_maharamessage_summary">Receive notifications when you receive a message from Mahara</string>
-	<string name="pref_sync_notification_maharamessage_title">Mahara messages</string>
    	<string name="pref_sync_notification_usermessage_key">usermessages</string>
 	<string name="pref_sync_notification_usermessage_summary">Receive notifications when users send messages to you</string>
 	<string name="pref_sync_notification_usermessage_title">User messages</string>
-
+	<string name="pref_sync_notification_usermessage_default">true</string>
+	
+	<string name="pref_sync_notification_feedback_key">feedback</string>
+	<string name="pref_sync_notification_feedback_summary">Receive notifications when you receive feedback</string>
+	<string name="pref_sync_notification_feedback_title">Feedback</string>
+	<string name="pref_sync_notification_feedback_default">true</string>
+	
+	<string name="pref_sync_notification_newpost_key">newpost</string>
+	<string name="pref_sync_notification_newpost_summary">Receive notifications about new posts</string>
+	<string name="pref_sync_notification_newpost_title">New posts</string>	
+	<string name="pref_sync_notification_newpost_default">true</string>	
+			   	
+   	<string name="pref_sync_notification_maharamessage_key">maharamessage</string>
+	<string name="pref_sync_notification_maharamessage_summary">Receive notifications when you receive a message from Mahara</string>
+	<string name="pref_sync_notification_maharamessage_title">Mahara messages</string>
+	<string name="pref_sync_notification_maharamessage_default">true</string>
+		
+   	<string name="pref_sync_notification_groupmessage_key">groupmessage</string>
+	<string name="pref_sync_notification_groupmessage_summary">Receive notifications when you receive a group message</string>
+	<string name="pref_sync_notification_groupmessage_title">Group messages</string>
+	<string name="pref_sync_notification_groupmessage_default">false</string>
+		
+   	<string name="pref_sync_notification_institutionmessage_key">institutionmessage</string>
+	<string name="pref_sync_notification_institutionmessage_summary">Receive notifications when you receive an instituition message</string>
+	<string name="pref_sync_notification_institutionmessage_title">Instituition messages</string>
+	<string name="pref_sync_notification_institutionmessage_default">false</string>
+		
+   	<string name="pref_sync_notification_watchlist_key">watchlist</string>
+	<string name="pref_sync_notification_watchlist_summary">Receive notifications when you receive a message from a watchlist</string>
+	<string name="pref_sync_notification_watchlist_title">Watchlist messages</string>
+	<string name="pref_sync_notification_watchlist_default">false</string>
+		
+   	<string name="pref_sync_notification_viewaccess_key">viewaccess</string>
+	<string name="pref_sync_notification_viewaccess_summary">Receive notifications about view access</string>
+	<string name="pref_sync_notification_viewaccess_title">View access messages</string>
+	<string name="pref_sync_notification_viewaccess_default">false</string>
+		
+   	<string name="pref_sync_notification_contactus_key">contactus</string>
+	<string name="pref_sync_notification_contactus_summary">Receive notifications about contact us messages</string>
+	<string name="pref_sync_notification_contactus_title">Contact us messages</string>
+	<string name="pref_sync_notification_contactus_default">false</string>
+		
+   	<string name="pref_sync_notification_objectionable_key">objectionable</string>
+	<string name="pref_sync_notification_objectionable_summary">Receive notifications about objectionable messages</string>
+	<string name="pref_sync_notification_objectionable_title">Objectionable messages</string>
+	<string name="pref_sync_notification_objectionable_default">false</string>
+		
+   	<string name="pref_sync_notification_virusrepeat_key">virusrepeat</string>
+	<string name="pref_sync_notification_virusrepeat_summary">Receive notifications about virus repeat messages</string>
+	<string name="pref_sync_notification_virusrepeat_title">Virus repeat messages</string>
+	<string name="pref_sync_notification_virusrepeat_default">false</string>
+		
+   	<string name="pref_sync_notification_virusrelease_key">virusrelease</string>
+	<string name="pref_sync_notification_virusrelease_summary">Receive notifications about virus release messages</string>
+	<string name="pref_sync_notification_virusrelease_title">Virus release messages</string>
+	<string name="pref_sync_notification_virusrelease_default">false</string>
+		
     <!--  Notification defaults -->
     <string name="pref_sync_notification_key">sync.notification</string>
     <string name="pref_sync_notification_title">Enable Sync Notifications</string>
@@ -163,8 +211,10 @@
     <string name="filetransfers">File Transfers</string>
     
     <string name="upload_journal_label">Journal:</string>
-    <string name="upload_journal_prompt">Upload file(s) or post to a Journal</string>
-    <string name="upload_journal_default">Upload file(s)</string>
+    <string name="upload_journal_prompt">Attach file(s) to a journal</string>
+    <string name="upload_journal_post_label">Attach:</string>
+    <string name="upload_journal_post_prompt">Attach file(s) to a journal post</string>
+    <string name="upload_journal_post_default">Upload file(s)</string>
     <string name="upload_is_draft_label"></string>
     <string name="upload_is_draft_text">Check this if your entry is a draft. As a draft no one except you can see it.</string>
     <string name="upload_allow_comments_label"></string>

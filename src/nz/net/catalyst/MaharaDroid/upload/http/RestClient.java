@@ -321,7 +321,8 @@ public class RestClient {
 					} catch (JSONException e1) { 
 						Log.w(TAG, "Response 200 received but invalid JSON.");
 						json.put("fail", e1.getMessage());
-						if ( DEBUG) Log.d(TAG, "HTTP POST returned status code: " + response.getStatusLine());
+						if ( DEBUG ) Log.d(TAG, "HTTP POST returned status code: " + response.getStatusLine());
+						if ( VERBOSE ) Log.v(TAG, content.toString());
 					}
 		    	} else {
 					Log.w(TAG, "File upload failed with response code:" + response.getStatusLine().getStatusCode());

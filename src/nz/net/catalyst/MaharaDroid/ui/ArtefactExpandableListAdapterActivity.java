@@ -36,6 +36,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -57,8 +58,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
-public class ArtefactExpandableListAdapterActivity extends Activity {
+public class ArtefactExpandableListAdapterActivity extends Activity implements OnClickListener {
 	static final String TAG = LogConfig.getLogTag(ArtefactExpandableListAdapterActivity.class);
 	// whether DEBUG level logging is enabled (whether globally, or explicitly
 	// for this log tag)
@@ -72,6 +74,8 @@ public class ArtefactExpandableListAdapterActivity extends Activity {
 	private ArtefactExpandableListAdapter adapter;
 	
 	private ExpandableListView listview;
+	
+	private CheckBox toggleContents;
 	
     ArtefactContentObserver acObserver = new ArtefactContentObserver(new Handler());
 	
@@ -105,6 +109,9 @@ public class ArtefactExpandableListAdapterActivity extends Activity {
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.windowtitle);
         
         this.getContentResolver().registerContentObserver(ArtefactUtils.URI, true, acObserver);
+        
+		toggleContents = (CheckBox) findViewById(R.id.show_upload_ready);
+		toggleContents.setOnClickListener(this);
 	    
         // Load artefacts on the UI
         updateView();
@@ -127,14 +134,9 @@ public class ArtefactExpandableListAdapterActivity extends Activity {
         this.getContentResolver().unregisterContentObserver(acObserver);
 	}
 	private void updateView() {
-		// First lets get our DB object
     	// Lets see how many saved artefacts we have
-	    Artefact[] a_array = ArtefactUtils.loadSavedArtefacts(mContext);
-	    
-    	if ( DEBUG ) Log.d(TAG, "returned " + a_array.length + " items");
-
     	// If none then we show introduction screen
-    	if ( a_array == null || a_array.length <= 0 ) {
+    	if ( ArtefactUtils.countSavedArtefacts(mContext) <= 0 ) {
     		// Show the introduction screen
             ((RelativeLayout) findViewById(R.id.introduction)).setVisibility(View.VISIBLE);
             ((TextView) findViewById(R.id.artefacts_help)).setText(Html.fromHtml(getString(R.string.artefacts_help)));
@@ -142,6 +144,10 @@ public class ArtefactExpandableListAdapterActivity extends Activity {
     		
 		// Else we have some artefacts to show lets load them up in our ExpandableListAdapter
     	} else {
+    	    Artefact[] a_array = ArtefactUtils.loadSavedArtefacts(mContext, toggleContents.isChecked());
+    	    
+        	if ( DEBUG ) Log.d(TAG, "returned " + a_array.length + " items");
+
             adapter  = new ArtefactExpandableListAdapter(this, new ArrayList<String>(), 
         			new ArrayList<ArrayList<Artefact>>());
             listview = (ExpandableListView) findViewById(R.id.listView);
@@ -300,8 +306,8 @@ public class ArtefactExpandableListAdapterActivity extends Activity {
 			    	        break;
 			        	}
 			        }
-			        ((CheckBox) convertView.findViewById(R.id.txtArtefactIsDraft)).setChecked(art.getIsDraft());
-			        ((CheckBox) convertView.findViewById(R.id.txtArtefactAllowComments)).setChecked(art.getAllowComments());
+			        ((CheckBox) convertView.findViewById(R.id.txtArtefactIsDraft)).setChecked(art.isDraft());
+			        ((CheckBox) convertView.findViewById(R.id.txtArtefactAllowComments)).setChecked(art.allowComments());
 		        }
 	    		// TDODO hide layout
 	    		l = (LinearLayout)convertView.findViewById(R.id.ArtefactJournalLayout);
@@ -386,6 +392,9 @@ public class ArtefactExpandableListAdapterActivity extends Activity {
 	        // Default to image - change if journal
 	        for ( int i = 0 ; i < children.get(groupPosition).size(); i++ ) {
 	        	Artefact a = children.get(groupPosition).get(i);
+	        	if ( a.isUploadReady() ) {
+	        		tv.setTextColor(Color.GRAY);
+	        	}
 	        	if ( a.isJournal() ) {
 	        		ImageView iv = (ImageView) convertView.findViewById(R.id.artefact_icon);
 	    	        iv.setImageResource(R.drawable.ic_menu_compose);
@@ -428,5 +437,12 @@ public class ArtefactExpandableListAdapterActivity extends Activity {
 			}
 		}
 
+	}
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		updateView();
+		((TextView) findViewById(R.id.saved_artefacts_header)).setText( toggleContents.isChecked() ? R.string.savedanduploadready : R.string.saved );
 	}
 }

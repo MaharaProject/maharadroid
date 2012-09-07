@@ -146,8 +146,8 @@ public class JournalSettingsActivity extends Activity implements OnClickListener
 				((EditText)findViewById(R.id.txtArtefactDescription)).setText(a.getDescription());
 				((EditText)findViewById(R.id.txtArtefactTags)).setText(a.getTags());
 				((EditText)findViewById(R.id.txtArtefactId)).setText(a.getId().toString());
-				((CheckBox)findViewById(R.id.txtArtefactIsDraft)).setChecked(a.getIsDraft());
-				((CheckBox)findViewById(R.id.txtArtefactAllowComments)).setChecked(a.getAllowComments());
+				((CheckBox)findViewById(R.id.txtArtefactIsDraft)).setChecked(a.isDraft());
+				((CheckBox)findViewById(R.id.txtArtefactAllowComments)).setChecked(a.allowComments());
 	
 				setDefaultJournal();
 	
@@ -190,8 +190,8 @@ public class JournalSettingsActivity extends Activity implements OnClickListener
 	        		if ( DEBUG ) Log.d(TAG, "setting default journal to '" + journal_id + "'");
 
 	        		if ( a != null ) {
-						((CheckBox)findViewById(R.id.txtArtefactIsDraft)).setChecked(a.getIsDraft());
-						((CheckBox)findViewById(R.id.txtArtefactAllowComments)).setChecked(a.getAllowComments());
+						((CheckBox)findViewById(R.id.txtArtefactIsDraft)).setChecked(a.isDraft());
+						((CheckBox)findViewById(R.id.txtArtefactAllowComments)).setChecked(a.allowComments());
 	        		}
 					if ( i > 0 ) {
 			    		TextView tv;

@@ -80,11 +80,11 @@ public class TransferService extends IntentService {
 		
 		JSONObject result = RestClient.UploadArtifact(
 				Utils.getUploadURLPref(mContext), 
-				getUploadAuthTokenPref(),
-				getUploadUsernamePref(),
+				Utils.getUploadAuthTokenPref(mContext),
+				Utils.getUploadUsernamePref(mContext),
 				a.getJournalId(), a.getJournalPostId(),
-				a.getIsDraft(), a.getAllowComments(),
-				getUploadFolderPref(),
+				a.isDraft(), a.allowComments(),
+				Utils.getUploadFolderPref(mContext),
 				a.getTags(),
 				a.getFilePath(mContext),
 				a.getTitle(),
@@ -158,10 +158,10 @@ public class TransferService extends IntentService {
 
 		// Set the info for the views that show in the notification panel.
 		notification.setLatestEventInfo(mContext, title, description, contentIntent);
-		notification.flags |= Notification.FLAG_ONGOING_EVENT;
+//		notification.flags |= Notification.FLAG_ONGOING_EVENT;
 		notification.flags |= Notification.FLAG_AUTO_CANCEL;
-		notification.flags |= Notification.DEFAULT_SOUND;
-		notification.flags |= Notification.FLAG_SHOW_LIGHTS;
+//		notification.flags |= Notification.DEFAULT_SOUND;
+//		notification.flags |= Notification.FLAG_SHOW_LIGHTS;
 
 		// Send the notification.
 		mNM.notify(id, notification);
@@ -174,31 +174,5 @@ public class TransferService extends IntentService {
 	}
 
 
-	private String getUploadFolderPref() {
-		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 
-		String[][] folderItems = SyncUtils.getFolders(null, mContext);
-		
-		if ( mPrefs.getBoolean(mContext.getResources().getString(R.string.pref_upload_folder_default_key), false) ) {
-			
-			String folder_key = mPrefs.getString(mContext.getResources().getString(R.string.pref_upload_folder_key), "");
-			
-			for (int i=0; i<folderItems[0].length; i++) {
-				if ( folder_key.equals(folderItems[0][i]) ) {
-					return folderItems[1][i];
-				}
-			}
-		}
-		return "";
-	}
-	private String getUploadAuthTokenPref() {
-		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-
-		return mPrefs.getString(mContext.getResources().getString(R.string.pref_auth_token_key), "");
-	}
-	private String getUploadUsernamePref() {
-		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-
-		return mPrefs.getString(mContext.getResources().getString(R.string.pref_auth_username_key), "");
-	}
 }

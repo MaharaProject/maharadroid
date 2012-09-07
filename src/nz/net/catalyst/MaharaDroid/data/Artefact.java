@@ -84,13 +84,13 @@ public class Artefact extends Object implements Parcelable {
 	public String getJournalPostId() {
 		return journal_post_id;
 	}
-	public boolean getIsDraft() {
+	public boolean isDraft() {
 		return is_draft;
 	}
-	public boolean getAllowComments() {
+	public boolean allowComments() {
 		return allow_comments;
 	}
-	public boolean getUploadReady() {
+	public boolean isUploadReady() {
 		return upload_ready;
 	}
 	public void setId(Long i) {
@@ -310,9 +310,9 @@ public class Artefact extends Object implements Parcelable {
         tags = ta.getTags();
         journal_id = ta.getJournalId();
         journal_post_id = ta.getJournalPostId();
-        is_draft = ta.getIsDraft();
-        allow_comments = ta.getAllowComments();
-        upload_ready = ta.getUploadReady();
+        is_draft = ta.isDraft();
+        allow_comments = ta.allowComments();
+        upload_ready = ta.isUploadReady();
 	}
 	public String getFilePath(Context context) {
     	if ( filename == null )

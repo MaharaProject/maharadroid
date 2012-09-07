@@ -141,27 +141,6 @@
 					
 			</LinearLayout>		
 			<LinearLayout
-				  xmlns:android="http://schemas.android.com/apk/res/android"
-				  android:layout_width="fill_parent"
-				  android:layout_height="wrap_content"
-				  android:layout_marginTop="10dp"
-				  android:orientation="horizontal">
-
-					<TextView android:text="@string/upload_time_label"
-							  android:layout_width="60dp"
-							  android:singleLine="false"
-							  android:layout_height="wrap_content"
-			  				  android:textStyle="bold"
-			  				  style="@android:style/TextAppearance.Small">
-					</TextView>
-			
-					<TextView  android:id="@+id/txtArtefactTime"
-							  android:layout_width="fill_parent"
-							  android:layout_height="wrap_content"
-  			  				  style="@android:style/TextAppearance.Small">
-				  	</TextView>
-			</LinearLayout>		
-			<LinearLayout
 			  xmlns:android="http://schemas.android.com/apk/res/android"
 			  android:id="@+id/ArtefactSettingsButtonLayout"
 			  android:layout_width="fill_parent"

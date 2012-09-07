@@ -11,10 +11,12 @@
 		Back in MaharaDroid touch your back button, and an authentication attempt will be made. 
 		&lt;/p&gt;
 		&lt;p&gt;
-		Once authenticated check the Menu for options on writing Journal posts and uploading files.
+		Once authenticated check the Menu for options on writing Journal posts.
 		Alternatively when taking photos, videos or recording audio look for options to \'share\' these files with MaharaDroid.
 		&lt;/p&gt;         
     </string>
+    <string name="saved">Saved</string>
+    <string name="savedanduploadready">Saved &amp; Ready for Upload</string>
     <string name="artefacts_no_saved_artefacts">Nothing saved at present.</string>
     
     <string name="options_menu_prefs">Preferences</string>
@@ -25,8 +27,7 @@
     <string name="options_menu_compose">Write</string>
     <string name="options_menu_deleteall">Delete All</string>
     <string name="options_menu_uploadall">Upload All</string>
-    <string name="options_menu_viewsaved">Saved for upload</string>
-
+    
     <string name="context_menu_upload">Upload</string>
     <string name="context_menu_view">View</string>
     <string name="context_menu_delete">Delete</string>

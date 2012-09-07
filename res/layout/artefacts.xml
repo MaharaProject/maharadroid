@@ -77,10 +77,9 @@
 				android:layout_gravity="left"
 		   	    android:layout_marginLeft="10dp"	  
 			/>
-		    
 			<TextView android:id="@+id/saved_artefacts_header"
-				android:text="@string/options_menu_viewsaved"
-				android:layout_width="fill_parent" 
+				android:text="@string/saved"
+				android:layout_width="wrap_content" 
 				android:singleLine="true" 
 				android:layout_height="wrap_content" 
 			    style="@style/headerText"
@@ -89,7 +88,13 @@
 		   	    android:layout_toRightOf="@id/saved"
 		   	    android:layout_centerInParent="true"
 			/>
-		</RelativeLayout>
+			<CheckBox android:id="@+id/show_upload_ready"
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+		   	    android:layout_marginRight="0dp"	  
+	    	    android:layout_alignParentRight="true"
+			/>
+			</RelativeLayout>
 		<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 		    android:id="@+id/body"
 		    android:layout_width="fill_parent"
@@ -102,7 +107,6 @@
 				android:choiceMode="multipleChoice"
 				android:fastScrollEnabled="true"
 				android:layout_below="@+id/saved_artefacts_header"
-			    android:layout_weight="1"
 				android:layout_width="fill_parent"
 				android:layout_height="fill_parent"
 				android:headerDividersEnabled="true"

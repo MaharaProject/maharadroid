@@ -27,6 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import nz.net.catalyst.MaharaDroid.R;
+import nz.net.catalyst.MaharaDroid.data.SyncUtils;
 import nz.net.catalyst.MaharaDroid.ui.ArtefactExpandableListAdapterActivity;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -316,4 +317,31 @@ public class Utils {
 
 		return bm;	
     }
+	public static String getUploadFolderPref(Context context) {
+		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+		String[][] folderItems = SyncUtils.getFolders(null, context);
+		
+		if ( mPrefs.getBoolean(context.getResources().getString(R.string.pref_upload_folder_default_key), false) ) {
+			
+			String folder_key = mPrefs.getString(context.getResources().getString(R.string.pref_upload_folder_key), "");
+			
+			for (int i=0; i<folderItems[0].length; i++) {
+				if ( folder_key.equals(folderItems[0][i]) ) {
+					return folderItems[1][i];
+				}
+			}
+		}
+		return "";
+	}
+	public static String getUploadAuthTokenPref(Context context) {
+		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+		return mPrefs.getString(context.getResources().getString(R.string.pref_auth_token_key), "");
+	}
+	public static String getUploadUsernamePref(Context context) {
+		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+		return mPrefs.getString(context.getResources().getString(R.string.pref_auth_username_key), "");
+	}
 }

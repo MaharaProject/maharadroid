@@ -69,11 +69,30 @@ public class ArtefactUtils {
 //		artefactContentProvider.release();
 		return a;
 	}
+	
 	public static Artefact loadSavedArtefact(Context context, Long id) {
 		Artefact[] a = getArtefactsFromSelection(context, BaseColumns._ID + " = ?", new String[] { id.toString() });
 		if ( a != null && a.length > 0 )
 			return a[0];
 		return null;
+	}
+	public static long countArtefactsFromSelection(Context context, String selection, String[] selectionArgs) {
+		long items = 0;
+		
+		ContentProviderClient artefactContentProvider = context.getContentResolver().acquireContentProviderClient(URI);
+		Cursor cursor = null;
+		try {
+			cursor = artefactContentProvider.query(URI, null, selection, selectionArgs, null);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			Log.e(TAG, "Failed to aquire content provider for query.");
+			e.printStackTrace();
+		}
+		if ( cursor == null ) 
+			return items;
+		items = cursor.getCount();
+		cursor.close();
+		return items;
 	}
 	public static int countSavedArtefacts(Context context) {
 		Artefact[] a = getArtefactsFromSelection(context, null, null);
@@ -81,9 +100,8 @@ public class ArtefactUtils {
 			return a.length;
 		return 0;
 	}
-
 	public static int uploadAllSavedArtefacts(Context context) {
-		Artefact[] a = getArtefactsFromSelection(context, null, null);
+		Artefact[] a = getArtefactsFromSelection(context, ArtefactContentProvider.UPLOAD_READY + " = 1 ", null);
 		if ( a == null ) 
 			return 0;
 		
@@ -94,8 +112,14 @@ public class ArtefactUtils {
 		return a.length;
 	}
 
-	public static Artefact[] loadSavedArtefacts(Context context) {
-		Artefact[] a = getArtefactsFromSelection(context, null, null);
+	public static Artefact[] loadSavedArtefacts(Context context, boolean include_ready_for_upload) {
+		
+		Artefact[] a;
+
+		if ( include_ready_for_upload )
+			a = getArtefactsFromSelection(context, null, null );
+		else 
+			a = getArtefactsFromSelection(context, ArtefactContentProvider.UPLOAD_READY + " = 0 ", null);
 		
 //			while (cursor.moveToNext()) {
 //				Artefact a = createArtefactFromCursor(cursor);

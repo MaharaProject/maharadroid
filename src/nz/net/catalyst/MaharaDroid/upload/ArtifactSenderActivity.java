@@ -45,50 +45,51 @@ import android.widget.Toast;
 
 public class ArtifactSenderActivity extends Activity {
 
-	static final String TAG = LogConfig.getLogTag(ArtifactSenderActivity.class);
-	// whether DEBUG level logging is enabled (whether globally, or explicitly for this log tag)
-	static final boolean DEBUG = LogConfig.isDebug(TAG);
-	// whether VERBOSE level logging is enabled
-	static final boolean VERBOSE = LogConfig.VERBOSE;
-	
-	@Override
+    static final String TAG = LogConfig.getLogTag(ArtifactSenderActivity.class);
+    // whether DEBUG level logging is enabled (whether globally, or explicitly
+    // for this log tag)
+    static final boolean DEBUG = LogConfig.isDebug(TAG);
+    // whether VERBOSE level logging is enabled
+    static final boolean VERBOSE = LogConfig.VERBOSE;
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        Intent intent = getIntent();
-		Bundle extras = intent.getExtras();
-		String [] uris = null;
-		
-		if ( DEBUG ) 
-			Log.d(TAG, "Type: " + intent.getType() + 
-					 ", Stream: " + intent.hasExtra("android.intent.extra.STREAM") +
-					 ", Data: " + intent.getDataString() + 
-					 ", Flag(s): " + intent.getFlags());
-        
-		if (intent.getAction().equals(Intent.ACTION_SEND)) {
-			if (extras.containsKey("android.intent.extra.STREAM")) {
-				Uri uri = (Uri) extras.get("android.intent.extra.STREAM");
-				uris = new String[] { uri.toString() };
-			}
-		} else if (intent.getAction().equals(Intent.ACTION_SEND_MULTIPLE)) {
-			if (extras.containsKey("android.intent.extra.STREAM")) {
-				ArrayList<Parcelable> list = extras.getParcelableArrayList(Intent.EXTRA_STREAM);
-				int c = 0;
-				uris = new String[list.size()];
-				for (Parcelable p : list) {
-					Uri uri = (Uri) p;
-					uris[c++] = uri.toString();
-				}
-			}
-		}
 
-		if ( uris == null ) {
-			Toast.makeText(getApplicationContext(), R.string.uploadnotavailable, Toast.LENGTH_SHORT).show();
-		} else {
-			Intent i = new Intent(this, ArtifactSettingsActivity.class);
-			i.putExtra("uri", uris);
-			startActivity(i);
-		}
-		finish();
-	}
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        String[] uris = null;
+
+        if (DEBUG)
+            Log.d(TAG, "Type: " + intent.getType() +
+                    ", Stream: " + intent.hasExtra("android.intent.extra.STREAM") +
+                    ", Data: " + intent.getDataString() +
+                    ", Flag(s): " + intent.getFlags());
+
+        if (intent.getAction().equals(Intent.ACTION_SEND)) {
+            if (extras.containsKey("android.intent.extra.STREAM")) {
+                Uri uri = (Uri) extras.get("android.intent.extra.STREAM");
+                uris = new String[] { uri.toString() };
+            }
+        } else if (intent.getAction().equals(Intent.ACTION_SEND_MULTIPLE)) {
+            if (extras.containsKey("android.intent.extra.STREAM")) {
+                ArrayList<Parcelable> list = extras.getParcelableArrayList(Intent.EXTRA_STREAM);
+                int c = 0;
+                uris = new String[list.size()];
+                for (Parcelable p : list) {
+                    Uri uri = (Uri) p;
+                    uris[c++] = uri.toString();
+                }
+            }
+        }
+
+        if (uris == null) {
+            Toast.makeText(getApplicationContext(), R.string.uploadnotavailable, Toast.LENGTH_SHORT).show();
+        } else {
+            Intent i = new Intent(this, ArtifactSettingsActivity.class);
+            i.putExtra("uri", uris);
+            startActivity(i);
+        }
+        finish();
+    }
 }

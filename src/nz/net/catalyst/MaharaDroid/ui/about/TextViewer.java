@@ -37,60 +37,65 @@ import android.widget.TextView;
 /**
  * Displays plain text from a URI.
  * 
- * @author	Grant Patterson (grant.patterson@catalyst.net.nz)
+ * @author Grant Patterson (grant.patterson@catalyst.net.nz)
  */
 public class TextViewer extends Activity {
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-//	    requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 
-		setContentView(R.layout.text_viewer);
+        setContentView(R.layout.text_viewer);
 
-//        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.windowtitle);
-    	
-//        ((TextView) findViewById(R.id.windowtitle_text)).setText(getString(R.string.about_title));
+        // getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
+        // R.layout.windowtitle);
 
-		Uri uri = getIntent().getData();
+        // ((TextView)
+        // findViewById(R.id.windowtitle_text)).setText(getString(R.string.about_title));
 
-		if (uri == null) {
-			return;
-		}
+        Uri uri = getIntent().getData();
 
-		TextView textView = (TextView) findViewById(R.id.textview);
-		textView.setText(readTextFromUri(uri));
+        if (uri == null) {
+            return;
+        }
 
-	}
-	
-	private String readTextFromUri(Uri uri) {
-		
-		StringBuilder sb = new StringBuilder();
-		BufferedReader br = null;
+        TextView textView = (TextView) findViewById(R.id.textview);
+        textView.setText(readTextFromUri(uri));
 
-		try {
+    }
 
-			InputStream is = getContentResolver().openInputStream(uri);
-			br = new BufferedReader(new InputStreamReader(is));
+    private String readTextFromUri(Uri uri) {
 
-			char[] buf = new char[4096];
-			int len = 0;
+        StringBuilder sb = new StringBuilder();
+        BufferedReader br = null;
 
-			while ((len = br.read(buf)) != -1) {
-				sb.append(buf, 0, len);
-			}
+        try {
 
-		} catch (IOException e) {
-			
-			Log.e("MaharaDroid", "Failed to read text from " + uri, e);
-			// just return anything we managed to read
-			
-		} finally {
-			if (br != null) {
-				try { br.close(); } catch (IOException e) {}
-			}
-		}
-		
-		return sb.toString();
-	}
+            InputStream is = getContentResolver().openInputStream(uri);
+            br = new BufferedReader(new InputStreamReader(is));
+
+            char[] buf = new char[4096];
+            int len = 0;
+
+            while ((len = br.read(buf)) != -1) {
+                sb.append(buf, 0, len);
+            }
+
+        } catch (IOException e) {
+
+            Log.e("MaharaDroid", "Failed to read text from " + uri, e);
+            // just return anything we managed to read
+
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+
+        return sb.toString();
+    }
 }

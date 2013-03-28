@@ -74,287 +74,300 @@ import android.util.Log;
  */
 
 public class RestClient {
-	static final String TAG = LogConfig.getLogTag(RestClient.class);
-	// whether DEBUG level logging is enabled (whether globally, or explicitly for this log tag)
-	static final boolean DEBUG = LogConfig.isDebug(TAG);
-	// whether VERBOSE level logging is enabled
-	static final boolean VERBOSE = LogConfig.VERBOSE;
+    static final String TAG = LogConfig.getLogTag(RestClient.class);
+    // whether DEBUG level logging is enabled (whether globally, or explicitly
+    // for this log tag)
+    static final boolean DEBUG = LogConfig.isDebug(TAG);
+    // whether VERBOSE level logging is enabled
+    static final boolean VERBOSE = LogConfig.VERBOSE;
     private static final int CONNECTION_TIMEOUT = 15000; // 15seconds
-	private static String convertStreamToString(InputStream is) {
-		/*
-		 * To convert the InputStream to String we use the BufferedReader.readLine()
-		 * method. We iterate until the BufferedReader return null which means
-		 * there's no more data to read. Each line will appended to a StringBuilder
-		 * and returned as String.
-		 */
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		StringBuilder sb = new StringBuilder();
 
-		String line = null;
-		try {
-			while ((line = reader.readLine()) != null) {
-				sb.append(line + "\n");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				is.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+    private static String convertStreamToString(InputStream is) {
+        /*
+         * To convert the InputStream to String we use the
+         * BufferedReader.readLine() method. We iterate until the BufferedReader
+         * return null which means there's no more data to read. Each line will
+         * appended to a StringBuilder and returned as String.
+         */
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder sb = new StringBuilder();
 
-		return sb.toString();
-	}
+        String line = null;
+        try {
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return sb.toString();
+    }
 
     // TODO: change this to be a hash of post variables
-	public static JSONObject UploadArtifact(String url, String token, String username, String blog, boolean draft, boolean allowcomments,
-												String foldername, String tags, String filename, String title, 
-												String description, Context context){
-		Vector<String> pNames = new Vector<String>();
-		Vector<String> pVals = new Vector<String>();
+    public static JSONObject UploadArtifact(String url, String token, String username, String blog, boolean draft, boolean allowcomments,
+            String foldername, String tags, String filename, String title,
+            String description, Context context) {
+        Vector<String> pNames = new Vector<String>();
+        Vector<String> pVals = new Vector<String>();
 
-		if ( title != null ) {
-			pNames.add("title");
-			pVals.add(title);
-		}
-		if ( description != null ) {
-			pNames.add("description");
-			pVals.add(description);
-		}
-		if ( token != null ) {
-			pNames.add("token");
-			pVals.add(token);
-		}
-		if ( username != null ) {
-			pNames.add("username");
-			pVals.add(username);
-		}
-		if ( foldername != null ) {
-			pNames.add("foldername");
-			pVals.add(foldername);
-		}
-		if ( tags != null ) {
-			pNames.add("tags");
-			pVals.add(tags);
-		}
-		if ( filename != null ) {
-			pNames.add("filename");
-			pVals.add(filename);
-		}
-		if (blog != null ) {
-			pNames.add("blog");
-			pVals.add(blog);
-		}
-		if ( draft ) {
-			pNames.add("draft");
-			pVals.add("true");
-		} 
-		if ( allowcomments ) {
-			pNames.add("allowcomments");
-			pVals.add("true");
-		}
-
-		String [] paramNames, paramVals;
-		paramNames = paramVals = new String[]{};
-		paramNames = pNames.toArray(paramNames);
-		paramVals = pVals.toArray(paramVals);
-		
-		return CallFunction(url, paramNames, paramVals, context);
-	}
-	public static JSONObject AuthSync(String url, String token, String username, Long lastsync, String notifications, Context context){
-		Vector<String> pNames = new Vector<String>();
-		Vector<String> pVals = new Vector<String>();
-		
-		if ( token != null ) {
-			pNames.add("token");
-			pVals.add(token);
-		}
-		if ( username != null ) {
-			pNames.add("username");
-			pVals.add(username);
-		}
-		if ( lastsync != null ) {
-			pNames.add("lastsync");
-			pVals.add(lastsync.toString());
-		}
-		if ( lastsync != null ) {
-			pNames.add("lastsync");
-			pVals.add(lastsync.toString());
-		}
-		if ( notifications != null ) {
-			pNames.add("notifications");
-			pVals.add(notifications);
-		}
-		
-		String [] paramNames, paramVals;
-		paramNames = paramVals = new String[]{};
-		paramNames = pNames.toArray(paramNames);
-		paramVals = pVals.toArray(paramVals);
-		
-		return CallFunction(url, paramNames, paramVals, context);
-	}
-
-	private static SSLSocketFactory getSocketFactory(Boolean d) {
-        // Enable debug mode to ignore all certificates
-        if ( DEBUG ) {
-        	KeyStore trustStore;
-        	try {
-				trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-				trustStore.load(null, null);
-				SSLSocketFactory sf = new DebugSSLSocketFactory(trustStore);
-		        sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-		        return sf;
-	
-			} catch (KeyStoreException e2) {
-				// TODO Auto-generated catch block
-				e2.printStackTrace();
-			} catch (NoSuchAlgorithmException e3) {
-				// TODO Auto-generated catch block
-				e3.printStackTrace();
-			} catch (CertificateException e3) {
-				// TODO Auto-generated catch block
-				e3.printStackTrace();
-			} catch (IOException e3) {
-				// TODO Auto-generated catch block
-				e3.printStackTrace();
-			} catch (KeyManagementException e2) {
-				// TODO Auto-generated catch block
-				e2.printStackTrace();
-			} catch (UnrecoverableKeyException e2) {
-				// TODO Auto-generated catch block
-				e2.printStackTrace();
-			}
+        if (title != null) {
+            pNames.add("title");
+            pVals.add(title);
         }
-    	
-    	return SSLSocketFactory.getSocketFactory();		
-	}
-	
-	public static JSONObject CallFunction(String url, String[] paramNames, String[] paramVals, Context context)
-	{
-		JSONObject json = new JSONObject();
+        if (description != null) {
+            pNames.add("description");
+            pVals.add(description);
+        }
+        if (token != null) {
+            pNames.add("token");
+            pVals.add(token);
+        }
+        if (username != null) {
+            pNames.add("username");
+            pVals.add(username);
+        }
+        if (foldername != null) {
+            pNames.add("foldername");
+            pVals.add(foldername);
+        }
+        if (tags != null) {
+            pNames.add("tags");
+            pVals.add(tags);
+        }
+        if (filename != null) {
+            pNames.add("filename");
+            pVals.add(filename);
+        }
+        if (blog != null) {
+            pNames.add("blog");
+            pVals.add(blog);
+        }
+        if (draft) {
+            pNames.add("draft");
+            pVals.add("true");
+        }
+        if (allowcomments) {
+            pNames.add("allowcomments");
+            pVals.add("true");
+        }
 
-		SchemeRegistry supportedSchemes = new SchemeRegistry();
+        String[] paramNames, paramVals;
+        paramNames = paramVals = new String[] {};
+        paramNames = pNames.toArray(paramNames);
+        paramVals = pVals.toArray(paramVals);
 
-        SSLSocketFactory sf = getSocketFactory(DEBUG);        
-			
-		//TODO we make assumptions about ports.
-		supportedSchemes.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-		supportedSchemes.register(new Scheme("https", sf, 443));
-		
-		HttpParams http_params = new BasicHttpParams();
-		ClientConnectionManager ccm = new ThreadSafeClientConnManager(http_params, supportedSchemes);
-		
-		//HttpParams http_params = httpclient.getParams();
-	    http_params.setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
-	    
-	    HttpConnectionParams.setConnectionTimeout(http_params, CONNECTION_TIMEOUT);
-	    HttpConnectionParams.setSoTimeout(http_params, CONNECTION_TIMEOUT);
+        return CallFunction(url, paramNames, paramVals, context);
+    }
 
-		DefaultHttpClient httpclient = new DefaultHttpClient(ccm, http_params);
-    
-	    if (paramNames == null) {
-			paramNames = new String[0];
-		}
-		if (paramVals == null) {
-			paramVals = new String[0];
-		}
-		
-		if (paramNames.length != paramVals.length) {
-			Log.w(TAG, "Incompatible nuber of param names and values, bailing on upload!");
-			return null;
-		}
-		
-		SortedMap<String,String> sig_params = new TreeMap<String,String>();
-		
-		HttpResponse response = null;
-		HttpPost httppost = null;
-		
-		try { 
-			httppost = new HttpPost(url);
-		} catch (IllegalArgumentException e) {
-			try {
-				json.put("fail", e.getMessage());
-			} catch (JSONException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			return json;
-		}
+    public static JSONObject AuthSync(String url, String token, String username, Long lastsync, String notifications, Context context) {
+        Vector<String> pNames = new Vector<String>();
+        Vector<String> pVals = new Vector<String>();
 
-		try {
-		    File file = null;
-		    // If this is a POST call, then it is a file upload. Check to see if a
-		    // filename is given, and if so, open that file.
-	    	// Get the title of the photo being uploaded so we can pass it into the
-	    	// MultipartEntityMonitored class to be broadcast for progress updates.
-	    	String title = "";
-	    	for (int i = 0; i < paramNames.length; ++i) {
-	    		if (paramNames[i].equals("title")) {
-	    			title = paramVals[i];
-	    		}
-	    		else if (paramNames[i].equals("filename")) {
-		    		file = new File(paramVals[i]);
-		    		continue;
-		    	}
-	    		sig_params.put(paramNames[i], paramVals[i]);
-	    	}
-	    	
-	    	MultipartEntityMonitored mp_entity = new MultipartEntityMonitored(context, title);
-	    	if ( file != null ) {
-	    		mp_entity.addPart("userfile", new FileBody(file));
-	    	}
-			for (Map.Entry<String,String> entry : sig_params.entrySet()) {
-				mp_entity.addPart(entry.getKey(), new StringBody(entry.getValue()));
-			}
-		    httppost.setEntity(mp_entity);
-			
-	    	response = httpclient.execute(httppost);
-			HttpEntity resEntity = response.getEntity();
-			
-		    if (resEntity != null) {
-		    	String content = convertStreamToString(resEntity.getContent());
-		    	if ( response.getStatusLine().getStatusCode() == 200 ) {
-					try {
-		    			json = new JSONObject(content.toString());
-					} catch (JSONException e1) { 
-						Log.w(TAG, "Response 200 received but invalid JSON.");
-						json.put("fail", e1.getMessage());
-						if ( DEBUG) Log.d(TAG, "HTTP POST returned status code: " + response.getStatusLine());
-					}
-		    	} else {
-					Log.w(TAG, "File upload failed with response code:" + response.getStatusLine().getStatusCode());
-					json.put("fail", response.getStatusLine().getReasonPhrase());
-					if ( DEBUG) Log.d(TAG, "HTTP POST returned status code: " + response.getStatusLine());
-		    	}
-	    	} else {
-				Log.w(TAG, "Response does not contain a valid HTTP entity.");
-				if ( DEBUG ) Log.d(TAG, "HTTP POST returned status code: " + response.getStatusLine());
-	    	}
+        if (token != null) {
+            pNames.add("token");
+            pVals.add(token);
+        }
+        if (username != null) {
+            pNames.add("username");
+            pVals.add(username);
+        }
+        if (lastsync != null) {
+            pNames.add("lastsync");
+            pVals.add(lastsync.toString());
+        }
+        if (lastsync != null) {
+            pNames.add("lastsync");
+            pVals.add(lastsync.toString());
+        }
+        if (notifications != null) {
+            pNames.add("notifications");
+            pVals.add(notifications);
+        }
 
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			try {
-				json.put("fail", e.getMessage());
-			} catch (JSONException e1) { }
-			e.printStackTrace();
-		} catch (IllegalStateException e) {
-			try {
-				json.put("fail", e.getMessage());
-			} catch (JSONException e1) { }
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			try {
-				json.put("fail", e.getMessage());
-			} catch (JSONException e1) { }
-			e.printStackTrace();
-		} catch (JSONException e) { }
-		
-		httpclient.getConnectionManager().shutdown();
+        String[] paramNames, paramVals;
+        paramNames = paramVals = new String[] {};
+        paramNames = pNames.toArray(paramNames);
+        paramVals = pVals.toArray(paramVals);
 
-		return json;
-		
-	}
+        return CallFunction(url, paramNames, paramVals, context);
+    }
+
+    private static SSLSocketFactory getSocketFactory(Boolean d) {
+        // Enable debug mode to ignore all certificates
+        if (DEBUG) {
+            KeyStore trustStore;
+            try {
+                trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+                trustStore.load(null, null);
+                SSLSocketFactory sf = new DebugSSLSocketFactory(trustStore);
+                sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+                return sf;
+
+            } catch (KeyStoreException e2) {
+                // TODO Auto-generated catch block
+                e2.printStackTrace();
+            } catch (NoSuchAlgorithmException e3) {
+                // TODO Auto-generated catch block
+                e3.printStackTrace();
+            } catch (CertificateException e3) {
+                // TODO Auto-generated catch block
+                e3.printStackTrace();
+            } catch (IOException e3) {
+                // TODO Auto-generated catch block
+                e3.printStackTrace();
+            } catch (KeyManagementException e2) {
+                // TODO Auto-generated catch block
+                e2.printStackTrace();
+            } catch (UnrecoverableKeyException e2) {
+                // TODO Auto-generated catch block
+                e2.printStackTrace();
+            }
+        }
+
+        return SSLSocketFactory.getSocketFactory();
+    }
+
+    public static JSONObject CallFunction(String url, String[] paramNames, String[] paramVals, Context context)
+    {
+        JSONObject json = new JSONObject();
+
+        SchemeRegistry supportedSchemes = new SchemeRegistry();
+
+        SSLSocketFactory sf = getSocketFactory(DEBUG);
+
+        // TODO we make assumptions about ports.
+        supportedSchemes.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+        supportedSchemes.register(new Scheme("https", sf, 443));
+
+        HttpParams http_params = new BasicHttpParams();
+        ClientConnectionManager ccm = new ThreadSafeClientConnManager(http_params, supportedSchemes);
+
+        // HttpParams http_params = httpclient.getParams();
+        http_params.setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+        HttpConnectionParams.setConnectionTimeout(http_params, CONNECTION_TIMEOUT);
+        HttpConnectionParams.setSoTimeout(http_params, CONNECTION_TIMEOUT);
+
+        DefaultHttpClient httpclient = new DefaultHttpClient(ccm, http_params);
+
+        if (paramNames == null) {
+            paramNames = new String[0];
+        }
+        if (paramVals == null) {
+            paramVals = new String[0];
+        }
+
+        if (paramNames.length != paramVals.length) {
+            Log.w(TAG, "Incompatible number of param names and values, bailing on upload!");
+            return null;
+        }
+
+        SortedMap<String, String> sig_params = new TreeMap<String, String>();
+
+        HttpResponse response = null;
+        HttpPost httppost = null;
+        Log.d(TAG, "HTTP POST URL: " + url);
+        try {
+            httppost = new HttpPost(url);
+        } catch (IllegalArgumentException e) {
+            try {
+                json.put("fail", e.getMessage());
+            } catch (JSONException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+            return json;
+        }
+
+        try {
+            File file = null;
+            // If this is a POST call, then it is a file upload. Check to see if
+            // a
+            // filename is given, and if so, open that file.
+            // Get the title of the photo being uploaded so we can pass it into
+            // the
+            // MultipartEntityMonitored class to be broadcast for progress
+            // updates.
+            String title = "";
+            for (int i = 0; i < paramNames.length; ++i) {
+                if (paramNames[i].equals("title")) {
+                    title = paramVals[i];
+                }
+                else if (paramNames[i].equals("filename")) {
+                    file = new File(paramVals[i]);
+                    continue;
+                }
+                sig_params.put(paramNames[i], paramVals[i]);
+            }
+
+            MultipartEntityMonitored mp_entity = new MultipartEntityMonitored(context, title);
+            if (file != null) {
+                mp_entity.addPart("userfile", new FileBody(file));
+            }
+            for (Map.Entry<String, String> entry : sig_params.entrySet()) {
+                mp_entity.addPart(entry.getKey(), new StringBody(entry.getValue()));
+            }
+            httppost.setEntity(mp_entity);
+
+            response = httpclient.execute(httppost);
+            HttpEntity resEntity = response.getEntity();
+
+            if (resEntity != null) {
+                String content = convertStreamToString(resEntity.getContent());
+                if (response.getStatusLine().getStatusCode() == 200) {
+                    try {
+                        json = new JSONObject(content.toString());
+                    } catch (JSONException e1) {
+                        Log.w(TAG, "Response 200 received but invalid JSON.");
+                        json.put("fail", e1.getMessage());
+                        if (DEBUG)
+                            Log.d(TAG, "HTTP POST returned status code: " + response.getStatusLine());
+                    }
+                } else {
+                    Log.w(TAG, "File upload failed with response code:" + response.getStatusLine().getStatusCode());
+                    json.put("fail", response.getStatusLine().getReasonPhrase());
+                    if (DEBUG)
+                        Log.d(TAG, "HTTP POST returned status code: " + response.getStatusLine());
+                }
+            } else {
+                Log.w(TAG, "Response does not contain a valid HTTP entity.");
+                if (DEBUG)
+                    Log.d(TAG, "HTTP POST returned status code: " + response.getStatusLine());
+            }
+
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            try {
+                json.put("fail", e.getMessage());
+            } catch (JSONException e1) {
+            }
+            e.printStackTrace();
+        } catch (IllegalStateException e) {
+            try {
+                json.put("fail", e.getMessage());
+            } catch (JSONException e1) {
+            }
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            try {
+                json.put("fail", e.getMessage());
+            } catch (JSONException e1) {
+            }
+            e.printStackTrace();
+        } catch (JSONException e) {
+        }
+
+        httpclient.getConnectionManager().shutdown();
+
+        return json;
+
+    }
 }

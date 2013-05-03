@@ -5,16 +5,16 @@
     <string name="artefacts_banner_text">Open source ePortfolios</string>
     <string name="artefacts_banner_text2">[mah-har-rah;verb]: to think, thinking, thought</string>
     <string name="artefacts_help">&lt;p&gt;Thanks for using MaharaDroid!&lt;/p&gt; 
-        &lt;p&gt;To get started touch Menu -&gt; Preferences.&lt;/p&gt;
+        &lt;p&gt;To get started touch Start button, then Preferences and
+        enter your Mahara username and set an initial token. At the same time visit Mahara (Settings) and set the same token value and click update. 
+        Back in MaharaDroid touch your back button, and an authentication attempt will be made.
+        &lt;/p&gt;
         &lt;p&gt;
-		Enter your Mahara username on set the initial token. At the same time visit Mahara (Settings) and set the same token value and click update. 
-		Back in MaharaDroid touch your back button, and an authentication attempt will be made. 
-		&lt;/p&gt;
-		&lt;p&gt;
-		Once authenticated check the Menu for options on writing Journal posts and uploading files.
-		Alternatively when taking photos, videos or recording audio look for options to \'share\' these files with MaharaDroid.
-		&lt;/p&gt;         
+        Once authenticated, check the Menu for writing Journal posts and uploading files.
+        Alternatively when taking photos, videos or recording audio, look for options to \'share\' these files with MaharaDroid.
+        &lt;/p&gt;
     </string>
+    <string name="start_but">Start</string>
     <string name="artefacts_no_saved_artefacts">Nothing saved at present.</string>
     
     <string name="options_menu_prefs">Preferences</string>

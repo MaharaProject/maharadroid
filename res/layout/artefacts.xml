@@ -1,115 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:gravity="right" >
-    
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:id="@+id/introduction"
-	    android:orientation="vertical"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:padding="2dip"
-	    style="@style/headerBackground"
-	    android:visibility="visible"
-	    >			
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:gravity="right" >
 
-    	<ImageView
+	<RelativeLayout
+		android:id="@+id/introduction"
+		style="@style/headerBackground"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:padding="2dip"
+		android:visibility="visible" >
+
+		<ImageView
 			android:id="@+id/banner"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_margin="5dp"
-			android:src="@drawable/banner"
-		/>
+			android:src="@drawable/banner" />
 
-		<TextView android:id="@+id/artefacts_banner_text"
-		    		android:text="@string/artefacts_banner_text"
-				  android:layout_width="wrap_content" 
-				  android:singleLine="false" 
-				  android:layout_height="wrap_content" 
-				  android:textStyle="bold" 
-					android:layout_margin="5dp"
-					style="@android:style/TextAppearance.Large"
-					android:layout_below="@+id/banner"
-				  />
-	  							
-		<TextView android:id="@+id/artefacts_banner_text2"
-		    	android:text="@string/artefacts_banner_text2"
-			  android:layout_margin="5dp"
-			  android:layout_width="fill_parent" 
-			  android:singleLine="false" 
-			  android:layout_height="wrap_content" 
-	 		  style="@android:style/TextAppearance.Small"
-	 		  android:layout_below="@+id/artefacts_banner_text"
-			  />
+		<TextView
+			android:id="@+id/artefacts_banner_text"
+			style="@android:style/TextAppearance.Large"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_below="@+id/banner"
+			android:layout_margin="5dp"
+			android:singleLine="false"
+			android:text="@string/artefacts_banner_text"
+			android:textStyle="bold" />
 
-		<TextView android:id="@+id/artefacts_help"
-			  android:layout_margin="5dp"
-			  android:layout_width="fill_parent" 
-			  android:singleLine="false" 
-			  android:layout_height="wrap_content" 
-	 		  style="@android:style/TextAppearance.Small"
-  	 		  android:layout_below="@+id/artefacts_banner_text2"
-			  />
-	</RelativeLayout>
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:id="@+id/artefacts"
-	    android:orientation="vertical"
+		<TextView
+			android:id="@+id/artefacts_banner_text2"
+			style="@android:style/TextAppearance.Small"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:layout_below="@+id/artefacts_banner_text"
+			android:layout_margin="5dp"
+			android:singleLine="false"
+			android:text="@string/artefacts_banner_text2" />
+
+     <Button
+         android:id="@+id/start_but"
+         style="@style/MaharaButton"
+         android:layout_width="60dp"
+         android:layout_height="40dp"
+         android:layout_below="@+id/artefacts_banner_text2" 
+         android:text="@string/start_but"
+         android:onClick="myOnClickStartBut" />
+
+     <TextView
+	    android:id="@+id/artefacts_help"
+	    style="@android:style/TextAppearance.Small"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
-	    android:padding="2dip"
-	    style="@style/headerBackground"
-	    android:visibility="visible"
-	    android:layout_below="@+id/introduction"
-	    >			
-    
-		<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		    android:id="@+id/body_heading"
-		    android:layout_width="fill_parent"
-		    android:layout_height="wrap_content"
-		    style="@style/headerBackground"
-		    >			  
-	   	   	<ImageView
+	    android:layout_below="@+id/start_but"
+			android:layout_margin="5dp"
+			android:singleLine="false" />
+	</RelativeLayout>
+
+	<RelativeLayout
+		android:id="@+id/artefacts"
+		style="@style/headerBackground"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@+id/introduction"
+		android:orientation="vertical"
+		android:padding="2dip"
+		android:visibility="visible" >
+
+		<RelativeLayout
+			android:id="@+id/body_heading"
+			style="@style/headerBackground"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" >
+
+			<ImageView
 				android:id="@+id/saved"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:src="@drawable/saved"
 				android:layout_gravity="left"
-		   	    android:layout_marginLeft="10dp"	  
-			/>
-		    
-			<TextView android:id="@+id/saved_artefacts_header"
-				android:text="@string/options_menu_viewsaved"
-				android:layout_width="fill_parent" 
-				android:singleLine="true" 
-				android:layout_height="wrap_content" 
-			    style="@style/headerText"
-		   	    android:layout_marginLeft="10dp"	  
-		   	    android:gravity="left|bottom"  
-		   	    android:layout_toRightOf="@id/saved"
-		   	    android:layout_centerInParent="true"
-			/>
+				android:layout_marginLeft="10dp"
+				android:src="@drawable/saved" />
+
+			<TextView
+				android:id="@+id/saved_artefacts_header"
+				style="@style/headerText"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:layout_centerInParent="true"
+				android:layout_marginLeft="10dp"
+				android:layout_toRightOf="@id/saved"
+				android:gravity="left|bottom"
+				android:singleLine="true"
+				android:text="@string/options_menu_viewsaved" />
 		</RelativeLayout>
-		<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		    android:id="@+id/body"
-		    android:layout_width="fill_parent"
-		    android:layout_height="wrap_content"
-		    android:layout_below="@+id/body_heading"
-	   	    android:layout_margin="5dp"	  
-		    >			  
-			<ExpandableListView android:id="@+id/listView"
-				android:scrollbars="none"
-				android:choiceMode="multipleChoice"
-				android:fastScrollEnabled="true"
-				android:layout_below="@+id/saved_artefacts_header"
-			    android:layout_weight="1"
+
+		<RelativeLayout
+			android:id="@+id/body"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:layout_below="@+id/body_heading"
+			android:layout_margin="5dp" >
+
+			<ExpandableListView
+				android:id="@+id/listView"
 				android:layout_width="fill_parent"
 				android:layout_height="fill_parent"
-				android:headerDividersEnabled="true"
+				android:layout_below="@+id/saved_artefacts_header"
+				android:layout_weight="1"
+				android:choiceMode="multipleChoice"
+				android:fastScrollEnabled="true"
 				android:footerDividersEnabled="true"
-				
-				/>
-			<!--  android:groupIndicator="@drawable/expander_group" -->
+				android:headerDividersEnabled="true"
+				android:scrollbars="none" />
+			<!-- android:groupIndicator="@drawable/expander_group" -->
 		</RelativeLayout>
 	</RelativeLayout>
+
 </RelativeLayout>

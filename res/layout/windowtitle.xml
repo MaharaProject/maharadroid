@@ -27,4 +27,5 @@
         android:layout_gravity="left|center_vertical"
         style="@style/MaharaWindowTitleText"
         />  
+
 </LinearLayout>

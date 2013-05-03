@@ -73,7 +73,8 @@ public class SyncContentProvider extends ContentProvider {
         return null;
     }
 
-    public Uri insert(Uri uri, ContentValues contentvalues) {
+    @Override
+	public Uri insert(Uri uri, ContentValues contentvalues) {
         if (contentvalues == null)
             return null;
 
@@ -111,5 +112,9 @@ public class SyncContentProvider extends ContentProvider {
     public int update(Uri uri, ContentValues contentvalues, String s,
             String[] as) {
         return 0;
+    }
+
+    public void close() {
+        dbHelper.getWritableDatabase().close();
     }
 }

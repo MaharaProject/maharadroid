@@ -116,16 +116,29 @@ public class ArtefactExpandableListAdapterActivity extends Activity {
         // A content view has now be set so lets set the title.
         ((TextView) findViewById(R.id.windowtitle_text)).setText(getString(R.string.app_name));
 
-        if (VERBOSE)
-            Log.v(TAG, "onCreate() called");
-
+        if (VERBOSE) Log.v(TAG, "onCreate() called");
     }
 
-    // public void onResume() {
-    // super.onResume();
+    @Override
+    public void onResume() {
+        //if (DEBUG) Log.d(TAG, "in onResume");
+
+        super.onResume();
+
+        /* Opens the options menu (normally opened when you touch the menu button)
+         * If openOptionsMenu() called in activity - can break app as window etc not fully built
+         * so do this way
+         */
+        //new Handler().postDelayed(new Runnable() {
+        //    public void run() {
+        //        openOptionsMenu();
+        //    }
+        //}, 1000);
+
     // if ( VERBOSE ) Log.v(TAG, "onResume() calls loadSavedArtefacts");
     // updateView();
-    // }
+    }
+
     @Override
 	public void onDestroy() {
         super.onDestroy();
@@ -143,7 +156,8 @@ public class ArtefactExpandableListAdapterActivity extends Activity {
 
         // If none then we show introduction screen
         if (a_array == null || a_array.length <= 0) {
-            // Show the introduction screen
+            //if (DEBUG) Log.d(TAG, "showing introduction");
+            // Show the introduction screen, hide saved items list
             ((RelativeLayout) findViewById(R.id.introduction)).setVisibility(View.VISIBLE);
             ((TextView) findViewById(R.id.artefacts_help)).setText(Html.fromHtml(getString(R.string.artefacts_help)));
             ((RelativeLayout) findViewById(R.id.artefacts)).setVisibility(View.GONE);
@@ -151,12 +165,13 @@ public class ArtefactExpandableListAdapterActivity extends Activity {
             // Else we have some artefacts to show lets load them up in our
             // ExpandableListAdapter
         } else {
+            //if (DEBUG) Log.d(TAG, "showing saved items");
             adapter = new ArtefactExpandableListAdapter(this, new ArrayList<String>(),
                     new ArrayList<ArrayList<Artefact>>());
             listview = (ExpandableListView) findViewById(R.id.listView);
             listview.setAdapter(adapter);
 
-            // Hide the introduction bits
+            // Hide the introduction bits, show saved items list
             ((RelativeLayout) findViewById(R.id.introduction)).setVisibility(View.GONE);
             ((RelativeLayout) findViewById(R.id.artefacts)).setVisibility(View.VISIBLE);
 
@@ -171,11 +186,18 @@ public class ArtefactExpandableListAdapterActivity extends Activity {
             adapter.notifyDataSetChanged();
             listview.invalidate();
         }
-
     }
+
+
+    public void myOnClickStartBut(View v) {
+        openOptionsMenu();
+    }
+
 
     @Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+        //if (DEBUG) Log.d(TAG, "in onCreateOptionsMenu");
+
         boolean result = super.onCreateOptionsMenu(menu);
 
         MenuInflater inflater = getMenuInflater();

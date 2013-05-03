@@ -1,17 +1,23 @@
 <?eclipse.ant.import?>
 <!-- custom targets
 To customise:
+
 - Create a set of custom image files in a parallel directory structure to ./res
 and change 'res_sol' below to the directory name. Change filenames to be copied below as required.
+
 - Check changes in text below, and add your own.
+
 - In Eclipse do File->Export, Ant buildfiles, select project name, Finish. 
 This will create a build.xml file which will do an include on this one (because of the PI on the top line above)
-- Do ant custom to run the customisations
+
+- Do ant custom to run the customisations. This copies existing (vanilla) files to 'std' directory
+  then copies the custom files into the res directory
+
 - To build apk - in Eclipse do Project->Clean, then Run->Run As->Android application (this builds Release version of apk)
 
 ref: http://ant.apache.org/manual/
 -->
-<project >
+<project>
 
   <property name="CUST_DIR" value="./res_sol"/>
   <property name="RES_DIR" value="./res"/>
@@ -19,9 +25,10 @@ ref: http://ant.apache.org/manual/
   <target depends="init,copyicons,editstrings,editwindowtitle"  description="All customisation" name="custom" >
     <echo message="Doing custom tasks"/>
   </target>
-  
-  
+
+
   <target depends="init"  description="copy icons" name="copyicons">
+
     <echo message="copying icons"/>
 
     <mkdir dir="${RES_DIR}/drawable/std"/>
@@ -48,6 +55,7 @@ ref: http://ant.apache.org/manual/
 
 
     <property name="SCRSZ" value="-hdpi"/>
+
     <mkdir dir="${RES_DIR}/drawable${SCRSZ}/std"/>
 
     <copy file="${RES_DIR}/drawable${SCRSZ}/icon.png" todir="${RES_DIR}/drawable${SCRSZ}/std/" 
@@ -105,8 +113,8 @@ ref: http://ant.apache.org/manual/
           value="&lt;string name=&quot;app_name&quot;&gt;myPortfolio&lt;/string&gt;" 
           summary="true"/>
   </target>
-  
-  
+
+
   <target depends="init"  description="edit windowtitle" name="editwindowtitle">
     <!-- this makes a copy of the original file in the std dir
          Notes as for editstrings - though this cannot reliably detect if content is already there
@@ -133,9 +141,51 @@ ref: http://ant.apache.org/manual/
 &lt;/LinearLayout&gt;&#xa;"
           summary="true"/>
   </target>
-  
-  
-  
+
+
+  <target depends="init"  description="copy std icons back" name="copystdiconsback">
+    <!-- this copyies all original files in the 'std' dir back to main res dir
+         XXXNotes as for editstrings - though this cannot reliably detect if content is already there
+     -->
+    <echo message="copying std files back"/>
+    <echo message="copying icons"/>
+
+    <copy todir="${RES_DIR}/drawable" overwrite="true" failonerror="false" verbose="true">
+        <fileset dir="${RES_DIR}/drawable/std" />
+    </copy>
+
+    <copy todir="${RES_DIR}/drawable-hdpi" overwrite="true" failonerror="false" verbose="true">
+        <fileset dir="${RES_DIR}/drawable-hdpi/std" />
+    </copy>
+
+    <copy todir="${RES_DIR}/drawable-ldpi" overwrite="true" failonerror="false" verbose="true">
+        <fileset dir="${RES_DIR}/drawable-ldpi/std" />
+    </copy>
+
+    <copy todir="${RES_DIR}/drawable-mdpi" overwrite="true" failonerror="false" verbose="true">
+        <fileset dir="${RES_DIR}/drawable-mdpi/std" />
+    </copy>
+
+    <copy todir="${RES_DIR}/drawable-xhdpi" overwrite="true" failonerror="false" verbose="true">
+        <fileset dir="${RES_DIR}/drawable-xhdpi/std" />
+    </copy>
+
+
+    <echo message="copying string file()s)"/>
+
+    <copy todir="${RES_DIR}/values" overwrite="true" failonerror="false" verbose="true">
+        <fileset dir="${RES_DIR}/values/std" />
+    </copy>
+
+    <echo message="copying layout file(s)"/>
+
+    <copy todir="${RES_DIR}/layout" overwrite="true" failonerror="false" verbose="true">
+        <fileset dir="${RES_DIR}/layout/std" />
+    </copy>
+
+  </target>
+
+
   <!-- see above for build information -->
   <target depends="init"  description="copy apk" name="copyapk">
     <echo message="copying apk"/>

@@ -99,12 +99,12 @@ ref: http://ant.apache.org/manual/
     <echo message="editing custom strings"/>
     <mkdir dir="${RES_DIR}/values/std"/>
 
-    <!-- <upload.base.uri>http://solent-mahara.catalystdemo.co.uk</upload.base.uri>   -->
+    <!-- <upload.base.uri>http://mahara.example.com</upload.base.uri>   -->
     <copy file="${RES_DIR}/values/strings.xml"  todir="${RES_DIR}/values/std/" 
           overwrite="false" failonerror="false" verbose="true"/>
     <replace file="${RES_DIR}/values/strings.xml" 
           token="&lt;string name=&quot;pref_base_url_default&quot;&gt;&lt;/string&gt;" 
-          value="&lt;string name=&quot;pref_base_url_default&quot;&gt;http://solent-mahara.catalystdemo.co.uk&lt;/string&gt;" 
+          value="&lt;string name=&quot;pref_base_url_default&quot;&gt;http://mahara.example.com&lt;/string&gt;" 
           summary="true"/>
           
       <!-- string name="app_name">MaharaDroid</string-->

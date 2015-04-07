@@ -3,8 +3,7 @@
       package="nz.net.catalyst.MaharaDroid"
       android:versionCode="10"
       android:versionName="2.0">
-    <application android:icon="@drawable/icon" android:label="@string/app_name"
-    		 android:debuggable="true" >
+    <application android:icon="@drawable/icon" android:label="@string/app_name">
     
         <activity android:name=".ui.ArtefactExpandableListAdapterActivity" 
         		  android:label="@string/app_name" 

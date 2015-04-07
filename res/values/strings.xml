@@ -47,7 +47,7 @@
     <string name="pref_base_url_key">upload.base_uri</string>
     <string name="pref_base_url_title">Mahara Base URI</string>
     <string name="pref_base_url_summary">Enter the Mahara base URL for file posts &amp; syncronisation</string>
-    <string name="pref_base_url_default">http://solent-mahara.catalystdemo.co.uk</string>
+    <string name="pref_base_url_default">http://mahara.example.com</string>
     
     <string name="pref_upload_url_key">upload.uri</string>
     <string name="pref_upload_url_title">Upload URI</string>

@@ -1,44 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
     <string name="app_name">MaharaDroid</string>
-	<!--
-    <string name="startup_text">Dobrodošli na MaharaDroid</string>
-    <string name="prefs_app_name">MaharaDroid možnosti</string>
-	//-->
     
     <string name="artefacts_banner_text">Odprto-kodni e-listovniki</string>
     <string name="artefacts_banner_text2">[mah-har-rah;glagol]: razmišljati, razmišljanje, misel</string>
-    <string name="artefacts_no_saved_artefacts">Ni shranjenih izdelkov</string>
+    <string name="artefacts_help">&lt;p&gt;Hvala, da uporabljate MaharaDroid!&lt;/p&gt; 
+        &lt;p&gt;Če želite začeto, se dotaknite gumba Start, nato Nastavitve ter
+        vnesite vaše Mahara uporabniško ime in nastavite začetni žeton. Hkrati obiščite spletišče Mahara (Nastavitve), nastavite isto vrednost žetona in kliknite Posodobi. 
+        V aplikaciji MaharaDroid se dotaknite gumba Nazaj, da se bo začel poizkus overjanja.
+        &lt;/p&gt;
+        &lt;p&gt;
+        Ko boste uspešno overjeni, odprite meni za pisanje objav v dnevik in za nalaganje datotek.
+        Ko fotografirate, snemate video ali zvok, poiščite možnost za \'deljenje'\ teh datotek z aplikacijo MaharaDroid.
+        &lt;/p&gt;
+    </string>
+    <string name="start_but">Start</string>
+    <string name="artefacts_no_saved_artefacts">Trenutno ni shranjenih izdelkov.</string>
 
     <string name="options_menu_prefs">Nastavitve</string>
+    <string name="options_menu_account">Račun &amp; Sinhronizacija</string>
+    <string name="options_menu_camera">Fotoaparat</string>
+    <string name="options_menu_gallery">Galerija</string>
+    <string name="options_menu_compose">Zapiši</string>
     <string name="options_menu_deleteall">Izbriši vse</string>
     <string name="options_menu_uploadall">Naloži vse</string>
-    <string name="options_menu_viewsaved">Shranjeni izdelki</string>
+    <string name="options_menu_viewsaved">Shranjeno za nalaganje</string>
 
     <string name="context_menu_upload">Nalaganje</string>
     <string name="context_menu_view">Ogled</string>
     <string name="context_menu_delete">Brisanje</string>
 
+    <!--  Authentication Details -->
+    <string name="prefcat_authentication">Podrobnosti overjanja z Maharo</string>
+
+    <string name="pref_auth_username_key">upload.username</string>
+    <string name="pref_auth_username_title">Uporabniško ime</string>
+    <string name="pref_auth_username_summary">Vpišite Mahara uporabniško ime</string>     
+
+    <string name="pref_auth_token_key">upload.token</string>
+    <string name="pref_auth_token_title">Žeton</string>
+    <string name="pref_auth_token_summary">Vpišite žeton za nalaganje na Maharo</string>     
+
+    <!--  Connection Details -->
+    <string name="prefcat_connection">Podrobnosti povezave z Maharo</string>
+
+    <string name="pref_base_url_key">upload.base_uri</string>
+    <string name="pref_base_url_title">Osnovni URI Mahare</string>
+    <string name="pref_base_url_summary">Vpišite osnovni URL Mahare za  pošiljanje datotek in sinhronizacijo</string>
+    <string name="pref_base_url_default">http://mahara.example.com</string>
+    
     <string name="pref_upload_url_key">upload.uri</string>
     <string name="pref_upload_url_title">URI za nalaganje</string>
     <string name="pref_upload_url_summary">Vpišite URL za pošiljanje datotek na Maharo</string>
-    <string name="pref_upload_url_default">http://master.dev.mahara.org/artefact/file/mobileupload.php</string>
+    <string name="pref_upload_url_default">/api/mobile/upload.php</string>
 
-    <string name="pref_upload_username_key">upload.username</string>
-    <string name="pref_upload_username_title">Uporabniško ime</string>
-    <string name="pref_upload_username_summary">Vpišite vaše Mahara uporabniško ime</string>     
-
-    <string name="pref_upload_token_key">upload.token</string>
-    <string name="pref_upload_token_title">Žeton</string>
-    <string name="pref_upload_token_summary">Vpišite vaš žeton za nalaganje na Maharo</string>     
+    <string name="pref_sync_url_key">sync.uri</string>
+    <string name="pref_sync_url_title">URI za sinhronizacijo</string>
+    <string name="pref_sync_url_summary">Vpišite URL za sinhronizacijo z Maharo</string>
+    <string name="pref_sync_url_default">/api/mobile/sync.php</string>
 
     <string name="pref_upload_connection_key">upload.connection</string>
-    <string name="pref_upload_connection_title">Tip povezave</string>
-    <string name="pref_upload_connection_summary">Omeji nalaganje izdelkov na naslednje tipe povezav (privzeto so uporabljene nastavitve telefona):</string>     
+    <string name="pref_upload_connection_title">Vrsta povezave</string>
+    <string name="pref_upload_connection_summary">Omeji nalaganje izdelkov na naslednje vrste povezav (privzeto so uporabljene nastavitve telefona):</string>     
     <string-array name="pref_upload_connection_entry">
         <item>Privzeto</item>
-        <item>Samo WiFi</item>
-        <item>Samo mobilnik</item>
+        <item>Samo Wi-Fi</item>
+        <item>Samo mobilne</item>
     </string-array>
     <string-array name="pref_upload_connection_entryValues">
         <item></item>
@@ -46,64 +73,127 @@
         <item>mobile</item>
     </string-array>
 
-    <string name="prefcat_advanced">Napredno</string>
-
+    <!--  Defaults -->
+    <string name="prefcat_defaults">Nastavitve aplikacije</string>
+    
+    <string name="prefcat_defaults_post">Nastavitve pošiljanja</string>
+    
+    <string name="pref_upload_journal_default_key">upload.journal.default</string>
+    <string name="pref_upload_journal_default_title">Objavljanje v privzetem dnevniku</string>
+    <string name="pref_upload_journal_default_summary">Obkljukajte, če želite izbrati privzeti dnevnik za vnose</string>
+    <string name="pref_upload_journal_key">upload.journal</string>
+    <string name="pref_upload_journal_title">Privzeti dnevnik</string>
+    <string name="pref_upload_journal_summary">Izberite privzeti dnevnik za vnose.
+        										Opomba: nič ne bo prikazano do prve sinhronizacije.</string>
+        
+    <string name="pref_upload_folder_default_key">upload.folder.default</string>
+    <string name="pref_upload_folder_default_title">Nalaganje v privzeto mapo</string>
+    <string name="pref_upload_folder_default_summary">Obkljukajte, če želite izbrati privzeto mapo za nalaganje datotek</string>
     <string name="pref_upload_folder_key">upload.folder</string>
     <string name="pref_upload_folder_title">Mapa za nalaganje</string>
-    <string name="pref_upload_folder_summary">Vpišite (osnovno) mapo, v katero boste nalagali vaše izdelke</string>
-    <string name="pref_upload_folder_default">MobileUploads</string>  
-
+    <string name="pref_upload_folder_summary">Izberite privzeto mapo za nalaganje datotek. 
+        									Opomba: nič ne bo prikazano do prve sinhronizacije.</string>
+        
+    <string name="pref_upload_tags_default_key">upload.tags.default</string>
+    <string name="pref_upload_tags_default_title">Privzete oznake</string>
+    <string name="pref_upload_tags_default_summary">Obkljukajte, če želite izbrati privzete oznake vsem naloženim datotekam/dnevnikom</string>
     <string name="pref_upload_tags_key">upload.tags</string>
-    <string name="pref_upload_tags_title">Oznake izdelka</string>
-    <string name="pref_upload_tags_summary">Vpišite oznake (ločene s presledkom), ki bodo dodane vsem naloženim izdelkom</string>
-    <string name="pref_upload_tags_default">Android</string>  
+    <string name="pref_upload_tags_title">Oznake</string>
+    <string name="pref_upload_tags_summary">Izberite privzete oznake vsem naloženim datotekam/dnevnikom.
+        									Opomba: nič ne bo prikazano do prve sinhronizacije.</string>
 
-    <string name="pref_upload_view_key">upload.view</string>
-    <string name="pref_upload_view_title">Ustvari javni pogled</string>
-    <string name="pref_upload_view_summary">Samodejno ustvarim javni pogled te mape?</string>
+    <string name="prefcat_defaults_notification">Nastavitve obveščanja</string>
+    
+    <string name="pref_sync_notification_feedback_key">feedback</string>
+	<string name="pref_sync_notification_feedback_summary">Prejemanje obvestil o prejetih odzivih</string>
+	<string name="pref_sync_notification_feedback_title">Odziv</string>
+   	<string name="pref_sync_notification_newpost_key">newpost</string>
+	<string name="pref_sync_notification_newpost_summary">Prejemanje obvestil o novih vnosih</string>
+	<string name="pref_sync_notification_newpost_title">Novi vnosi</string>		   	
+   	<string name="pref_sync_notification_maharamessage_key">maharamessage</string>
+	<string name="pref_sync_notification_maharamessage_summary">Prejemanje obvestil o sporočilih Mahare</string>
+	<string name="pref_sync_notification_maharamessage_title">Sporočila Mahare</string>
+   	<string name="pref_sync_notification_usermessage_key">usermessages</string>
+	<string name="pref_sync_notification_usermessage_summary">Prejemanje obvestil o uporabniških sporočilih</string>
+	<string name="pref_sync_notification_usermessage_title">Uporabniška sporočila</string>
 
+    <!--  Notification defaults -->
+    <string name="pref_sync_notification_key">sync.notification</string>
+    <string name="pref_sync_notification_title">Omogoči sinhronizacijo obvestil</string>
+    <string name="pref_sync_notification_summary">Obvesti me, če med sinhronizacijo najdeš nova sporočila.</string>
+
+    <string name="prefcat_advanced">Napredne nastavitve</string>
+    
+    <string name="pref_sync_periodic_key">sync.periodic</string>
+    <string name="pref_sync_periodic_title">Periodična sinhronizacija</string>
+    <string name="pref_sync_periodic_summary">Vnesite čas v minutah, da vsilite periodično sinhronizacijo (0 ali prazno pomeni brez)</string>
+    
+    <string name="pref_sync_time_key">sync.time</string>
+    <string name="pref_sync_time_title">Čas zadnje sinhronizacije</string>
+    <string name="pref_sync_time_summary">Čas, v sekundah, od zadnje sinhrinizacije, prejet od strežnika.</string>
+    
     <string name="pref_menu_reset">Ponastavi</string>
     <string name="pref_menu_about">Vizitka</string>
     <string name="pref_menu_scan">Preišči</string>
     
     <string name="btnok">V redu</string>
+    <string name="btnedit">Uredi</string>
     <string name="btnupload">Naloži</string>
     <string name="btnsave">Shrani</string>
     <string name="btndelete">Izbriši</string>
-    <string name="btnsendlabel">Pošlji</string>
-    <string name="btnview">Poglej</string>
+    <string name="btnsendlabel">Pošlji</string>->
     <string name="btncancellabel">Prekliči</string>
     
     <string name="lbluploadoptions">Nastavitve nalaganja</string>
  
-    <string name="artifact_retrieve_error">Napaka pri pridobivanju podrobnosti izdelka</string>
-    <string name="artifactsettings">Nastavitve izdelka</string>
-    <string name="transferprogress">Napredek prenosa datoteke</string>
+    <string name="artifact_retrieve_error">Napaka pri pridobivanju podrobnosti</string>
+    <string name="artifactsettings">Nastavitve pošiljanja</string>
+    <string name="transferprogress">Napredek prenosa</string>
     <string name="uploadstarting">Nalaganje se začenja</string>
     <string name="uploadfinished">Nalaganje je končano</string>
     <string name="uploadfailed">Nalaganje neuspešno</string>
     <string name="savefailed">Shranjevanje neuspešno</string>
     <string name="uploadsaved">Naloženo in shranjeno</string>
-    <string name="uploadnotavailable">Oprostite, toda datoteke lahko naložite le kot izdelke.</string>
-    <string name="uploadingartifact">Nalagam izdelek</string>
-    <string name="uploading">Nalagam</string>
+    <string name="uploadnotavailable">Oprostite, toda naložite lahko le datoteke.</string>
+    <string name="capturefailed">Prišlo je do težav z zajemanjem slike.</string>
+    <string name="uploadingartifact">Nalaganje &#8230;</string>
+    <string name="uploading">Nalaganje</string>
     <string name="uploadnoconnection">Oprosite, trenutno za nalaganje nimate nobene delujoče podatkovne povezave.</string>
+    <string name="uploadincomplete">Oprostite, za vnos v dnevnik morate vnesti naslov in vsebino.</string>
     <string name="filetransfers">Prenosi datotek</string>
     
-    <string name="upload_confirm_label">Da:</string>
+    <string name="upload_journal_label">Dnevnik:</string>
+    <string name="upload_journal_prompt">Naloži datoteke ali vnose v dnevnik</string>
+    <string name="upload_journal_default">Naloži datoteke</string>
+    <string name="upload_is_draft_label"></string>
+    <string name="upload_is_draft_text">Obkljukajte, če je to osnutek vnosa. Osnutka ne vidi nihče razen vas.</string>
+    <string name="upload_allow_comments_label"></string>
+    <string name="upload_allow_comments_text">Obkljukajte, če želite omogočiti komentiranje tega vnosa.</string>
+    <string name="upload_tags_prompt">Dodaj obstoječo oznako</string>
+    <string name="upload_confirm_label"></string>
     <string name="upload_confirm_text">Datoteka, ki jo nameravam naložiti, je moja oz. imam pisno
 								dovoljenje za njeno reprodukcijo in/ali distribucijo. Moja uporaba te datoteke
 								ne krši nobenega izmed lokalnih zakonov o avtorskih in sorodnih pravicah.
-								Ta datoteka se drži tudi Pravil in pogojev tega spletišča.</string>
-    <string name="upload_title_label">Naziv:</string>
-    <string name="upload_description_label">Opis:</string>
+								Ta datoteka se drži tudi Pravil in pogojev spletišča.</string>
+    <string name="upload_title_label">Naslov:</string>
+    <string name="upload_file_description_label">Opis:</string>
+    <string name="upload_journal_description_label">Vnos:</string>
     <string name="upload_tags_label">Oznake:</string>
-    <string name="upload_time_label">Shranjeno:</string>
+    <string name="upload_time_label">Nazadnje:</string>
+    <string name="upload_files_label">Datoteka:</string>
  
     <string name="load_config_download_error">Oprostite, prišlo je do napake pri nalaganju nastavitvene datoteke.</string>
     <string name="load_config_error">Oprostite, prišlo je do napake pri izvajanju nastavitvene datoteke.</string>
     <string name="load_config_success">Nastavitvena datoteka uspešno naložena.</string>
     <string name="scan_not_available">Oprostite, za to morate namestiti ZXing Barcode Scanner.</string>
+
+    <string name="login_authenticating">Overjanje &#8230;</string>
+    <string name="only_one_account">Trenutno lahko hkrati uporabljate največ en račun.</string>
+
+    <string name="auth_result_no_connection">Napačen naslov strežnika ali številka vrat</string>
+    <string name="auth_result_success">Overjanje uspešno!</string>
+    <string name="auth_result_fail_short">Overjanje neuspešno</string>
+    <string name="auth_result_fail_long">Overjanje neuspešno, preverite povezavo in uporabniški žeton.</string>
 
     <!--  About page -->
     <string name="about_title">MaharaDroid vizitka</string>

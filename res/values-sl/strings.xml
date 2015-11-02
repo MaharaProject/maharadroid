@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">MaharaDroid</string>
     
@@ -11,7 +11,7 @@
         &lt;/p&gt;
         &lt;p&gt;
         Ko boste uspešno overjeni, odprite meni za pisanje objav v dnevik in za nalaganje datotek.
-        Ko fotografirate, snemate video ali zvok, poiščite možnost za \'deljenje'\ teh datotek z aplikacijo MaharaDroid.
+        Ko fotografirate, snemate video ali zvok, poiščite možnost za \'deljenje\' teh datotek z aplikacijo MaharaDroid.
         &lt;/p&gt;
     </string>
     <string name="start_but">Start</string>
@@ -141,7 +141,7 @@
     <string name="btnupload">Naloži</string>
     <string name="btnsave">Shrani</string>
     <string name="btndelete">Izbriši</string>
-    <string name="btnsendlabel">Pošlji</string>->
+    <string name="btnsendlabel">Pošlji</string>
     <string name="btncancellabel">Prekliči</string>
     
     <string name="lbluploadoptions">Nastavitve nalaganja</string>

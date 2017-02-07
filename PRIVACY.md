@@ -6,7 +6,8 @@ We are committed to protecting your privacy and providing users with a safe and 
 
 ## Collection of personal information
 
-By using the full potential of the application, you will need to log into the Mahara site that you are using for your portfolio work. The login form for internal Mahara or LDAP accounts sits in the mobile app whereas single sign-on takes you to your Mahara site.
+To use the full potential of the application, you will need to log into the Mahara site that you are using for your portfolio work, and create an authentication token to allow this application to access
+your account on your Mahara site.
 
 Your own name is displayed in the app once you are logged in, and you are connected to your Mahara account via an access token that is stored in the app as well as on Mahara itself so the two can communicate with each other.
 

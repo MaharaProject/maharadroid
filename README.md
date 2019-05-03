@@ -1,4 +1,4 @@
-MaharaDroid was an Android application that allowed students to collect
+[Deprecated] MaharaDroid was an Android application that allowed students to collect
 their learning evidence, i.e. any file on their Android device, and then
 upload it to their Mahara file area for inclusion in their portfolios.
 
